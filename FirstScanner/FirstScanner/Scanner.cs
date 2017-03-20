@@ -149,7 +149,7 @@ namespace FirstScanner
 
         private Token ScanLetter()
         {
-            Regex r_letterAndDigit = new Regex("[A-Za-z0-9]");
+            Regex r_letterAndDigit = new Regex("[A-ZÆØÅa-zæøå0-9]");
 
             string output = "";
 
