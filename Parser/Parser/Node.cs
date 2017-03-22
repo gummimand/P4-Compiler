@@ -6,21 +6,32 @@ using System.Threading.Tasks;
 
 namespace Parserproject
 {
-    public class Node
+
+    public abstract class ASTNode
     {
         public Node Parent { get; set; }
-        public Token token { get; set; }
+        public abstract void PreOrderWalk();
+    }
 
-        public List<Node> Children { get; set; }
+    public class Node: ASTNode
+    {
+        public string Type { get; set; }
 
-        public void PreOrderWalk()
+        public List<ASTNode> Children { get; set; } = new List<ASTNode>();
+
+        public Node(string type)
         {
-            Console.WriteLine(token.Type + " - " + token.Value);
-            foreach (Node n in Children)
+            this.Type = type;
+        }
+
+        public override void PreOrderWalk()
+        {
+            Console.WriteLine(Type);
+            foreach (ASTNode n in Children)
                 n.PreOrderWalk();
         }
 
-        public void AddChild(Node n)
+        public void AddChild(ASTNode n)
         {
             Children.Add(n);
             n.Parent = this;

@@ -13,9 +13,10 @@ namespace ParserTest
     public class ParserTest
     {
         [Test]
-        public void Parse_EmptyTokenStream_doesNothing()
+        public void Parse()
         {
-       
+         
+
         }
     }
 }
