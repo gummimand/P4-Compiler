@@ -8,7 +8,17 @@ namespace Parserproject
 {
     public class AST
     {
-        public Node Head { get; set; }
+        public ASTNode Root { get; set; }
+
+        public AST(ASTNode root)
+        {
+            Root = root;
+        }
+
+        public void print()
+        {
+            Root.PreOrderWalk();
+        }
 
     }
 }

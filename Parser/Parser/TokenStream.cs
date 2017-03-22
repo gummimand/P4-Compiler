@@ -6,24 +6,31 @@ using System.Threading.Tasks;
 
 namespace Parserproject
 {
-    class TokenStream
+    public class TokenStream
     {
         private List<Token> tokenStream;
-        private int currentIndex = 0;
+
+        public TokenStream(List<Token> tokens)
+        {
+            tokenStream = tokens;
+        }
 
         public Token next()
         {
-            currentIndex++;
-            if (tokenStream.Count > currentIndex)
-                return tokenStream[currentIndex];
+            if (tokenStream.Count > 0)
+            {
+                var token = tokenStream[0];
+                tokenStream.RemoveAt(0);
+                return token;
+            }
             else
                 return new Token("", "end");
         }
 
         public Token peek()
         {
-            if (tokenStream.Count > currentIndex + 1)
-                return tokenStream[currentIndex + 1];
+            if (tokenStream.Count > 0)
+                return tokenStream[0];
             else
                 return new Token("", "end");
         }
