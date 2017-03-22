@@ -8,15 +8,18 @@ namespace Parserproject
 {
     public class Token
     {
+        public string content;
+        public string type;
 
-        public string Value { get; set; }
-        public string Type { get; set; }
-
-        public Token(string value, string type)
+        public Token (string _content)
         {
-            Value = value;
-            Type = type;
+            content = _content;
         }
-        
+
+        public Token(string _content, string _type)
+        {
+            content = _content;
+            type = _type;
+        }
     }
 }
