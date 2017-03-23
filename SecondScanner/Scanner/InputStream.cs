@@ -35,5 +35,10 @@ namespace FirstScanner
         {
             return streamreader.EndOfStream;
         }
+        public int AddNumber()
+        {
+            return streamreader.Read();
+        }
+
     }
 }

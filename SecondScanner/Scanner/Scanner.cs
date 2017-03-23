@@ -17,7 +17,7 @@ namespace FirstScanner
 
         string TokenContent;
 
-        enum Typer { Tal, Heltal, Streng, Identifier, Operator }
+        enum Typer { Tal, Heltal, Streng, Identifier, Operator, Bracket }
 
         public void Scan()
         {
@@ -25,21 +25,30 @@ namespace FirstScanner
             {
                 CS.advance();
             }
+
+            char peeked = CS.peek();
+
             if (CS.EOF())
             {
                 outputtokens.Add(new Token("EOF")); //todo, End of file char?
             }
-            else if (isDigit(CS.peek()))
+            else if (isDigit(peeked))
             {
                 outputtokens.Add(ScanDigit());
                 Scan();
             }
-            else if (isLetter(CS.peek()))
+            else if (isLetter(peeked))
             {
                 outputtokens.Add(ScanLetter());
                 Scan();
             }
-            else if (CS.peek() == '"')
+            else if (isBracket(peeked))
+            {
+                outputtokens.Add(ScanBracket());
+                Scan();
+            }
+
+            else if (peeked == '"')
             {
                 TokenContent += CS.add();
 
@@ -51,14 +60,16 @@ namespace FirstScanner
                 outputtokens.Add(new Token(TokenContent, Typer.Streng.ToString()));
                 Scan();
             }
-            else if (isOperator(CS.peek()))
+            else if (isOperator(peeked))
             {
                 outputtokens.Add(ScanOperator());
                 Scan();
             }
             else
             {
-                outputtokens.Add(new Token("fejl", "error"));
+                
+                outputtokens.Add(new Token(CS.add().ToString(), "error"));
+
                 Scan();
             }
 
@@ -77,18 +88,27 @@ namespace FirstScanner
 
             return r.IsMatch(input.ToString());
         }
+
         private bool isLetter(char input)
         {
-            Regex r = new Regex("[A-ZÆØÅa-zæøå]");
+            Regex r = new Regex("[ÆØÅæøåA-Za-z0-9]");
 
             return r.IsMatch(input.ToString());
         }
 
         private bool isOperator(char input)
         {
-            Regex r_operators = new Regex(@"\W|_");
+            Regex r_operators = new Regex("[-+*/^%<>=|&.:]"); //@"\-\+\*\^.|&%/\:"
 
             return r_operators.IsMatch(input.ToString());
+        }
+
+        private bool isBracket(char input)
+        {
+            Regex r = new Regex(@"\(\)\[\]{}");
+
+            return r.IsMatch(input.ToString());
+
         }
 
         private Token ScanOperator()
@@ -150,7 +170,7 @@ namespace FirstScanner
 
         private Token ScanLetter()
         {
-            Regex r_letterAndDigit = new Regex("[A-Za-z0-9]");
+            Regex r_letterAndDigit = new Regex("[A-ZÆØÅa-zæøå0-9]");
 
             string output = "";
 
@@ -159,6 +179,11 @@ namespace FirstScanner
                 output += CS.add();
             }
             return new Token(output, Typer.Identifier.ToString());
+        }
+
+        private Token ScanBracket()
+        {
+            return new Token(CS.add().ToString(), Typer.Bracket.ToString());
         }
 
         public void printTokens()
@@ -171,5 +196,16 @@ namespace FirstScanner
             }
             Console.ReadKey();
         }
+
+        public void test()
+        {
+            while (!CS.EOF())
+            {
+                Console.WriteLine(CS.AddNumber());
+            }
+            Console.Read();
+        }
     }
+
+
 }
