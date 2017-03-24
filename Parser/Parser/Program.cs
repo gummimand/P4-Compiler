@@ -12,15 +12,19 @@ namespace Parserproject
         static void Main(string[] args)
         {
 
-           var ts = new TokenStream(new List<Token>()
+            var ts = new TokenStream(new List<Token>()
            {
+               new Token("var", "x"),
+               new Token("a", "identifier"),
+               new Token("=", "x"),
+               new Token("15", "Num"),
                new Token("hvis", "keyword"),
                new Token("(", "bracket"),
                new Token("True", "Bool"),
-               new Token(")"),
-               new Token("så"),
+               new Token(")", "x"),
+               new Token("så", "x"),
                new Token("a", "Var"),
-               new Token("ellers"),
+               new Token("ellers", "x"),
                new Token("b", "Var")
            });
 

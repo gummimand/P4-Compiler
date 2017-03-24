@@ -24,7 +24,7 @@ namespace Parserproject
                 return token;
             }
             else
-                return new Token("", "end");
+                return new Token("END", "end");
         }
 
         public Token peek()
@@ -32,7 +32,7 @@ namespace Parserproject
             if (tokenStream.Count > 0)
                 return tokenStream[0];
             else
-                return new Token("", "end");
+                return new Token("END", "end");
         }
 
 

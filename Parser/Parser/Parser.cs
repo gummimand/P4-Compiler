@@ -20,8 +20,12 @@ namespace Parserproject
         {
             var programNode = new Node("Program");
 
+            var nextToken = TokenStream.peek();
+            if(nextToken.content == "var" || nextToken.content == "type" || nextToken.content == "funktion")
+            {
+                ParseDeclarations(programNode);
+            }
             
-            ParseDeclarations(programNode);
 
             ParseExpression(programNode);
 
@@ -32,10 +36,285 @@ namespace Parserproject
         {
             var declNode = new Node("Declarations");
             Parent.AddChild(declNode);
+
+            ParseSingleDeclaration(declNode);
+
+            var nextToken = TokenStream.peek();
+            if(nextToken.content == ";")
+            {
+                ParseDeclarations(declNode);
+            }
+        }
+
+        private void ParseSingleDeclaration(Node parent)
+        {
+            var declNode = new Node("Declaration");
+            parent.AddChild(declNode);
+
+            var nextToken = TokenStream.peek();
+            if(nextToken.content == "var")
+            {
+                VariableDeclaration(declNode);
+            }
+            else if(nextToken.content == "type")
+            {
+                TypeDeclaration(declNode);
+            }
+            else if (nextToken.content == "funktion")
+            {
+                FunctionDeclaration(declNode);
+            }
+            else
+            {
+                throw new ArgumentException("Syntax error for declaration");
+            }
+        }
+
+        private void FunctionDeclaration(Node parent)
+        {
+            var funLeaf = new Leaf(TokenStream.next());
+            parent.AddChild(funLeaf);
+
+            var nextToken = TokenStream.peek();
+            if (nextToken.type == "identifier")
+            {
+                parent.AddChild(new Leaf(TokenStream.next()));
+            }
+            else
+            {
+                throw new ArgumentException("Syntax error, expected identifier.");
+            }
+
+            nextToken= TokenStream.peek();
+            if(nextToken.content == "(")
+            {
+                parent.AddChild(new Leaf(TokenStream.next()));
+
+                DeclarationRow(parent);
+            }
+            else
+            {
+                throw new ArgumentException("Syntax error, expected '('.");
+            }
+
+            if (nextToken.content == ")")
+            {
+                parent.AddChild(new Leaf(TokenStream.next()));
+
+            }
+            else
+            {
+                throw new ArgumentException("Syntax error, expected ')'.");
+            }
+
+            ParseClause(parent);
+
+        }
+
+        private void ParseClause(Node parent)
+        {
+            var clNode = new Node("clause");
+            parent.AddChild(clNode);
+
+            var nextToken = TokenStream.peek();
+
+            if (nextToken.content == "{")
+            {
+                clNode.AddChild(new Leaf(TokenStream.next()));
+                ParseExpression(clNode);
+
+                nextToken = TokenStream.peek();
+                if (nextToken.content == "}")
+                {
+                    clNode.AddChild(new Leaf(TokenStream.next()));
+                }
+                else
+                {
+                    throw new ArgumentException("Syntax error, expected '}'.");
+                }
+
+                nextToken = TokenStream.peek();
+                if (nextToken.content == "=")
+                {
+                    clNode.AddChild(new Leaf(TokenStream.next()));
+                }
+                else
+                {
+                    throw new ArgumentException("Syntax error, expected '='.");
+                }
+
+                ParseExpression(clNode);
+
+                nextToken = TokenStream.peek();
+                if (nextToken.content == "|")
+                {
+                    clNode.AddChild(new Leaf(TokenStream.next()));
+                }
+                else
+                {
+                    throw new ArgumentException("Syntax error, expected '|'.");
+                }
+
+                ParseClause(clNode);
+            }
+            else if (nextToken.content == "=")
+            {
+                clNode.AddChild(new Leaf(TokenStream.next()));
+                ParseExpression(clNode);
+            }
+            else
+            {
+                throw new ArgumentException("Syntax error, expected clause.");
+            }
+
+        }
+
+        private void TypeDeclaration(Node parent)
+        {
+            var typeToken = TokenStream.next();
+            var typeLeaf = new Leaf(typeToken);
+            parent.AddChild(typeLeaf);
+
+            var nextToken = TokenStream.peek();
+            if (nextToken.type == "identifier")
+            {
+                var idLeaf = new Leaf(TokenStream.next());
+                parent.AddChild(idLeaf);
+            }
+            else
+            {
+                throw new ArgumentException("Syntax error, expected identifier.");
+            }
+
+            nextToken = TokenStream.peek();
+            if (nextToken.content == "=")
+            {
+                var eqLeaf = new Leaf(TokenStream.next());
+                parent.AddChild(eqLeaf);
+            }
+            else
+            {
+                throw new ArgumentException("Syntax error, expected '='.");
+            }
+
+            nextToken = TokenStream.peek();
+            if (nextToken.content == "[")
+            {
+                var startbracketLeaf = new Leaf(TokenStream.next());
+                parent.AddChild(startbracketLeaf);
+
+                TypedDeclRow(parent);
+            }
+            else
+            {
+                throw new ArgumentException("Syntax error, expected '['.");
+            }
+
+            nextToken = TokenStream.peek();
+
+            if (nextToken.content == "]")
+            {
+                var endbracketLeaf = new Leaf(TokenStream.next());
+                parent.AddChild(endbracketLeaf);
+            }
+            else
+            {
+                throw new ArgumentException("Syntax error, expected ']'.");
+            }
+        }
+
+        private void TypedDeclRow(Node parent)
+        {
+            var declRowNode = new Node("TypedDeclarationRow");
+            parent.AddChild(declRowNode);
+
+            var nextToken = TokenStream.peek();
+            if (nextToken.type == "type")
+            {
+                declRowNode.AddChild(new Leaf(TokenStream.next()));
+            }
+            else
+            {
+                throw new ArgumentException("Syntax error, expected type.");
+            }
+
+            nextToken = TokenStream.peek();
+            if (nextToken.type == "identifier")
+            {
+                declRowNode.AddChild(new Leaf(TokenStream.next()));
+            }
+            else
+            {
+                throw new ArgumentException("Syntax error, expected identifier.");
+            }
+
+            nextToken = TokenStream.peek();
+            if (nextToken.content == ",")
+            {
+                declRowNode.AddChild(new Leaf(TokenStream.next()));
+
+                TypedDeclRow(declRowNode);
+            }
+            
+        }
+
+        private void DeclarationRow(Node parent)
+        {
+            var declRowNode = new Node("DeclarationRow");
+            parent.AddChild(declRowNode);
+
+            var nextToken = TokenStream.peek();
+            if(nextToken.type == "identifier")
+            {
+                declRowNode.AddChild(new Leaf(TokenStream.next()));
+            }
+            else
+            {
+                throw new ArgumentException("Syntax error, expected identifier.");
+            }
+
+            nextToken = TokenStream.peek();
+            if(nextToken.content ==",")
+            {
+                declRowNode.AddChild(new Leaf(TokenStream.next()));
+                DeclarationRow(declRowNode);
+            }
+        }
+
+        private void VariableDeclaration(Node parent)
+        {
+            var varToken = TokenStream.next();
+            var varLeaf = new Leaf(varToken);
+            parent.AddChild(varLeaf);
+
+            var nextToken = TokenStream.peek();
+            if(nextToken.type == "identifier")
+            {
+                var idLeaf = new Leaf(TokenStream.next());
+                parent.AddChild(idLeaf);
+            }
+            else
+            {
+                throw new ArgumentException("Syntax error, expected identifier.");
+            }
+
+            nextToken = TokenStream.peek();
+            if(nextToken.content == "=")
+            {
+                var eqLeaf = new Leaf(TokenStream.next());
+                parent.AddChild(eqLeaf);
+            }
+            else
+            {
+                throw new ArgumentException("Syntax error, expected '='.");
+            }
+
+            ParseExpression(parent);
         }
 
         private void ParseExpression(Node parent)
         {
+
             var expNode = new Node("Expression");
             parent.AddChild(expNode);
 
