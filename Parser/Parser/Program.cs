@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,10 +12,10 @@ namespace Parserproject
         static void Main(string[] args)
         {
 
-            var ts = new TokenStream(new List<Token>()
+           var ts = new TokenStream(new List<Token>()
            {
-               new Token("hvis"),
-               new Token("("),
+               new Token("hvis", "keyword"),
+               new Token("(", "bracket"),
                new Token("True", "Bool"),
                new Token(")"),
                new Token("så"),
@@ -27,7 +28,6 @@ namespace Parserproject
             var ast = p.Parse();
 
             ast.print();
-
             Console.ReadKey();
 
         }

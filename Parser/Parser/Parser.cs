@@ -28,7 +28,7 @@ namespace Parserproject
             return new AST(programNode);
         }
 
-        private void ParseDeclarations(Node Parent)
+        private void ParseDeclarations(Node Parent)  //todo
         {
             var declNode = new Node("Declarations");
             Parent.AddChild(declNode);
@@ -42,7 +42,7 @@ namespace Parserproject
             ParseSimpleExpression(parent);
 
             var operators = new List<string>() { "+", "-", "*", "/", "%", "^", "==", "<=", ">=", "!=", "<", ">", "og", "eller", "." };
-            var exprEnders = new List<string>() { "så", "ellers", "i", "slut", ")", "]", "}" };
+            var exprEnders = new List<string>() { "så", "ellers", "i", "slut", ")", "]", "}", ";" };
 
             var nextToken = TokenStream.peek();
             if(operators.Contains(nextToken.content))
