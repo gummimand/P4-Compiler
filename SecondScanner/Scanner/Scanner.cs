@@ -17,7 +17,7 @@ namespace FirstScanner
 
         string TokenContent;
 
-        enum Typer { Tal, Heltal, Streng, Identifier, Operator, Bracket }
+        enum Typer { Tal, Heltal, Streng, Identifier, Operator, Bracket, Keyword }
 
         public void Scan()
         {
@@ -178,7 +178,27 @@ namespace FirstScanner
             {
                 output += CS.add();
             }
-            return new Token(output, Typer.Identifier.ToString());
+            switch(output)
+            {
+                case "hvis":
+                case "så":
+                case "ellers":
+                case "lad":
+                case "i":
+                case "slut":
+                case "var":
+                case "funktion":
+                case "FALSK":
+                case "SAND":
+                case "hoved":
+                case "hale":
+                case "tag":
+                case "smid":
+                case "fejl":
+                    return new Token(output, Typer.Keyword.ToString());
+                default:
+                    return new Token(output, Typer.Identifier.ToString());
+            }
         }
 
         private Token ScanBracket()
