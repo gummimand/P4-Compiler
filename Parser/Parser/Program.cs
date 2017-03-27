@@ -18,6 +18,7 @@ namespace Parserproject
                new Token("a", "identifier"),
                new Token("=", "x"),
                new Token("15", "Num"),
+               new Token(";","x"),
                new Token("hvis", "keyword"),
                new Token("(", "bracket"),
                new Token("True", "Bool"),

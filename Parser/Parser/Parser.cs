@@ -21,11 +21,11 @@ namespace Parserproject
             var programNode = new Node("Program");
 
             var nextToken = TokenStream.peek();
-            if(nextToken.content == "var" || nextToken.content == "type" || nextToken.content == "funktion")
+            while(nextToken.content == "var" || nextToken.content == "type" || nextToken.content == "funktion")
             {
                 ParseDeclarations(programNode);
+                nextToken = TokenStream.peek();
             }
-            
 
             ParseExpression(programNode);
 
@@ -42,8 +42,14 @@ namespace Parserproject
             var nextToken = TokenStream.peek();
             if(nextToken.content == ";")
             {
-                ParseDeclarations(declNode);
+                Parent.AddChild(new Leaf(TokenStream.next()));
+               //ParseDeclarations(declNode);
             }
+            else
+            {
+                throw new ArgumentException("Syntax error, expected ';'");
+            }
+
         }
 
         private void ParseSingleDeclaration(Node parent)
