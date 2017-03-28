@@ -11,25 +11,12 @@ namespace Parserproject
     {
         static void Main(string[] args)
         {
+            Scanner scanner = new Scanner();
+            scanner.Scan();
 
-            var ts = new TokenStream(new List<Token>()
-           {
-               new Token("var", "x"),
-               new Token("a", "identifier"),
-               new Token("=", "x"),
-               new Token("15", "Num"),
-               new Token(";","x"),
-               new Token("hvis", "keyword"),
-               new Token("(", "bracket"),
-               new Token("True", "Bool"),
-               new Token(")", "x"),
-               new Token("så", "x"),
-               new Token("a", "Var"),
-               new Token("ellers", "x"),
-               new Token("b", "Var")
-           });
+            TokenStream tokenstream = new TokenStream(scanner.outputtokens);
 
-            var p = new Parser(ts);
+            var p = new Parser(tokenstream);
             var ast = p.Parse();
 
             ast.print();
