@@ -17,7 +17,7 @@ namespace FirstScanner
 
         string TokenContent;
 
-        enum Typer { Tal, Heltal, Streng, Identifier, Operator, Bracket, Keyword }
+        enum Typer { Tal, Heltal, Streng, Identifier, Operator, Bracket, Nøgleord }
 
         public void Scan()
         {
@@ -65,9 +65,16 @@ namespace FirstScanner
                 outputtokens.Add(ScanOperator());
                 Scan();
             }
+            else if (peeked == '#')
+            {
+                while (CS.peek() != '\n')
+                {
+                    CS.advance();
+                }   
+
+            }
             else
             {
-                
                 outputtokens.Add(new Token(CS.add().ToString(), "error"));
 
                 Scan();
@@ -108,7 +115,6 @@ namespace FirstScanner
             Regex r = new Regex(@"\(\)\[\]{}");
 
             return r.IsMatch(input.ToString());
-
         }
 
         private Token ScanOperator()
@@ -195,7 +201,7 @@ namespace FirstScanner
                 case "tag":
                 case "smid":
                 case "fejl":
-                    return new Token(output, Typer.Keyword.ToString());
+                    return new Token(output, Typer.Nøgleord.ToString());
                 default:
                     return new Token(output, Typer.Identifier.ToString());
             }
