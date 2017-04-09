@@ -10,17 +10,21 @@ namespace ConsoleApplication5
     {
         static void Main(string[] args)
         {
-            SymbolTable table = new SymbolTable();
-            //table.EnterScope();
-            table.AddIdentifier("Hej", "streng", "dette er en hilsen");
-            table.EnterScope();
-            table.AddIdentifier("Kommentar", "HansKommentar", "dette er noget sovs");
-            table.EnterScope();
-            table.AddIdentifier("Meme", "Fugtig", "Noget med Bubber");
-            table.AddIdentifier("Joke", "dårlig", "mit liv");
-            table.EnterScope();
-            table.AddIdentifier("Holdning", "retarderet", "Der er mere end to køn!");
-            table.PrintTables();
+            Scope SymbolTable = new Scope();
+
+            Variable counter = new Variable("counter","int", "7");
+
+            SymbolTable.AddElement(counter);
+
+            counter.PrintVariable();
+
+            List<Variable> Liste = new List<Variable>();
+
+            foreach (var item in Liste)
+            {
+                Console.WriteLine(item);
+            }
+            Console.ReadKey();
         }
     }
 }
