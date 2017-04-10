@@ -11,6 +11,7 @@ namespace Parserproject
     {
         public Node Parent { get; set; }
         public abstract void PreOrderWalk();
+        public abstract void PrintPretty(string indent, bool last);
     }
 
     public class Node: ASTNode
@@ -35,6 +36,25 @@ namespace Parserproject
         {
             Children.Add(n);
             n.Parent = this;
+        }
+
+        public override void PrintPretty(string indent, bool last)
+        {
+            Console.Write(indent);
+            if (last)
+            {
+                Console.Write("\\-");
+                indent += "  ";
+            }
+            else
+            {
+                Console.Write("|-");
+                indent += "| ";
+            }
+            Console.WriteLine(Type);
+
+            for (int i = 0; i < Children.Count; i++)
+                Children[i].PrintPretty(indent, i == Children.Count - 1);
         }
     }
 }

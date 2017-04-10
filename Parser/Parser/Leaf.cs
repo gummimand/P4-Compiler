@@ -19,5 +19,12 @@ namespace Parserproject
         {
             Console.WriteLine(token.content + " : " + token.Type);
         }
+
+        public override void PrintPretty(string indent, bool last)
+        {
+            Console.Write(indent);
+            Console.Write("\\-");
+            Console.WriteLine(token.content + " : " + token.Type);
+        }
     }
 }

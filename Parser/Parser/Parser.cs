@@ -406,7 +406,7 @@ namespace Parserproject
             }
             else
             {
-                throw new ArgumentException("Oh shiiit, son!");
+                throw new ArgumentException($"Can't parse expression starting with {nextToken}.");
             }
 
         }

@@ -17,8 +17,9 @@ namespace Parserproject
 
         public void print()
         {
-            Root.PreOrderWalk();
+            Root.PrintPretty("",true);
         }
+
 
     }
 }
