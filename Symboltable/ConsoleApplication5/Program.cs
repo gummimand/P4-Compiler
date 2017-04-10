@@ -12,18 +12,27 @@ namespace ConsoleApplication5
         {
             Scope SymbolTable = new Scope();
 
-            Variable counter = new Variable("counter","int", "7");
+            Scope scope1 = new Scope();
+            Scope scope2 = new Scope();
+            Scope scope3 = new Scope();
+            Scope scope4 = new Scope();
+            Scope scope5 = new Scope();
+            
+            SymbolTable.AddScope(scope1);
+            SymbolTable.AddScope(scope2);
+            scope1.AddScope(scope3);
+            scope2.AddScope(scope4);
+            scope4.AddScope(scope5);
 
-            SymbolTable.AddElement(counter);
+            SymbolTable.AddVariable("Bla", "fucking", "bla");
+            SymbolTable.AddVariable("123", "456", "789");
+            scope1.AddVariable("zzz", "zzz", "zzz");
+            scope2.AddVariable("SPO", "SPO", "SPO");
+            scope3.AddVariable("HANS", "HANS", "HANS");
+            scope4.AddVariable("nej", "nej", "nej");
+            scope5.AddVariable("lol", "lol", "lol");
 
-            counter.PrintVariable();
-
-            List<Variable> Liste = new List<Variable>();
-
-            foreach (var item in Liste)
-            {
-                Console.WriteLine(item);
-            }
+            SymbolTable.Print();
             Console.ReadKey();
         }
     }

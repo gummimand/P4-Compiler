@@ -8,29 +8,52 @@ namespace ConsoleApplication5
 {
     class Scope : TableElement
     {
-        private Dictionary<int, TableElement> _scope = new Dictionary<int, TableElement>();
+        Dictionary<int, TableElement> level = new Dictionary<int, TableElement>();
+
         private int _internalScopelevel = 0;
 
         public Scope()
         { 
         }
 
-        public void AddElement(TableElement element)
+        public void AddScope(Scope scope)
         {
-            _scope.Add(_internalScopelevel, element);
+            level.Add(_internalScopelevel, scope);
             _internalScopelevel++;
         }
-        
+
+        public void AddVariable(string name, string type, string value)
+        {
+            level.Add(_internalScopelevel, new Variable(name, type, value));
+            _internalScopelevel++;
+        }
+
         public List<Variable> GetVariables()
         {
             List <Variable> output = new List<Variable>();
 
-            foreach (Variable variable in _scope.Values)
+            foreach (Variable variable in level.Values)
             {
                 output.Add(variable);
             }
 
             return output;
         }
+
+        public TableElement GetElement(int index)
+        {
+            return level.ElementAt(index).Value;
+        }
+
+        public override void Print()
+        {
+            Console.WriteLine("----Scope start----");
+            foreach(TableElement item in level.Values)
+            {
+                item.Print();
+            }
+            Console.WriteLine("----Scope end----");
+        }
+
     }
 }

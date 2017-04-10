@@ -8,5 +8,7 @@ namespace ConsoleApplication5
 {
     abstract class TableElement
     {
+        public abstract void Print();
+
     }
 }

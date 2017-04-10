@@ -12,13 +12,12 @@ namespace ConsoleApplication5
         private string _value;
         private string _name;
 
-        public Variable(string type, string value, string name)
+        public Variable(string name, string type, string value)
         {
+            _name = name;
             _type = type;
             _value = value;
-            _name = nameof();
         }
-
         public string GetName()
         {
             return _name;
@@ -34,10 +33,10 @@ namespace ConsoleApplication5
             return _value;
         }
 
-        public void PrintVariable()
+        public override void Print()
         {
-            Console.WriteLine(_name);
-            Console.WriteLine(_type);
+            Console.Write(_name);
+            Console.Write(_type);
             Console.WriteLine(_value);
         }
     }
