@@ -8,69 +8,102 @@ using System.Threading.Tasks;
 
 namespace Parserproject
 {
-    class Scanner
+    public class Scanner
     {
-        InputStream CS = new InputStream(@"MyTest.txt");
 
-        public List<Token> outputtokens = new List<Token>();
+        private CharacterStream cs;
 
-        string TokenContent;
-
-        enum Typer { Tal, Heltal, Streng, Identifier, Operator, Bracket, Keyword }
-
-        public void Scan()
+        public Scanner(string characterString)
         {
-            while (isWhiteSpace(CS.peek()))
+            cs = new CharacterStream(characterString);
+        }
+
+        enum Typer { Tal, Heltal, Streng, Identifier, Operator, Bracket, Keyword } 
+
+
+        public List<Token> Scan()
+        {
+            var tokens = new List<Token>();
+
+            if (cs.EOF())
+                tokens.Add(new Token("EOF", TokenType.EOF));
+
+            while (!cs.EOF())
             {
-                CS.advance();
+                RemoveWhiteSpace();
+
+                if (cs.EOF())
+                    tokens.Add(new Token("EOF", TokenType.EOF)); //todo, End of file char?
+                else
+                    tokens.Add(ScanToken());
             }
 
-            char peeked = CS.peek();
+            return tokens;
+        }
 
-            if (CS.EOF())
+        private void RemoveWhiteSpace()
+        {
+            while (isWhiteSpace(cs.Peek()))
             {
-                outputtokens.Add(new Token("EOF")); //todo, End of file char?
+                cs.Advance();
             }
-            else if (isDigit(peeked))
+        }
+
+        private Token ScanToken()
+        {
+            char peeked = cs.Peek();
+
+            if (isDigit(peeked))
             {
-                outputtokens.Add(ScanDigit());
-                Scan();
+                return ScanDigit();
             }
             else if (isLetter(peeked))
             {
-                outputtokens.Add(ScanLetter());
-                Scan();
+                return ScanLetter();
             }
             else if (isBracket(peeked))
             {
-                outputtokens.Add(ScanBracket());
-                Scan();
+                return ScanBracket();
             }
-
             else if (peeked == '"')
             {
-                TokenContent += CS.add();
-
-                {
-                    while (CS.peek() != '"')
-                        TokenContent += CS.add();
-                }
-
-                outputtokens.Add(new Token(TokenContent, Typer.Streng.ToString()));
-                Scan();
+                return ScanString();
             }
             else if (isOperator(peeked))
             {
-                outputtokens.Add(ScanOperator());
-                Scan();
+                return ScanOperator();
+            }
+            else if (isSeperator(peeked))
+            {
+                return ScanSeperator();
             }
             else
             {
-              outputtokens.Add(new Token(CS.add().ToString(), "error"));
+                throw new ArgumentException($"Could not read {peeked}");
+            }
+        }
 
-              Scan();
+        private Token ScanSeperator()
+        {
+            string lexeme = cs.GetNextChar().ToString();
+            return new Token(lexeme, TokenType.seperator);
+        }
+
+        private Token ScanString()
+        {
+            string lexeme = cs.GetNextChar().ToString();
+          
+            while (!cs.EOF() && cs.Peek() != '"')
+            {
+                lexeme += cs.GetNextChar();
             }
 
+            if (cs.EOF())
+                throw new ArgumentException("File ended while stying to scan a string");
+            else if (cs.Peek() == '"') 
+                return new Token(lexeme + cs.GetNextChar(), TokenType.streng);
+            else
+                throw new ArgumentException($"Something went wrong while scanning a string. next char was {cs.Peek()}");
         }
 
         private bool isDigit(char input)
@@ -89,7 +122,7 @@ namespace Parserproject
 
         private bool isLetter(char input)
         {
-            Regex r = new Regex("[ÆØÅæøåA-Za-z0-9]");
+            Regex r = new Regex("[ÆØÅæøåA-Za-z]");
 
             return r.IsMatch(input.ToString());
         }
@@ -101,82 +134,101 @@ namespace Parserproject
             return r_operators.IsMatch(input.ToString());
         }
 
-        private bool isBracket(char input)
+        private bool isBracket(char input)//todo
         {
-            Regex r = new Regex(@"\(\)\[\]{}");
+            Regex r = new Regex(@"[\(\)\[\]{}]");
 
             return r.IsMatch(input.ToString());
 
+        }
+
+        private bool isSeperator(char input)
+        {
+            Regex r = new Regex(@"[,;]");
+
+            return r.IsMatch(input.ToString());
         }
 
         private Token ScanOperator()
         {
             Regex r = new Regex("[<>=!]");
 
+            char first = cs.Peek();
             string output = "";
+            TokenType type = TokenType.op;
 
-            if (r.IsMatch(CS.peek().ToString()))
+            if (r.IsMatch(first.ToString()))
             {
-                output += CS.add();
-                if (CS.peek() == '=')
+                output += cs.GetNextChar();
+                if (cs.Peek() == '=')
                 {
-                    output += CS.add();
-                    return new Token(output, Typer.Operator.ToString());
-
+                    output += cs.GetNextChar();
+                    return new Token(output, type);
                 }
                 else
-                    return new Token(output, Typer.Operator.ToString());
+                    return new Token(output, type);
+            }
+            else if(first == '&')
+            {
+                if (cs.Peek() == '&')
+                    return new Token("&&", type);
+                else
+                    throw new ArgumentException("& is not a valid operator. Use &&.");
+            }
+            else if (first == '|')
+            {
+                if (cs.Peek() == '|')
+                    return new Token("||", type);
+                else
+                    throw new ArgumentException("| is not a valid operator. Use ||.");
             }
             else
             {
-                output += CS.add();
-                return new Token(output, Typer.Operator.ToString());
+                output += cs.GetNextChar();
+                return new Token(output, TokenType.op);
             }
         }
 
         private Token ScanDigit()
         {
-            string output = "";
-            string type = Typer.Heltal.ToString();
+            string lexeme = "";
+            TokenType type = TokenType.heltal;
 
-            while (isDigit(CS.peek()))
-            {
-                output += CS.add();
-            }
-            if (CS.peek() == '.')
-            {
-                type = Typer.Tal.ToString();
-                output += CS.add();
+            while (isDigit(cs.Peek()))
+                lexeme += cs.GetNextChar();
 
-                if (!isDigit(CS.peek()))
+            if (cs.Peek() == '.')
+            {
+                type = TokenType.tal;
+                lexeme += cs.GetNextChar();
+
+                if (!isDigit(cs.Peek()))
                 {
-                    output += 0;
-                    return new Token(output, type);
+                    lexeme += 0;
+                    return new Token(lexeme, type);
                 }
                 else
                 {
-                    while (isDigit(CS.peek()))
-                    {
-                        output += CS.add();
-                    }
-                    return new Token(output, type);
+                    while (isDigit(cs.Peek()))
+                        lexeme += cs.GetNextChar();
+
+                    return new Token(lexeme, type);
                 }
             }
             else
-                return new Token(output, type);
+            {
+                return new Token(lexeme, type);
+            }
         }
 
         private Token ScanLetter()
         {
-            Regex r_letterAndDigit = new Regex("[A-ZÆØÅa-zæøå0-9]");
+            string lexeme = "";
 
-            string output = "";
+            while(isLetter(cs.Peek()) || isDigit(cs.Peek()))
+                lexeme += cs.GetNextChar();
 
-            while (r_letterAndDigit.IsMatch(CS.peek().ToString()))
-            {
-                output += CS.add();
-            }
-            switch(output)
+            switch(lexeme)
             {
                 case "hvis":
                 case "så":
@@ -184,44 +236,27 @@ namespace Parserproject
                 case "lad":
                 case "i":
                 case "slut":
-                case "var":
-                case "funktion":
-                case "FALSK":
-                case "SAND":
                 case "hoved":
                 case "hale":
                 case "tag":
                 case "smid":
                 case "fejl":
-                    return new Token(output, Typer.Keyword.ToString());
+                    return new Token(lexeme, TokenType.keyword);
+                case "var":
+                case "funktion":
+                case "type":
+                    return new Token(lexeme, TokenType.decl);
+                case "falsk":
+                case "sand":
+                    return new Token(lexeme, TokenType.boolean);
                 default:
-                    return new Token(output, Typer.Identifier.ToString());
+                    return new Token(lexeme, TokenType.identifier);
             }
         }
 
         private Token ScanBracket()
         {
-            return new Token(CS.add().ToString(), Typer.Bracket.ToString());
-        }
-
-        public void printTokens()
-        {
-            foreach (Token token in outputtokens)
-            {
-                Console.WriteLine(token.type);
-                Console.WriteLine(token.content);
-                Console.WriteLine("---------------------");
-            }
-            Console.ReadKey();
-        }
-
-        public void test()
-        {
-            while (!CS.EOF())
-            {
-                Console.WriteLine(CS.AddNumber());
-            }
-            Console.Read();
+            return new Token(cs.GetNextChar().ToString(), TokenType.parentes);
         }
     }
 

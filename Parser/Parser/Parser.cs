@@ -20,14 +20,15 @@ namespace Parserproject
         {
             var programNode = new Node("Program");
 
-            var nextToken = TokenStream.peek();
-            while(nextToken.content == "var" || nextToken.content == "type" || nextToken.content == "funktion")
+            while(TokenStream.peek().Type == TokenType.decl)
             {
                 ParseDeclarations(programNode);
-                nextToken = TokenStream.peek();
             }
 
-            ParseExpression(programNode);
+            if(TokenStream.peek().Type != TokenType.EOF)
+            {
+                ParseExpression(programNode);
+            }
 
             return new AST(programNode);
         }
@@ -40,14 +41,22 @@ namespace Parserproject
             ParseSingleDeclaration(declNode);
 
             var nextToken = TokenStream.peek();
-            if(nextToken.content == ";")
+            if (nextToken.content == ";" || nextToken.Type == TokenType.EOF)
             {
                 Parent.AddChild(new Leaf(TokenStream.next()));
-               //ParseDeclarations(declNode);
+            }
+            else if (nextToken.Type == TokenType.decl)
+            {
+
             }
             else
             {
                 throw new ArgumentException("Syntax error, expected ';'");
+            }
+
+            if (TokenStream.peek().Type == TokenType.decl)
+            {
+                ParseDeclarations(declNode);
             }
 
         }
@@ -82,7 +91,7 @@ namespace Parserproject
             parent.AddChild(funLeaf);
 
             var nextToken = TokenStream.peek();
-            if (nextToken.type == "identifier")
+            if (nextToken.Type == TokenType.identifier)
             {
                 parent.AddChild(new Leaf(TokenStream.next()));
             }
@@ -103,7 +112,7 @@ namespace Parserproject
                 throw new ArgumentException("Syntax error, expected '('.");
             }
 
-            if (nextToken.content == ")")
+            if (TokenStream.peek().content == ")")
             {
                 parent.AddChild(new Leaf(TokenStream.next()));
 
@@ -182,7 +191,7 @@ namespace Parserproject
             parent.AddChild(typeLeaf);
 
             var nextToken = TokenStream.peek();
-            if (nextToken.type == "identifier")
+            if (nextToken.Type == TokenType.identifier)
             {
                 var idLeaf = new Leaf(TokenStream.next());
                 parent.AddChild(idLeaf);
@@ -235,17 +244,17 @@ namespace Parserproject
             parent.AddChild(declRowNode);
 
             var nextToken = TokenStream.peek();
-            if (nextToken.type == "type")
+            if (nextToken.Type == TokenType.datatype)
             {
                 declRowNode.AddChild(new Leaf(TokenStream.next()));
             }
             else
             {
-                throw new ArgumentException("Syntax error, expected type.");
+                throw new ArgumentException("Syntax error, expected datatype.");
             }
 
             nextToken = TokenStream.peek();
-            if (nextToken.type == "identifier")
+            if (nextToken.Type == TokenType.identifier)
             {
                 declRowNode.AddChild(new Leaf(TokenStream.next()));
             }
@@ -270,7 +279,7 @@ namespace Parserproject
             parent.AddChild(declRowNode);
 
             var nextToken = TokenStream.peek();
-            if(nextToken.type == "identifier")
+            if(nextToken.Type == TokenType.identifier)
             {
                 declRowNode.AddChild(new Leaf(TokenStream.next()));
             }
@@ -294,7 +303,7 @@ namespace Parserproject
             parent.AddChild(varLeaf);
 
             var nextToken = TokenStream.peek();
-            if(nextToken.type == "identifier")
+            if(nextToken.Type == TokenType.identifier)
             {
                 var idLeaf = new Leaf(TokenStream.next());
                 parent.AddChild(idLeaf);
@@ -326,20 +335,37 @@ namespace Parserproject
 
             ParseSimpleExpression(parent);
 
-            var operators = new List<string>() { "+", "-", "*", "/", "%", "^", "==", "<=", ">=", "!=", "<", ">", "og", "eller", "." };
-            var exprEnders = new List<string>() { "så", "ellers", "i", "slut", ")", "]", "}", ";" };
-
             var nextToken = TokenStream.peek();
-            if(operators.Contains(nextToken.content))
+            if(nextToken.Type == TokenType.op)
             {
                 var operatorleaf = new Leaf(TokenStream.next());
                 parent.AddChild(operatorleaf);
                 ParseExpression(parent);
             }
-            else if (nextToken.type != "end" && !exprEnders.Contains(nextToken.content))
+            else if (nextToken.Type != TokenType.EOF && !IsExpressionEnding(nextToken) )
             {
                 ParseExpression(parent);
             }            
+        }
+
+        private bool IsExpressionEnding(Token token)
+        {
+            bool a, b;
+            switch (token.Type)
+            {
+                case TokenType.keyword:
+                case TokenType.seperator:
+                case TokenType.decl: a = true; break;
+                default: a = false; break;
+            }
+            switch (token.content)
+            {
+                case ")":
+                case "}":
+                case "]": b = true; break;
+                default: b = false; break;
+            }
+            return a || b;
         }
 
         private void ParseSimpleExpression(Node Parent)
@@ -349,9 +375,7 @@ namespace Parserproject
 
             var nextToken = TokenStream.peek();
 
-            var constantTypes = new List<string>() { "Identifier", "Int", "Num", "String", "Bool", "Var", "-", "!" };
-
-            if (constantTypes.Contains(nextToken.type))
+            if (IsConst(nextToken.Type))
             {
                 var leaf = new Leaf(TokenStream.next());
                 simExpr.AddChild(leaf);
@@ -385,6 +409,19 @@ namespace Parserproject
                 throw new ArgumentException("Oh shiiit, son!");
             }
 
+        }
+
+        private bool IsConst(TokenType type)
+        {
+            switch (type)
+            {
+                case TokenType.tal:
+                case TokenType.heltal:
+                case TokenType.boolean:
+                case TokenType.streng:
+                case TokenType.identifier: return true;
+                default: return false;
+            }
         }
 
         private void ParseTuple(Node parent)

@@ -19,28 +19,28 @@ namespace ParserTest
 
             var token = ts.peek();
 
-            Assert.AreEqual("end", token.type);
+            Assert.AreEqual(TokenType.EOF, token.Type);
         }
 
         [Test]
         public void Peek_hasToken_returnsToken()
         {
-            var ts = new TokenStream(new List<Token>() { new Token("content","type")});
+            var ts = new TokenStream(new List<Token>() { new Token("content",TokenType.boolean)});
 
             var token = ts.peek();
 
-            Assert.AreEqual("type", token.type);
+            Assert.AreEqual(TokenType.boolean, token.Type);
         }
 
         [Test]
         public void Peek_hasToken_doesNotRemoveToken()
         {
-            var ts = new TokenStream(new List<Token>() { new Token("content", "type") });
+            var ts = new TokenStream(new List<Token>() { new Token("content", TokenType.boolean) });
 
             ts.peek();
             var token = ts.peek();
 
-            Assert.AreEqual("type", token.type);
+            Assert.AreEqual(TokenType.boolean, token.Type);
         }
 
 
@@ -51,29 +51,28 @@ namespace ParserTest
 
             var token = ts.next();
 
-            Assert.AreEqual("end", token.type);
+            Assert.AreEqual(TokenType.EOF, token.Type);
         }
 
         [Test]
         public void Next_hasToken_returnsToken()
         {
-            var ts = new TokenStream(new List<Token>() { new Token("content", "type") });
+            var ts = new TokenStream(new List<Token>() { new Token("content", TokenType.boolean) });
 
             var token = ts.next();
 
-            Assert.AreEqual("type", token.type);
+            Assert.AreEqual(TokenType.boolean, token.Type);
         }
 
         [Test]
         public void Peek_hasToken_RemovesToken()
         {
-            var ts = new TokenStream(new List<Token>() { new Token("content", "type") });
+            var ts = new TokenStream(new List<Token>() { new Token("content", TokenType.boolean) });
 
             ts.next();
             var token = ts.peek();
 
-            Assert.AreEqual("end", token.type);
+            Assert.AreEqual(TokenType.EOF, token.Type);
         }
-
     }
 }

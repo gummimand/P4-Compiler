@@ -44,7 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AST.cs" />
-    <Compile Include="InputStream.cs" />
+    <Compile Include="CharacterStream.cs" />
     <Compile Include="Leaf.cs" />
     <Compile Include="Node.cs" />
     <Compile Include="Parser.cs" />

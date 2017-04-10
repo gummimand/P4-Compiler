@@ -6,20 +6,31 @@ using System.Threading.Tasks;
 
 namespace Parserproject
 {
+    public enum TokenType
+    {
+        identifier,
+        datatype,
+        streng,
+        heltal,
+        tal,
+        boolean,
+        keyword,
+        decl,
+        op,
+        parentes,
+        seperator,
+        EOF
+    }
+
     public class Token
     {
         public string content;
-        public string type;
+        public TokenType Type;
 
-        public Token (string _content)
+        public Token(string content, TokenType type)
         {
-            content = _content;
-        }
-
-        public Token(string _content, string _type)
-        {
-            content = _content;
-            type = _type;
+            this.content = content;
+            this.Type = type;
         }
     }
 }

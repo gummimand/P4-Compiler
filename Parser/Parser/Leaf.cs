@@ -17,7 +17,7 @@ namespace Parserproject
 
         public override void PreOrderWalk()
         {
-            Console.WriteLine(token.content + " : " + token.type);
+            Console.WriteLine(token.content + " : " + token.Type);
         }
     }
 }

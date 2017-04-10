@@ -44,9 +44,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CharacterStreamTest.cs" />
     <Compile Include="NodeTest.cs" />
     <Compile Include="ParserTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ScannerTest.cs" />
     <Compile Include="TokenStreamTest.cs" />
   </ItemGroup>
   <ItemGroup>
