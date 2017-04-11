@@ -19,3 +19,6 @@ C:\Users\Christian\Desktop\Min Git mappe\P4\SecondScanner\Scanner\obj\Debug\Scan
 C:\Users\Christian\Desktop\Min Git mappe\P4\SecondScanner\Scanner\obj\Debug\Scanner.exe
 C:\Users\Christian\Desktop\Min Git mappe\P4\SecondScanner\Scanner\obj\Debug\Scanner.pdb
 >>>>>>> master
+C:\Git repo\P4-Compiler\SecondScanner\Scanner\bin\Debug\Scanner.exe.config
+C:\Git repo\P4-Compiler\SecondScanner\Scanner\obj\Debug\Scanner.exe
+C:\Git repo\P4-Compiler\SecondScanner\Scanner\obj\Debug\Scanner.pdb
