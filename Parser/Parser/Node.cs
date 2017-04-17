@@ -57,4 +57,78 @@ namespace Parserproject
                 Children[i].PrintPretty(indent, i == Children.Count - 1);
         }
     }
+
+    public class ProgramNode:Node
+    {
+        public ProgramNode() :base("Program"){ }
+    }
+
+    public class DeclarartionsNode :Node
+    {
+        public DeclarartionsNode() : base("Declarations") { }
+    }
+
+    public class VarDeclarartionNode : Node
+    {
+        public VarDeclarartionNode() : base("VarDeclarartion") { }
+    }
+
+    public class TypeDeclarartionNode : Node
+    {
+        public TypeDeclarartionNode() : base("TypeDeclarartion") { }
+    }
+
+    public class FunctionDeclarartionNode : Node
+    {
+        public FunctionDeclarartionNode() : base("FunctionDeclarartion") { }
+    }
+    public class ClauseNode : Node
+    {
+        public ClauseNode() : base("Clause") { }
+    }
+    public class DefaultClauseNode : Node
+    {
+        public DefaultClauseNode() : base("DefaultClause") { }
+    }
+
+    public class ExpressionNode : Node
+    {
+        public ExpressionNode() : base("Expression") { }
+    }
+
+    public class IfExpressionNode : Node
+    {
+        public IfExpressionNode() : base("IfExpression") { }
+    }
+
+    public class LetExpressionNode : Node
+    {
+        public LetExpressionNode() : base("LetExpression") { }
+    }
+
+    public class AnonFuncNode : Node
+    {
+        public AnonFuncNode() : base("AnonFunc") { }
+    }
+
+    public class StructureExpressionNode : Node
+    {
+        public StructureExpressionNode() : base("StructureExpression") { }
+    }
+
+    public class ListExpressionNode : Node
+    {
+        public ListExpressionNode() : base("ListExpression") { }
+    }
+
+    public class TupleExpressionNode : Node
+    {
+        public TupleExpressionNode() : base("TupleExpression") { }
+    }
+
+    public class ConstantExpressionNode : Node
+    {
+        public ConstantExpressionNode() : base("ConstantExpression") { }
+    }
+
 }
