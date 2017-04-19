@@ -65,8 +65,7 @@ namespace Parserproject
             var nextToken = TokenStream.peek();
             if(nextToken.content == "var")
             {
-                declNode = new VarDeclarartionNode();
-                VariableDeclaration(declNode);
+                declNode = VariableDeclaration(declNode);
             }
             else if(nextToken.content == "type")
             {
@@ -317,17 +316,19 @@ namespace Parserproject
             }
         }
 
-        private void VariableDeclaration(Node parent)
+        private VarDecl VariableDeclaration(Node parent)
         {
             //var varToken = TokenStream.next();
             //var varLeaf = new Leaf(varToken);
             //parent.AddChild(varLeaf);
+            Identifier id;
 
             TokenStream.next();
 
             var nextToken = TokenStream.peek();
             if(nextToken.Type == TokenType.identifier)
             {
+                id = new Identifier(nextToken);
                 var idLeaf = new Leaf(TokenStream.next());
                 parent.AddChild(idLeaf);
             }
@@ -351,7 +352,10 @@ namespace Parserproject
             //    throw new ArgumentException("Syntax error, expected '='.");
             //}
 
+            ExpressionNode exp; 
             ParseExpression(parent);
+
+            return new VarDecl(id, exp);
         }
 
         private void ParseExpression(Node parent)
