@@ -78,15 +78,18 @@ namespace Parserproject
         public Value(Token t) : base(t) { }
     }
 
-    public class ProgramNode : Node
+    public class ProgramAST : Node
     {
-        public ProgramNode() : base("Program") { }
+        private Decl decl;
+        private Expression exp;
+
+        public ProgramAST(Decl decl, Expression exp) : base("Program") {
+            this.decl = decl;
+            this.exp = exp;
+        }
     }
 
-    public class DeclarartionsNode : Node
-    {
-        public DeclarartionsNode() : base("Declarations") { }
-    }
+    
 
 
 
@@ -264,11 +267,49 @@ namespace Parserproject
         }
     }
 
+    public class StructureExpression : Expression
+    {
+        Expression[] exps;
 
+        public StructureExpression(params Expression[] exps) : base("STRUCTURE_EXPRESSION")
+        {
+            this.exps = exps;
+        }
+    }
+
+    public class ListExpression : Expression
+    {
+        Expression[] exps;
+
+        public ListExpression(params Expression[] exps) : base("LIST_EXPRESSION") {
+            this.exps = exps;
+        }
+    }
+
+    public class TupleExpression : Expression
+    {
+        Expression[] exps;
+
+        public TupleExpression(params Expression[] exps) : base("TUPLE_EXPRESSION") {
+            this.exps = exps;
+        }
+    }
+
+
+    //PARSETREE CLASSESs
+    public class ProgramNode : Node
+    {
+        public ProgramNode() : base("Program") { }
+    }
 
     public class TypeDeclarartionNode : Node
     {
         public TypeDeclarartionNode() : base("TypeDeclarartion") { }
+    }
+
+    public class DeclarartionsNode : Node
+    {
+        public DeclarartionsNode() : base("Declarations") { }
     }
 
     public class FunctionDeclarartionNode : Node
