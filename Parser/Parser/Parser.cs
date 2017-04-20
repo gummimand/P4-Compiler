@@ -18,11 +18,10 @@ namespace Parserproject
 
         public AST Parse()
         {
-            var programNode = new ProgramNode();
-
-            while(TokenStream.peek().Type == TokenType.decl)
+            Decl decl;
+            if (TokenStream.peek().Type == TokenType.decl)
             {
-                ParseDeclarations(programNode);
+                decl = ParseDeclarations();
             }
 
             if(TokenStream.peek().Type != TokenType.EOF)
@@ -30,10 +29,12 @@ namespace Parserproject
                 ParseExpression(programNode);
             }
 
+            var programNode = new ProgramNode();
+
             return new AST(programNode);
         }
 
-        private void ParseDeclarations(Node Parent)  //todo
+        private Decl ParseDeclarations(Node Parent)  //todo
         {
             var declNode = new Node("Declarations");
             Parent.AddChild(declNode);
@@ -54,6 +55,7 @@ namespace Parserproject
             {
                 ParseDeclarations(declNode);
             }
+            return;
 
         }
 
@@ -84,17 +86,21 @@ namespace Parserproject
             parent.AddChild(declNode);
         }
 
-        private void FunctionDeclaration(Node parent)
+        private FuncDecl FunctionDeclaration(Node parent)
         {
-            //var funLeaf = new Leaf(TokenStream.next());
-            //parent.AddChild(funLeaf);
+            var funLeaf = new Leaf(TokenStream.next());
+            parent.AddChild(funLeaf);
 
-            TokenStream.next();
+            Identifier ident;
+            Clause clause;
+            Identifier[] args;
+
 
             var nextToken = TokenStream.peek();
             if (nextToken.Type == TokenType.identifier)
             {
                 parent.AddChild(new Leaf(TokenStream.next()));
+                ident = new Identifier(nextToken);
             }
             else
             {
@@ -104,96 +110,81 @@ namespace Parserproject
             nextToken= TokenStream.peek();
             if(nextToken.content == "(")
             {
-                //parent.AddChild(new Leaf(TokenStream.next()));
-                TokenStream.next();
-                DeclarationRow(parent);
+                parent.AddChild(new Leaf(TokenStream.next()));
+
+                args = DeclarationRow(parent);
             }
             else
             {
                 throw new ArgumentException("Syntax error, expected '('.");
             }
 
-            if (TokenStream.peek().content != ")")
+            if (TokenStream.peek().content == ")") {
+                parent.AddChild(new Leaf(TokenStream.next()));
+
+            }
+            else {
                 throw new ArgumentException("Syntax error, expected ')'.");
-            TokenStream.next();
+            }
 
-            //if (TokenStream.peek().content == ")")
-            //{
-            //    parent.AddChild(new Leaf(TokenStream.next()));
+            clause = ParseClause(parent);
 
-            //}
-            //else
-            //{
-            //    throw new ArgumentException("Syntax error, expected ')'.");
-            //}
-
-            ParseClause(parent);
+            return new FuncDecl(ident, clause, args);
 
         }
 
-        private void ParseClause(Node parent)
+        private Clause ParseClause(Node parent)
         {
             Node clNode = new Node("clause");
 
-            var nextToken = TokenStream.peek();
+            Clause clause;
+            Expression condition;
+            Expression exp;
+            Clause altClause;
 
+            var nextToken = TokenStream.peek();
             if (nextToken.content == "{")
             {
-                //clNode.AddChild(new Leaf(TokenStream.next()));
-                TokenStream.next();
+                clNode.AddChild(new Leaf(TokenStream.next()));
                 clNode = new ClauseNode();
-                ParseExpression(clNode);
+                condition = ParseExpression(clNode);
 
                 nextToken = TokenStream.peek();
-                if (nextToken.content != "}")
+                if (nextToken.content == "}") {
+                    clNode.AddChild(new Leaf(TokenStream.next()));
+                }
+                else {
                     throw new ArgumentException("Syntax error, expected '}'.");
-                TokenStream.next();
-                //if (nextToken.content == "}")
-                //{
-                //    clNode.AddChild(new Leaf(TokenStream.next()));
-                //}
-                //else
-                //{
-                //    throw new ArgumentException("Syntax error, expected '}'.");
-                //}
+                }
 
                 nextToken = TokenStream.peek();
-                if (nextToken.content == "=")
+                if (nextToken.content == "=") {
+                    clNode.AddChild(new Leaf(TokenStream.next()));
+                }
+                else {
                     throw new ArgumentException("Syntax error, expected '='.");
-                TokenStream.next();
+                }
 
-                //if (nextToken.content == "=")
-                //{
-                //    clNode.AddChild(new Leaf(TokenStream.next()));
-                //}
-                //else
-                //{
-                //    throw new ArgumentException("Syntax error, expected '='.");
-                //}
-
-                ParseExpression(clNode);
+                exp = ParseExpression(clNode);
 
                 nextToken = TokenStream.peek();
-                if (nextToken.content == "|")
+                if (nextToken.content == "|") {
+                    clNode.AddChild(new Leaf(TokenStream.next()));
+                }
+                else {
                     throw new ArgumentException("Syntax error, expected '|'.");
-                TokenStream.next();
-                //if (nextToken.content == "|")
-                //{
-                //    clNode.AddChild(new Leaf(TokenStream.next()));
-                //}
-                //else
-                //{
-                //    throw new ArgumentException("Syntax error, expected '|'.");
-                //}
+                }
 
-                ParseClause(clNode);
+                altClause = ParseClause(clNode);
+                clause = new ConditionalClause(condition, exp, altClause);
             }
             else if (nextToken.content == "=")
             {
-                //clNode.AddChild(new Leaf(TokenStream.next()));
-                TokenStream.next();
+                clNode.AddChild(new Leaf(TokenStream.next()));
                 clNode = new DefaultClauseNode();
-                ParseExpression(clNode);
+                exp = ParseExpression(clNode);
+
+                clause = new DefaultClause(exp);
             }
             else
             {
@@ -201,20 +192,22 @@ namespace Parserproject
             }
 
             parent.AddChild(clNode);
+            return clause;
 
         }
 
-        private void TypeDeclaration(Node parent)
+        private TypeDecl TypeDeclaration(Node parent)
         {
             var typeToken = TokenStream.next();
-            var typeLeaf = new Leaf(typeToken);
-            parent.AddChild(typeLeaf);
-
+            var typeleaf = new Leaf(typeToken);
+            parent.AddChild(typeleaf);
+            
             var nextToken = TokenStream.peek();
             if (nextToken.Type == TokenType.identifier)
             {
                 var idLeaf = new Leaf(TokenStream.next());
                 parent.AddChild(idLeaf);
+                Identifier idleaf = new Identifier(nextToken);
             }
             else
             {
@@ -237,7 +230,7 @@ namespace Parserproject
             {
                 var startbracketLeaf = new Leaf(TokenStream.next());
                 parent.AddChild(startbracketLeaf);
-
+                //////////////////////////////////// Insert TypeDecl object, which gets labels from return from line below.
                 TypedDeclRow(parent);
             }
             else
@@ -256,10 +249,13 @@ namespace Parserproject
             {
                 throw new ArgumentException("Syntax error, expected ']'.");
             }
+
+            return;
         }
 
-        private void TypedDeclRow(Node parent)
+        private Identifier[] TypedDeclRow(Node parent)//Shouldnt be recursive.. Should make labels siblings instead of parent/child.
         {
+            
             var declRowNode = new Node("TypedDeclarationRow");
             parent.AddChild(declRowNode);
 
@@ -284,46 +280,56 @@ namespace Parserproject
             }
 
             nextToken = TokenStream.peek();
-            if (nextToken.content == ",")
+            if (nextToken.content == ",") //While loop maybe?
             {
                 declRowNode.AddChild(new Leaf(TokenStream.next()));
 
-                TypedDeclRow(declRowNode);
+                TypedDeclRow(declRowNode);//parent parameter maybe?
             }
             
         }
 
-        private void DeclarationRow(Node parent)
+        private Identifier[] DeclarationRow(Node parent)
         {
             var declRowNode = new Node("DeclarationRow");
             parent.AddChild(declRowNode);
+            List<Identifier> args = new List<Identifier>();
+
 
             var nextToken = TokenStream.peek();
             if(nextToken.Type == TokenType.identifier)
             {
                 declRowNode.AddChild(new Leaf(TokenStream.next()));
+                args.Add(new Identifier(nextToken));
             }
             else
             {
                 throw new ArgumentException("Syntax error, expected identifier.");
             }
 
-            nextToken = TokenStream.peek();
-            if(nextToken.content ==",")
-            {
-                declRowNode.AddChild(new Leaf(TokenStream.next()));
-                DeclarationRow(declRowNode);
+            while(TokenStream.peek().content == ",") {
+                nextToken = TokenStream.next();
+                declRowNode.AddChild(new Leaf(nextToken));
+                args.Add(new Identifier(nextToken));
+
             }
+            //nextToken = TokenStream.peek();
+            //if(nextToken.content ==",")//Better with while? then append declarations to decl list for AST
+            //{
+            //    declRowNode.AddChild(new Leaf(TokenStream.next()));
+            //    DeclarationRow(declRowNode);
+            //}
+
+            return args.ToArray();
         }
 
         private VarDecl VariableDeclaration(Node parent)
         {
-            //var varToken = TokenStream.next();
-            //var varLeaf = new Leaf(varToken);
-            //parent.AddChild(varLeaf);
+            var varToken = TokenStream.next();
+            var varLeaf = new Leaf(varToken);
+            parent.AddChild(varLeaf);
             Identifier id;
-
-            TokenStream.next();
+            
 
             var nextToken = TokenStream.peek();
             if(nextToken.Type == TokenType.identifier)
@@ -338,31 +344,28 @@ namespace Parserproject
             }
 
             nextToken = TokenStream.peek();
-            if (nextToken.content != "=")
+            
+            if (nextToken.content == "=") {
+                var eqLeaf = new Leaf(TokenStream.next());
+                parent.AddChild(eqLeaf);
+            }
+            else {
                 throw new ArgumentException("Syntax error, expected '='.");
-            TokenStream.next();
+            }
 
-            //if(nextToken.content == "=")
-            //{
-            //    var eqLeaf = new Leaf(TokenStream.next());
-            //    parent.AddChild(eqLeaf);
-            //}
-            //else
-            //{
-            //    throw new ArgumentException("Syntax error, expected '='.");
-            //}
-
-            ExpressionNode exp; 
-            ParseExpression(parent);
+            Expression exp; 
+            exp = ParseExpression(parent);
 
             return new VarDecl(id, exp);
         }
 
-        private void ParseExpression(Node parent)
+        private Expression ParseExpression(Node parent)
         {
 
             var expNode = new ExpressionNode();
             parent.AddChild(expNode);
+
+
 
             ParseSimpleExpression(expNode);
 
@@ -399,47 +402,58 @@ namespace Parserproject
             return a || b;
         }
 
-        private void ParseSimpleExpression(Node Parent)
+        private Expression ParseSimpleExpression(Node Parent)
         {
             Node simExpr = new Node("SimpleExpression");
+            Expression exp;
             
             var nextToken = TokenStream.peek();
 
-            if (IsConst(nextToken.Type))
+            if (IsConst(nextToken.Type) || nextToken.Type == TokenType.identifier)
             {
                 simExpr = new ConstantExpressionNode();
                 var leaf = new Leaf(TokenStream.next());
                 simExpr.AddChild(leaf);
+
+                //AST:
+                if(nextToken.Type == TokenType.identifier) {
+                    Identifier identifier = new Identifier(nextToken);
+                    exp = new IdentifierExpression(identifier);
+                }
+                else {
+                    Value value = new Value(nextToken);
+                    exp = new ValueExpression(value);
+                }
             }
             else if (nextToken.content == "hvis")
             {
                 simExpr = new IfExpressionNode();
-                ifStatement(simExpr);
+                exp = ifStatement(simExpr);
             }
             else if (nextToken.content == "lad")
             {
                 simExpr = new LetExpressionNode();
-                letEnvironment(simExpr);
+                exp = letEnvironment(simExpr);
             }
             else if (nextToken.content == "fn")
             {
                 simExpr = new AnonFuncNode();
-                AnonFunction(simExpr);
+                exp = AnonFunction(simExpr);
             }
             else if (nextToken.content == "[")
             {
                 simExpr = new StructureExpressionNode();
-                Structure(simExpr);
+                exp = Structure(simExpr);
             }
             else if (nextToken.content == "{")
             {
                 simExpr = new ListExpressionNode();
-                ParseList(simExpr);
+                exp = ParseList(simExpr);
             }
             else if (nextToken.content == "(")
             {
                 simExpr = new TupleExpressionNode();
-                ParseTuple(simExpr);
+                exp = ParseTuple(simExpr);
             }
             else
             {
@@ -447,6 +461,7 @@ namespace Parserproject
             }
 
             Parent.AddChild(simExpr);
+            return exp;
 
         }
 
@@ -457,141 +472,144 @@ namespace Parserproject
                 case TokenType.tal:
                 case TokenType.heltal:
                 case TokenType.boolean:
-                case TokenType.streng:
-                case TokenType.identifier: return true;
+                case TokenType.streng: return true;
                 default: return false;
             }
         }
 
-        private void ParseTuple(Node parent)
+        private TupleExpression ParseTuple(Node parent)
         {
-            //var nextToken = TokenStream.peek();
-            //var StartBracketLeaf = new Leaf(TokenStream.next());
-            //parent.AddChild(StartBracketLeaf);
-
-            TokenStream.next();
-
-            ExprRow(parent);
-
             var nextToken = TokenStream.peek();
+            var StartBracketLeaf = new Leaf(TokenStream.next());
+            parent.AddChild(StartBracketLeaf);
 
-            if (nextToken.content != ")")
+            TupleExpression tupleexp;
+            Expression[] exps;
+
+
+            exps = ExprRow(parent);
+
+            nextToken = TokenStream.peek();
+
+            if (nextToken.content == ")") {
+                var EndBracketLeaf = new Leaf(TokenStream.next());
+                parent.AddChild(EndBracketLeaf);
+            }
+            else {
                 throw new ArgumentException($"Expexted ')', was {nextToken.content}");
-
-            TokenStream.next();
-            
-            //if (nextToken.content == ")")
-            //{
-            //    var EndBracketLeaf = new Leaf(TokenStream.next());
-            //    parent.AddChild(EndBracketLeaf);
-            //}
-            //else
-            //{
-            //    throw new ArgumentException($"Expexted ')', was {nextToken.content}");
-            //}
-        }
-
-        private void ParseList(Node parent)
-        {
-            //var nextToken = TokenStream.peek();
-            //var StartBracketLeaf = new Leaf(TokenStream.next());
-            //parent.AddChild(StartBracketLeaf);
-
-            TokenStream.next();
-            ExprRow(parent);
-
-            var nextToken = TokenStream.peek();
-
-            if (nextToken.content != "}")
-                throw new ArgumentException($"Expexted '}}', was {nextToken.content}");
-
-            TokenStream.next();
-
-            //if (nextToken.content == "}")
-            //{
-            //    var EndBracketLeaf = new Leaf(TokenStream.next());
-            //    parent.AddChild(EndBracketLeaf);
-            //}
-            //else
-            //{
-            //    throw new ArgumentException($"Expexted '}}', was {nextToken.content}");
-            //}
-        }
-
-        private void Structure(Node parent)
-        {
-            //var nextToken = TokenStream.peek();
-            //var StartBracketLeaf = new Leaf(TokenStream.next());
-            //parent.AddChild(StartBracketLeaf);
-
-
-            TokenStream.next();
-            ExprRow(parent);
-
-            var nextToken = TokenStream.peek();
-            if (nextToken.content != "]")
-                throw new ArgumentException($"Expexted ']', was {nextToken.content}");
-            TokenStream.next();
-
-            //if(nextToken.content == "]")
-            //{
-            //    var EndBracketLeaf = new Leaf(TokenStream.next());
-            //    parent.AddChild(EndBracketLeaf);
-            //}
-            //else
-            //{
-            //    throw new ArgumentException($"Expexted ']', was {nextToken.content}");
-            //}
-        }
-
-        private void ExprRow(Node parent)
-        {
-
-            ParseExpression(parent);
-
-            while (TokenStream.peek().content == ",")
-            {
-                TokenStream.next();
-                ParseExpression(parent);
             }
 
-            //var exprRow = new Node("EpressionRow");
-            //parent.AddChild(exprRow);
+            tupleexp = new TupleExpression(exps);
+            return tupleexp;
+        }
 
-            //ParseExpression(exprRow);
-            //var nextToken = TokenStream.peek();
+        private ListExpression ParseList(Node parent)
+        {
+            var nextToken = TokenStream.peek();
+            var StartBracketLeaf = new Leaf(TokenStream.next());
+            parent.AddChild(StartBracketLeaf);
 
-            //while(nextToken.content == ",")
-            //{
-            //    var commaLeaf = new Leaf(TokenStream.next());
-            //    exprRow.AddChild(commaLeaf);
-            //    ParseExpression(exprRow);
-            //}
+            ListExpression listexp;
+            Expression[] exps;
+
+
+            exps = ExprRow(parent);
+
+            nextToken = TokenStream.peek();
+
+            if (nextToken.content == "}") {
+                var EndBracketLeaf = new Leaf(TokenStream.next());
+                parent.AddChild(EndBracketLeaf);
+            }
+            else {
+                throw new ArgumentException($"Expexted '}}', was {nextToken.content}");
+            }
+
+            listexp = new ListExpression(exps);
+            return listexp;
+        }
+
+        private StructureExpression Structure(Node parent)
+        {
+            var nextToken = TokenStream.peek();
+            var StartBracketLeaf = new Leaf(TokenStream.next());
+            parent.AddChild(StartBracketLeaf);
+
+            StructureExpression structureexp;
+            Expression[] exps;
+
+
+            exps = ExprRow(parent);
+
+            nextToken = TokenStream.peek();
+
+            if (nextToken.content == "]") {
+                var EndBracketLeaf = new Leaf(TokenStream.next());
+                parent.AddChild(EndBracketLeaf);
+            }
+            else {
+                throw new ArgumentException($"Expexted ']', was {nextToken.content}");
+            }
+
+            structureexp = new StructureExpression(exps);
+            return structureexp;
+        }
+
+        private Expression[] ExprRow(Node parent)
+        {
+            var exprRow = new Node("EpressionRow");
+            parent.AddChild(exprRow);
+
+            List<Expression> exps = new List<Expression>();
+
+            exps.Add(ParseExpression(exprRow));
+
+
+            while (TokenStream.peek().content == ",") {
+                var commaLeaf = new Leaf(TokenStream.next());
+                exprRow.AddChild(commaLeaf);
+                exps.Add(ParseExpression(exprRow));
+            }
+
+            return exps.ToArray();
 
         }
 
-        private void AnonFunction(Node parent)//TODO
+        private AnonFuncExpression AnonFunction(Node parent)//TODO
         {
             var nextToken = TokenStream.peek();
             var fnLeaf = new Leaf(TokenStream.next());
             parent.AddChild(fnLeaf);
+
+            AnonFuncExpression anonexp;
+            Expression exp;
+            Identifier[] args;
+
+
+            anonexp = new AnonFuncExpression(exp, args);
+            return anonexp;
+
         }
 
-        private void letEnvironment(Node parent)
+        private LetExpression letEnvironment(Node parent)
         {
-            //var nextToken = TokenStream.peek();
-            //var ladLeaf = new Leaf(TokenStream.next());
-            //parent.AddChild(ladLeaf);
-            TokenStream.next();
-            ParseDeclarations(parent);
-
             var nextToken = TokenStream.peek();
+            var ladLeaf = new Leaf(TokenStream.next());
+            parent.AddChild(ladLeaf);
+
+            LetExpression letexp;
+            Decl decl;
+            Expression exp;
+
+            decl = ParseDeclarations(parent);
+
+            nextToken = TokenStream.peek();
             if(nextToken.content == "i")
             {
-                TokenStream.next();
-                ParseExpression(parent);
-                //var iLeaf = new Leaf(TokenStream.next());
-                //parent.AddChild(iLeaf);
+                var iLeaf = new Leaf(TokenStream.next());
+                parent.AddChild(iLeaf);
+
+                exp = ParseExpression(parent);
             }
             else
             {
@@ -599,38 +617,40 @@ namespace Parserproject
             }
 
             nextToken = TokenStream.peek();
-            if (nextToken.content != "slut")
+
+            if (nextToken.content == "slut") {
+                var slutLeaf = new Leaf(TokenStream.next());
+                parent.AddChild(slutLeaf);
+            }
+            else {
                 throw new ArgumentException($"Expexted keyword 'slut', was {nextToken.content}");
-            TokenStream.next();
+            }
 
-
-            //if (nextToken.content == "slut")
-            //{
-            //    var slutLeaf = new Leaf(TokenStream.next());
-            //    parent.AddChild(slutLeaf);
-            //}
-            //else
-            //{
-            //    throw new ArgumentException($"Expexted keyword 'slut', was {nextToken.content}");
-            //}
+            letexp = new LetExpression(decl, exp);
+            return letexp;
         }
 
-        private void ifStatement(Node parent)
+        private IfExpression ifStatement(Node parent)
         {
-            //var nextToken = TokenStream.peek();
-            //var hvisLeaf = new Leaf(TokenStream.next());
-            //parent.AddChild(hvisLeaf);
-
-            TokenStream.next();
-            ParseExpression(parent);
-
             var nextToken = TokenStream.peek();
+            var hvisLeaf = new Leaf(TokenStream.next());
+            parent.AddChild(hvisLeaf);
+
+            IfExpression ifexp;
+            Expression condition;
+            Expression alt1;
+            Expression alt2;
+
+
+
+            condition = ParseExpression(parent);
+
+            nextToken = TokenStream.peek();
             if (nextToken.content == "så")
             {
-                TokenStream.next();
-                ParseExpression(parent);
-                //var saaLeaf = new Leaf(TokenStream.next());
-                //parent.AddChild(saaLeaf);
+                var saaLeaf = new Leaf(TokenStream.next());
+                parent.AddChild(saaLeaf);
+                alt1 = ParseExpression(parent);
             }
             else
             {
@@ -641,16 +661,18 @@ namespace Parserproject
             nextToken = TokenStream.peek();
             if (nextToken.content == "ellers")
             {
-                TokenStream.next();
-                ParseExpression(parent);
-                //var ellersLeaf = new Leaf(TokenStream.next());
-                //parent.AddChild(ellersLeaf);
+                var ellersLeaf = new Leaf(TokenStream.next());
+                parent.AddChild(ellersLeaf);
+
+                alt2 = ParseExpression(parent);
             }
             else
             {
                 throw new ArgumentException($"Expexted keyword 'ellers', was {nextToken.content}");
             }
 
+            ifexp = new IfExpression(condition, alt1, alt2);
+            return ifexp;
             
         }
         
