@@ -26,5 +26,19 @@ namespace Parserproject
             Console.Write("\\-");
             Console.WriteLine(token.content + " : " + token.Type);
         }
+
+        public override bool Equals(object obj)
+        {
+            Leaf other = obj as Leaf;
+            if (other != null)
+                return this.token.Equals(other.token);
+            else
+                return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 }

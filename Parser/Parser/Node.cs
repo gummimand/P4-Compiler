@@ -56,6 +56,47 @@ namespace Parserproject
             for (int i = 0; i < Children.Count; i++)
                 Children[i].PrintPretty(indent, i == Children.Count - 1);
         }
+
+        public override bool Equals(object obj)
+        {
+            Node other = obj as Node;
+            if (other != null)
+            {
+                if (this.Type == other.Type)
+                {
+                    int thisChildren = this.Children.Count;
+                    int otherChildren = other.Children.Count;
+
+                    if (thisChildren == otherChildren)
+                    {
+                        if (thisChildren == 0)
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            bool isEqual = true;
+                            int i = 0;
+
+                            while (isEqual && i < thisChildren)
+                            {
+                                isEqual = isEqual && this.Children[i].Equals(other.Children[i]);
+                                i++;
+                            }
+
+                            return isEqual;
+                        }
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 
     public class Identifier : Leaf
@@ -86,6 +127,9 @@ namespace Parserproject
         public ProgramAST(Decl decl, Expression exp) : base("Program") {
             this.decl = decl;
             this.exp = exp;
+
+            AddChild(decl);
+            AddChild(exp);
         }
     }
 
@@ -107,6 +151,9 @@ namespace Parserproject
         {
             this.id = id;
             this.exp = exp;
+
+            AddChild(id);
+            AddChild(exp);
         }
     }
 
@@ -119,6 +166,9 @@ namespace Parserproject
         {
             this.decl1 = decl1;
             this.decl2 = decl2;
+
+            AddChild(decl1);
+            AddChild(decl2);
         }
     }
 
@@ -133,18 +183,47 @@ namespace Parserproject
             this.id = id;
             this.cl = cl;
             this.args = args;
+
+            AddChild(id);
+            foreach (var arg in args)
+                AddChild(arg);
+            AddChild(cl);
         }
     }
 
     public class TypeDecl : Decl
     {
         private Identifier id;
-        private Identifier[] labels;
+        private DatatypeLabelPair[] labels;
 
-        public TypeDecl(Identifier id, params Identifier[] labels) : base("TYPE_DECL")
+        public TypeDecl(Identifier id, params DatatypeLabelPair[] labels) : base("TYPE_DECL")
         {
             this.id = id;
             this.labels = labels;
+
+            AddChild(id);
+            foreach (var label in labels)
+                AddChild(label);
+        }
+    }
+
+    public class EmptyDecl : Decl
+    {
+        public EmptyDecl() : base("EMPTY_DECL") { }
+    }
+
+    public class DatatypeLabelPair : Node
+    {
+        Identifier label;
+        Identifier type;
+
+        public DatatypeLabelPair(Identifier label, Identifier type) : base("DATATYPELABEL_PAIR")
+        {
+            this.label = label;
+            this.type = type;
+
+            AddChild(label);
+            AddChild(type);
         }
     }
 
@@ -162,6 +241,7 @@ namespace Parserproject
         public DefaultClause(Expression exp) : base("DEFAULT_CLAUSE")
         {
             this.exp = exp;
+            AddChild(exp);
         }
     }
 
@@ -176,6 +256,10 @@ namespace Parserproject
             this.condition = condition;
             this.exp = exp;
             this.altClause = altClause;
+
+            AddChild(condition);
+            AddChild(exp);
+            AddChild(altClause);
         }
     }
 
@@ -193,6 +277,10 @@ namespace Parserproject
         {
             this.constructor = constructor;
             this.exps = exps;
+
+            AddChild(constructor);
+            foreach (var exp in exps)
+                AddChild(exp);
         }
     }
 
@@ -205,6 +293,10 @@ namespace Parserproject
         {
             this.op = op;
             this.exps = exps;
+
+            AddChild(op);
+            foreach (var exp in exps)
+                AddChild(exp);
         }
     }
 
@@ -220,6 +312,10 @@ namespace Parserproject
             this.condition = condition;
             this.alt1 = alt1;
             this.alt2 = alt2;
+
+            AddChild(condition);
+            AddChild(alt1);
+            AddChild(alt2);
         }
     }
 
@@ -232,6 +328,9 @@ namespace Parserproject
         {
             this.decl = decl;
             this.exp = exp;
+
+            AddChild(decl);
+            AddChild(exp);
         }
     }
 
@@ -244,6 +343,10 @@ namespace Parserproject
         {
             this.exp = exp;
             this.args = args;
+
+            foreach (var arg in args)
+                AddChild(arg);
+            AddChild(exp);
         }
     }
 
@@ -254,6 +357,8 @@ namespace Parserproject
         public ValueExpression(Value value) : base("VALUE_EXPRESSION")
         {
             this.value = value;
+
+            AddChild(value);
         }
     }
 
@@ -264,6 +369,8 @@ namespace Parserproject
         public IdentifierExpression(Identifier id) : base("IDENTIFIER_EXPRESSION")
         {
             this.id = id;
+
+            AddChild(id);
         }
     }
 
@@ -274,6 +381,9 @@ namespace Parserproject
         public StructureExpression(params Expression[] exps) : base("STRUCTURE_EXPRESSION")
         {
             this.exps = exps;
+
+            foreach (var exp in exps)
+                AddChild(exp);
         }
     }
 
@@ -281,8 +391,12 @@ namespace Parserproject
     {
         Expression[] exps;
 
-        public ListExpression(params Expression[] exps) : base("LIST_EXPRESSION") {
+        public ListExpression(params Expression[] exps) : base("LIST_EXPRESSION")
+        {
             this.exps = exps;
+
+            foreach (var exp in exps)
+                AddChild(exp);
         }
     }
 
@@ -290,9 +404,33 @@ namespace Parserproject
     {
         Expression[] exps;
 
-        public TupleExpression(params Expression[] exps) : base("TUPLE_EXPRESSION") {
+        public TupleExpression(params Expression[] exps) : base("TUPLE_EXPRESSION")
+        {
             this.exps = exps;
+
+            foreach (var exp in exps)
+                AddChild(exp);
         }
+    }
+
+    public class ApplicationExpression: Expression
+    {
+        private Expression rator;
+        private Expression rand;
+
+        public ApplicationExpression(Expression rator, Expression rand) : base("APPLICATION_EXPRESSION")
+        {
+            this.rator = rator;
+            this.rand = rand;
+
+            AddChild(rator);
+            AddChild(rand);
+        }
+    }
+
+    public class EmptyExpression : Expression
+    {
+        public EmptyExpression() : base("EMPTY_EXPRESSION") { }
     }
 
 

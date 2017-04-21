@@ -20,6 +20,19 @@ namespace Parserproject
             Root.PrintPretty("",true);
         }
 
+        public override bool Equals(object obj)
+        {
+            AST other = obj as AST;
+            if (other != null)
+                return Root.Equals(other.Root);
+            else
+                return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
 
     }
 }

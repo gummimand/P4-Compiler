@@ -32,5 +32,21 @@ namespace Parserproject
             this.content = content;
             this.Type = type;
         }
+
+        public override bool Equals(object obj)
+        {
+            Token other = obj as Token;
+            if (other != null)
+                return this.content == other.content && this.Type == other.Type;
+            else
+                return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
+
+    
 }

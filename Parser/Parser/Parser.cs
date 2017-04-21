@@ -18,20 +18,33 @@ namespace Parserproject
 
         public AST Parse()
         {
+            var programNode = new ProgramNode();
             Decl decl;
+            Expression exp;
+
             if (TokenStream.peek().Type == TokenType.decl)
             {
-                decl = ParseDeclarations();
+                decl = ParseDeclarations(programNode);
+            }
+            else
+            {
+                decl = new EmptyDecl();
             }
 
             if(TokenStream.peek().Type != TokenType.EOF)
             {
-                ParseExpression(programNode);
+                exp = ParseExpression(programNode);
+            }
+            else
+            {
+                exp = new EmptyExpression();
             }
 
-            var programNode = new ProgramNode();
+            ProgramAST prog = new ProgramAST(decl, exp);
 
-            return new AST(programNode);
+            //new AST(programNode);   // parsetree
+
+            return new AST(prog);
         }
 
         private Decl ParseDeclarations(Node Parent)  //todo
@@ -39,51 +52,47 @@ namespace Parserproject
             var declNode = new Node("Declarations");
             Parent.AddChild(declNode);
 
-            ParseSingleDeclaration(declNode);
+            Decl decl = ParseSingleDeclaration(declNode);
 
-            var nextToken = TokenStream.peek();
-            if (nextToken.content == ";" || nextToken.Type == TokenType.EOF)
+            while(TokenStream.peek().content == ";")
             {
                 Parent.AddChild(new Leaf(TokenStream.next()));
-            }
-            else if (nextToken.Type != TokenType.decl)
-            {
-                throw new ArgumentException("Syntax error, expected ';'");
-            }
 
-            if (TokenStream.peek().Type == TokenType.decl)
-            {
-                ParseDeclarations(declNode);
-            }
-            return;
+                if (TokenStream.peek().Type == TokenType.decl)
+                {
+                    decl = new SeqDecl(decl, ParseDeclarations(declNode));
+                }
 
+            }
+           
+            return decl;
         }
 
-        private void ParseSingleDeclaration(Node parent)
+        private Decl ParseSingleDeclaration(Node parent)
         {
             var declNode = new Node("Declaration");
-            
+            Decl decl;
 
             var nextToken = TokenStream.peek();
             if(nextToken.content == "var")
             {
-                declNode = VariableDeclaration(declNode);
+                decl = VariableDeclaration(declNode);
             }
             else if(nextToken.content == "type")
             {
-                declNode = new TypeDeclarartionNode();
-                TypeDeclaration(declNode);
+                decl = TypeDeclaration(declNode);
             }
             else if (nextToken.content == "funktion")
             {
-                declNode = new FunctionDeclarartionNode();
-                FunctionDeclaration(declNode);
+                decl = FunctionDeclaration(declNode);
             }
             else
             {
                 throw new ArgumentException("Syntax error for declaration");
             }
             parent.AddChild(declNode);
+
+            return decl;
         }
 
         private FuncDecl FunctionDeclaration(Node parent)
@@ -201,13 +210,16 @@ namespace Parserproject
             var typeToken = TokenStream.next();
             var typeleaf = new Leaf(typeToken);
             parent.AddChild(typeleaf);
-            
+            Identifier id;
+            DatatypeLabelPair[] labels;
+
+
             var nextToken = TokenStream.peek();
             if (nextToken.Type == TokenType.identifier)
             {
                 var idLeaf = new Leaf(TokenStream.next());
                 parent.AddChild(idLeaf);
-                Identifier idleaf = new Identifier(nextToken);
+                id = new Identifier(nextToken);
             }
             else
             {
@@ -231,7 +243,7 @@ namespace Parserproject
                 var startbracketLeaf = new Leaf(TokenStream.next());
                 parent.AddChild(startbracketLeaf);
                 //////////////////////////////////// Insert TypeDecl object, which gets labels from return from line below.
-                TypedDeclRow(parent);
+                labels = TypedDeclRow(parent);
             }
             else
             {
@@ -250,19 +262,39 @@ namespace Parserproject
                 throw new ArgumentException("Syntax error, expected ']'.");
             }
 
-            return;
+            return new TypeDecl(id, labels);
         }
 
-        private Identifier[] TypedDeclRow(Node parent)//Shouldnt be recursive.. Should make labels siblings instead of parent/child.
+        private DatatypeLabelPair[] TypedDeclRow(Node parent)//Shouldnt be recursive.. Should make labels siblings instead of parent/child.
         {
             
             var declRowNode = new Node("TypedDeclarationRow");
             parent.AddChild(declRowNode);
 
+            List<DatatypeLabelPair> pairs = new List<DatatypeLabelPair>();
+
+            pairs.Add(ParseDatatypeLabelPair(declRowNode));
+            
+            while (TokenStream.peek().content == ",") //While loop maybe?
+            {
+                declRowNode.AddChild(new Leaf(TokenStream.next()));
+
+                pairs.Add(ParseDatatypeLabelPair(declRowNode));
+            }
+
+            return pairs.ToArray();
+        }
+
+        private DatatypeLabelPair ParseDatatypeLabelPair(Node parent)
+        {
+            Identifier label;
+            Identifier type;
+
             var nextToken = TokenStream.peek();
             if (nextToken.Type == TokenType.datatype)
             {
-                declRowNode.AddChild(new Leaf(TokenStream.next()));
+                parent.AddChild(new Leaf(TokenStream.next()));
+                type = new Identifier(nextToken);
             }
             else
             {
@@ -272,21 +304,15 @@ namespace Parserproject
             nextToken = TokenStream.peek();
             if (nextToken.Type == TokenType.identifier)
             {
-                declRowNode.AddChild(new Leaf(TokenStream.next()));
+                parent.AddChild(new Leaf(TokenStream.next()));
+                label = new Identifier(nextToken);
             }
             else
             {
                 throw new ArgumentException("Syntax error, expected identifier.");
             }
 
-            nextToken = TokenStream.peek();
-            if (nextToken.content == ",") //While loop maybe?
-            {
-                declRowNode.AddChild(new Leaf(TokenStream.next()));
-
-                TypedDeclRow(declRowNode);//parent parameter maybe?
-            }
-            
+            return new DatatypeLabelPair(label, type);
         }
 
         private Identifier[] DeclarationRow(Node parent)
@@ -365,21 +391,24 @@ namespace Parserproject
             var expNode = new ExpressionNode();
             parent.AddChild(expNode);
 
-
-
-            ParseSimpleExpression(expNode);
+            Expression exp = ParseSimpleExpression(expNode);
 
             var nextToken = TokenStream.peek();
             if(nextToken.Type == TokenType.op)
             {
                 var operatorleaf = new Leaf(TokenStream.next());
                 expNode.AddChild(operatorleaf);
-                ParseExpression(expNode);
+
+                Operator op = new Operator(nextToken);
+
+                exp = new OperatorExpression(op, exp, ParseExpression(expNode));
             }
             else if (nextToken.Type != TokenType.EOF && !IsExpressionEnding(nextToken) )
             {
-                ParseExpression(expNode);
-            }            
+                exp = new ApplicationExpression(exp, ParseExpression(expNode)); 
+            }
+
+            return exp;        
         }
 
         private bool IsExpressionEnding(Token token)
@@ -584,6 +613,36 @@ namespace Parserproject
             AnonFuncExpression anonexp;
             Expression exp;
             Identifier[] args;
+
+            if (TokenStream.peek().content == "(")
+            {
+                parent.AddChild(new Leaf(TokenStream.next()));
+
+                args = DeclarationRow(parent);
+            }
+            else
+            {
+                throw new ArgumentException($"Expected '(', but was {TokenStream.peek().content}");
+            }
+
+
+            if (TokenStream.peek().content == ")")
+            {
+                parent.AddChild(new Leaf(TokenStream.next()));
+            }
+            else
+            {
+                throw new ArgumentException($"Expected ')', but was {TokenStream.peek().content}");
+            }
+            if (TokenStream.peek().content == "=>")
+            {
+                parent.AddChild(new Leaf(TokenStream.next()));
+                exp = ParseExpression(parent);
+            }
+            else
+            {
+                throw new ArgumentException($"Expected '=>', but was {TokenStream.peek().content}");
+            }
 
 
             anonexp = new AnonFuncExpression(exp, args);
