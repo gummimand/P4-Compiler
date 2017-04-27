@@ -10,27 +10,30 @@ namespace Parserproject
     public abstract class ASTNode
     {
         public Node Parent { get; set; }
+        public Scanner.Typer type;
+
         public abstract void PreOrderWalk();
         public abstract void PrintPretty(string indent, bool last);
-        public abstract void accept(IVisitor v); 
+        public abstract void accept(IVisitor v);
     }
 
     public class Node : ASTNode
     {
-        public string Type { get; set; }
+        //To label node in the AST structure -> for printing.
+        public string NodeLabel { get; set; }
 
         public List<ASTNode> Children { get; set; } = new List<ASTNode>();
 
         public override void accept(IVisitor v) { v.visit(this); }
 
-        public Node(string type)
+        public Node(string nodelabel)
         {
-            this.Type = type;
+            this.NodeLabel = nodelabel;
         }
 
         public override void PreOrderWalk()
         {
-            Console.WriteLine(Type);
+            Console.WriteLine(NodeLabel);
             foreach (ASTNode n in Children)
                 n.PreOrderWalk();
         }
@@ -54,7 +57,7 @@ namespace Parserproject
                 Console.Write("|-");
                 indent += "| ";
             }
-            Console.WriteLine(Type);
+            Console.WriteLine(NodeLabel);
 
             for (int i = 0; i < Children.Count; i++)
                 Children[i].PrintPretty(indent, i == Children.Count - 1);
@@ -65,7 +68,7 @@ namespace Parserproject
             Node other = obj as Node;
             if (other != null)
             {
-                if (this.Type == other.Type)
+                if (this.NodeLabel == other.NodeLabel)
                 {
                     int thisChildren = this.Children.Count;
                     int otherChildren = other.Children.Count;

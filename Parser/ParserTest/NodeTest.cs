@@ -30,7 +30,7 @@ namespace ParserTest
 
             parent.AddChild(child);
 
-            Assert.AreEqual("parent", child.Parent.Type);
+            Assert.AreEqual("parent", child.Parent.NodeLabel);
         }
 
         [Test]

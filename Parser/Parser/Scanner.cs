@@ -18,7 +18,7 @@ namespace Parserproject
             cs = new CharacterStream(characterString);
         }
 
-        enum Typer { Tal, Heltal, Streng, Identifier, Operator, Bracket, Keyword } 
+        public enum Typer { Tal, Heltal, Streng, Identifier, Operator, Bracket, Keyword } 
 
 
         public List<Token> Scan()
