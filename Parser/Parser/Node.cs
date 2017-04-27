@@ -12,6 +12,7 @@ namespace Parserproject
         public Node Parent { get; set; }
         public abstract void PreOrderWalk();
         public abstract void PrintPretty(string indent, bool last);
+        public abstract void accept(IVisitor v); 
     }
 
     public class Node : ASTNode
@@ -19,6 +20,8 @@ namespace Parserproject
         public string Type { get; set; }
 
         public List<ASTNode> Children { get; set; } = new List<ASTNode>();
+
+        public override void accept(IVisitor v) { v.visit(this); }
 
         public Node(string type)
         {
@@ -102,27 +105,37 @@ namespace Parserproject
     public class Identifier : Leaf
     {
         public Identifier(Token t) : base(t) { }
+        public override void accept(IVisitor v) { v.visit(this); }
+        //Static polymorphism
+
     }
 
     public class Operator : Leaf
     {
         public Operator(Token t) : base(t) { }
+        public override void accept(IVisitor v) { v.visit(this); }
+
     }
 
     public class Constructor : Leaf
     {
         public Constructor(Token t) : base(t) { }
+        public override void accept(IVisitor v) { v.visit(this); }
+
     }
 
     public class Value : Leaf
     {
         public Value(Token t) : base(t) { }
+        public override void accept(IVisitor v) { v.visit(this); }
     }
 
     public class ProgramAST : Node
     {
         private Decl decl;
         private Expression exp;
+
+        public override void accept(IVisitor v) { v.visit(this); }
 
         public ProgramAST(Decl decl, Expression exp) : base("Program") {
             this.decl = decl;
@@ -140,12 +153,15 @@ namespace Parserproject
     public abstract class Decl : Node
     {
         public Decl(string type) : base(type) { }
+        public override void accept(IVisitor v) { v.visit(this); }
     }
 
     public class VarDecl : Decl
     {
         private Identifier id;
         private Expression exp;
+
+        public override void accept(IVisitor v) { v.visit(this); }
 
         public VarDecl(Identifier id, Expression exp) : base("VAR_DECL")
         {
@@ -162,6 +178,8 @@ namespace Parserproject
         private Decl decl1;
         private Decl decl2;
 
+        public override void accept(IVisitor v) { v.visit(this); }
+
         public SeqDecl(Decl decl1, Decl decl2) : base("SEQ_DECL")
         {
             this.decl1 = decl1;
@@ -177,6 +195,8 @@ namespace Parserproject
         private Identifier id;
         private Clause cl;
         private Identifier[] args;
+
+        public override void accept(IVisitor v) { v.visit(this); }
 
         public FuncDecl(Identifier id, Clause cl, params Identifier[] args) : base("FUNC_DECL")
         {
@@ -196,6 +216,8 @@ namespace Parserproject
         private Identifier id;
         private DatatypeLabelPair[] labels;
 
+        public override void accept(IVisitor v) { v.visit(this); }
+
         public TypeDecl(Identifier id, params DatatypeLabelPair[] labels) : base("TYPE_DECL")
         {
             this.id = id;
@@ -210,12 +232,15 @@ namespace Parserproject
     public class EmptyDecl : Decl
     {
         public EmptyDecl() : base("EMPTY_DECL") { }
+        public override void accept(IVisitor v) { v.visit(this); }
     }
 
     public class DatatypeLabelPair : Node
     {
         Identifier label;
         Identifier type;
+
+        public override void accept(IVisitor v) { v.visit(this); }
 
         public DatatypeLabelPair(Identifier label, Identifier type) : base("DATATYPELABEL_PAIR")
         {
@@ -229,14 +254,15 @@ namespace Parserproject
 
     public abstract class Clause : Node
     {
-        public Clause(string type) : base(type)
-        {
-        }
+        public Clause(string type) : base(type) { }
+        public override void accept(IVisitor v) { v.visit(this); }
     }
 
     public class DefaultClause : Clause
     {
         private Expression exp;
+
+        public override void accept(IVisitor v) { v.visit(this); }
 
         public DefaultClause(Expression exp) : base("DEFAULT_CLAUSE")
         {
@@ -250,6 +276,8 @@ namespace Parserproject
         private Expression condition;
         private Expression exp;
         private Clause altClause;
+
+        public override void accept(IVisitor v) { v.visit(this); }
 
         public ConditionalClause(Expression condition, Expression exp, Clause altClause) : base("CONDITIONAL_CLAUSE")
         {
@@ -266,12 +294,15 @@ namespace Parserproject
     public abstract class Expression : Node
     {
         public Expression(string type) : base(type) { }
+        public override void accept(IVisitor v) { v.visit(this); }
     }
 
     public class ConstrExpression : Expression
     {
         private Constructor constructor;
         private Expression[] exps;
+
+        public override void accept(IVisitor v) { v.visit(this); }
 
         public ConstrExpression(Constructor constructor, params Expression[] exps) : base("CONSTR_EXPRESSION")
         {
@@ -288,6 +319,8 @@ namespace Parserproject
     {
         private Operator op;
         private Expression[] exps;
+
+        public override void accept(IVisitor v) { v.visit(this); }
 
         public OperatorExpression(Operator op, params Expression[] exps) : base("OPERATOR_EXPRESSION")
         {
@@ -307,6 +340,8 @@ namespace Parserproject
         private Expression alt1;
         private Expression alt2;
 
+        public override void accept(IVisitor v) { v.visit(this); }
+
         public IfExpression(Expression condition, Expression alt1, Expression alt2) : base("IF_EXPRESSION")
         {
             this.condition = condition;
@@ -324,6 +359,8 @@ namespace Parserproject
         private Decl decl;
         private Expression exp;
 
+        public override void accept(IVisitor v) { v.visit(this); }
+
         public LetExpression(Decl decl, Expression exp) : base("LET_EXPRESSION")
         {
             this.decl = decl;
@@ -338,6 +375,8 @@ namespace Parserproject
     {
         private Identifier[] args;
         private Expression exp;
+
+        public override void accept(IVisitor v) { v.visit(this); }
 
         public AnonFuncExpression(Expression exp, params Identifier[] args) : base("ANONFUNC_EXPRESSION")
         {
@@ -354,6 +393,8 @@ namespace Parserproject
     {
         private Value value;
 
+        public override void accept(IVisitor v) { v.visit(this); }
+
         public ValueExpression(Value value) : base("VALUE_EXPRESSION")
         {
             this.value = value;
@@ -366,6 +407,8 @@ namespace Parserproject
     {
         private Identifier id;
 
+        public override void accept(IVisitor v) { v.visit(this); }
+
         public IdentifierExpression(Identifier id) : base("IDENTIFIER_EXPRESSION")
         {
             this.id = id;
@@ -377,6 +420,8 @@ namespace Parserproject
     public class StructureExpression : Expression
     {
         Expression[] exps;
+
+        public override void accept(IVisitor v) { v.visit(this); }
 
         public StructureExpression(params Expression[] exps) : base("STRUCTURE_EXPRESSION")
         {
@@ -391,6 +436,8 @@ namespace Parserproject
     {
         Expression[] exps;
 
+        public override void accept(IVisitor v) { v.visit(this); }
+
         public ListExpression(params Expression[] exps) : base("LIST_EXPRESSION")
         {
             this.exps = exps;
@@ -403,6 +450,8 @@ namespace Parserproject
     public class TupleExpression : Expression
     {
         Expression[] exps;
+
+        public override void accept(IVisitor v) { v.visit(this); }
 
         public TupleExpression(params Expression[] exps) : base("TUPLE_EXPRESSION")
         {
@@ -418,6 +467,8 @@ namespace Parserproject
         private Expression rator;
         private Expression rand;
 
+        public override void accept(IVisitor v) { v.visit(this); }
+
         public ApplicationExpression(Expression rator, Expression rand) : base("APPLICATION_EXPRESSION")
         {
             this.rator = rator;
@@ -431,78 +482,91 @@ namespace Parserproject
     public class EmptyExpression : Expression
     {
         public EmptyExpression() : base("EMPTY_EXPRESSION") { }
+        public override void accept(IVisitor v) { v.visit(this); }
     }
 
 
-    //PARSETREE CLASSESs
+    //PARSETREE CLASSESs, Maybe remove accept methods from here on and down. 
     public class ProgramNode : Node
     {
         public ProgramNode() : base("Program") { }
+        public override void accept(IVisitor v) { v.visit(this); }
     }
 
     public class TypeDeclarartionNode : Node
     {
         public TypeDeclarartionNode() : base("TypeDeclarartion") { }
+        public override void accept(IVisitor v) { v.visit(this); }
     }
 
     public class DeclarartionsNode : Node
     {
         public DeclarartionsNode() : base("Declarations") { }
+        public override void accept(IVisitor v) { v.visit(this); }
     }
 
     public class FunctionDeclarartionNode : Node
     {
         public FunctionDeclarartionNode() : base("FunctionDeclarartion") { }
+        public override void accept(IVisitor v) { v.visit(this); }
     }
     public class ClauseNode : Node
     {
         public ClauseNode() : base("Clause") { }
+        public override void accept(IVisitor v) { v.visit(this); }
     }
     public class DefaultClauseNode : Node
     {
         public DefaultClauseNode() : base("DefaultClause") { }
+        public override void accept(IVisitor v) { v.visit(this); }
     }
 
     public class ExpressionNode : Node
     {
         public ExpressionNode() : base("Expression") { }
+        public override void accept(IVisitor v) { v.visit(this); }
     }
-
-   
 
     public class IfExpressionNode : Expression
     {
         public IfExpressionNode() : base("IfExpression") { }
+        public override void accept(IVisitor v) { v.visit(this); }
     }
 
     public class LetExpressionNode : Node
     {
         public LetExpressionNode() : base("LetExpression") { }
+        public override void accept(IVisitor v) { v.visit(this); }
     }
 
     public class AnonFuncNode : Node
     {
         public AnonFuncNode() : base("AnonFunc") { }
+        public override void accept(IVisitor v) { v.visit(this); }
     }
 
     public class StructureExpressionNode : Node
     {
         public StructureExpressionNode() : base("StructureExpression") { }
+        public override void accept(IVisitor v) { v.visit(this); }
     }
 
     public class ListExpressionNode : Node
     {
         public ListExpressionNode() : base("ListExpression") { }
+        public override void accept(IVisitor v) { v.visit(this); }
     }
 
     public class TupleExpressionNode : Node
     {
         public TupleExpressionNode() : base("TupleExpression") { }
+        public override void accept(IVisitor v) { v.visit(this); }
     }
 
     public class ConstantExpressionNode : Node
     {
         public ConstantExpressionNode() : base("ConstantExpression") { }
+        public override void accept(IVisitor v) { v.visit(this); }
     }
 
 }

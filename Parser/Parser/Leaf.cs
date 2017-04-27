@@ -15,6 +15,8 @@ namespace Parserproject
             token = tkn;
         }
 
+        public override void accept(IVisitor v) { v.visit(this); }
+
         public override void PreOrderWalk()
         {
             Console.WriteLine(token.content + " : " + token.Type);
