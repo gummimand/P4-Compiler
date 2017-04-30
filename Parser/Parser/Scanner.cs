@@ -18,7 +18,7 @@ namespace Parserproject
             cs = new CharacterStream(characterString);
         }
 
-        public enum Typer { Tal, Heltal, Streng, Identifier, Operator, Bracket, Keyword } 
+        //public enum Typer { Tal, Heltal, Streng, Identifier, Operator, Bracket, Keyword } 
 
 
         public List<Token> Scan()
@@ -129,7 +129,7 @@ namespace Parserproject
 
         private bool isOperator(char input)
         {
-            Regex r_operators = new Regex("[-+*/^%<>=|&.:]"); //@"\-\+\*\^.|&%/\:"
+            Regex r_operators = new Regex("[-+*/^%<>=|&!.:]"); //@"\-\+\*\^.|&%/\:"TODO contain "!"?
 
             return r_operators.IsMatch(input.ToString());
         }

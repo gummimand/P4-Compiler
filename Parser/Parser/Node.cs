@@ -9,12 +9,15 @@ namespace Parserproject
 
     public abstract class ASTNode
     {
+        
         public Node Parent { get; set; }
-        public Scanner.Typer type;
+        public TokenType type;
 
         public abstract void PreOrderWalk();
         public abstract void PrintPretty(string indent, bool last);
         public abstract void accept(IVisitor v);
+
+        
     }
 
     public class Node : ASTNode
@@ -241,14 +244,14 @@ namespace Parserproject
     public class DatatypeLabelPair : Node
     {
         Identifier label;
-        Identifier type;
+        public Identifier elementType;
 
         public override void accept(IVisitor v) { v.visit(this); }
 
         public DatatypeLabelPair(Identifier label, Identifier type) : base("DATATYPELABEL_PAIR")
         {
             this.label = label;
-            this.type = type;
+            this.elementType = type;
 
             AddChild(label);
             AddChild(type);
