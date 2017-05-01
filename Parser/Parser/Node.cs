@@ -138,22 +138,22 @@ namespace Parserproject
 
     public class ProgramAST : Node
     {
-        private Decl decl;
+        private Decl typeDecl;
+        private Decl varDecl;
         private Expression exp;
 
         public override void accept(IVisitor v) { v.visit(this); }
 
-        public ProgramAST(Decl decl, Expression exp) : base("Program") {
-            this.decl = decl;
+        public ProgramAST(Decl typeDecl, Decl varDecl, Expression exp) : base("Program") {
+            this.typeDecl = typeDecl;
+            this.varDecl = varDecl;
             this.exp = exp;
 
-            AddChild(decl);
+            AddChild(typeDecl);
+            AddChild(varDecl);
             AddChild(exp);
         }
     }
-
-    
-
 
 
     public abstract class Decl : Node
@@ -166,16 +166,19 @@ namespace Parserproject
     {
         private Identifier id;
         private Expression exp;
+        private Decl nextDecl;
 
         public override void accept(IVisitor v) { v.visit(this); }
 
-        public VarDecl(Identifier id, Expression exp) : base("VAR_DECL")
+        public VarDecl(Identifier id, Expression exp, Decl nextDecl) : base("VAR_DECL")
         {
             this.id = id;
             this.exp = exp;
+            this.nextDecl = nextDecl;
 
             AddChild(id);
             AddChild(exp);
+            AddChild(nextDecl);
         }
     }
 
@@ -194,7 +197,7 @@ namespace Parserproject
             AddChild(decl1);
             AddChild(decl2);
         }
-    }
+    } // TODO remove
 
     public class FuncDecl : Decl
     {
@@ -215,16 +218,17 @@ namespace Parserproject
                 AddChild(arg);
             AddChild(cl);
         }
-    }
+    } // TODO remove
 
     public class TypeDecl : Decl
     {
         private Identifier id;
-        private DatatypeLabelPair[] labels;
+        private DatatypeLabelPair[] labels; // Todo type expression
+        private Decl nextDecl;
 
         public override void accept(IVisitor v) { v.visit(this); }
 
-        public TypeDecl(Identifier id, params DatatypeLabelPair[] labels) : base("TYPE_DECL")
+        public TypeDecl(Identifier id, Decl nextDecl, params DatatypeLabelPair[] labels) : base("TYPE_DECL")
         {
             this.id = id;
             this.labels = labels;
@@ -232,6 +236,8 @@ namespace Parserproject
             AddChild(id);
             foreach (var label in labels)
                 AddChild(label);
+
+            AddChild(nextDecl);
         }
     }
 

@@ -21,6 +21,8 @@ namespace ParserTest
             return parser.Parse();
         }
 
+
+
         [Test]
         public void Parse_ifExpression_MakesAST()
         {
@@ -32,6 +34,7 @@ namespace ParserTest
             (
                 new ProgramAST
                 (
+                    new EmptyDecl(),
                     new EmptyDecl(), 
                     new IfExpression
                     (
@@ -58,6 +61,7 @@ namespace ParserTest
             (
                 new ProgramAST
                 (
+                    new EmptyDecl(),
                     new EmptyDecl(),
                     new IfExpression
                     (
