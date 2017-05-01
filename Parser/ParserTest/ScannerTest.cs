@@ -24,6 +24,7 @@ namespace ParserTest
         [TestCase("(", TokenType.parentes)]
         [TestCase("*", TokenType.op)]
         [TestCase(";", TokenType.seperator)]
+        [TestCase("|", TokenType.seperator)]
         public void Scan_ReceivesString_ReturnsCorrectTokentype(string str, TokenType type)
         {
             var S = new Scanner(str);

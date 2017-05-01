@@ -385,18 +385,18 @@ namespace Parserproject
 
     public class AnonFuncExpression : Expression
     {
-        private Identifier[] args;
+        private Identifier arg;
         private Expression exp;
 
         public override void accept(IVisitor v) { v.visit(this); }
 
-        public AnonFuncExpression(Expression exp, params Identifier[] args) : base("ANONFUNC_EXPRESSION")
+        public AnonFuncExpression(Identifier arg, Expression exp) : base("ANONFUNC_EXPRESSION")
         {
             this.exp = exp;
-            this.args = args;
+            this.arg = arg;
 
-            foreach (var arg in args)
-                AddChild(arg);
+            
+            AddChild(arg);
             AddChild(exp);
         }
     }

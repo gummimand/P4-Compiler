@@ -16,6 +16,7 @@ namespace Parserproject
         boolean,
         keyword,
         decl,
+        typeDecl,
         op,
         parentes,
         seperator,

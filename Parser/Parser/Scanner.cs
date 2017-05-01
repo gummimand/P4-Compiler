@@ -177,10 +177,16 @@ namespace Parserproject
             }
             else if (first == '|')
             {
+                cs.GetNextChar();
                 if (cs.Peek() == '|')
+                {
+                    cs.GetNextChar();
                     return new Token("||", type);
+                }
                 else
-                    throw new ArgumentException("| is not a valid operator. Use ||.");
+                {
+                    return new Token("|", TokenType.seperator);
+                }
             }
             else
             {
@@ -244,8 +250,9 @@ namespace Parserproject
                     return new Token(lexeme, TokenType.keyword);
                 case "var":
                 case "funktion":
-                case "type":
                     return new Token(lexeme, TokenType.decl);
+                case "type":
+                    return new Token(lexeme, TokenType.typeDecl);
                 case "falsk":
                 case "sand":
                     return new Token(lexeme, TokenType.boolean);
