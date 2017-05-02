@@ -22,6 +22,123 @@ namespace ParserTest
         }
 
 
+        //[Test]
+        //public void skabelon()
+        //{
+        //    string code = "";
+
+        //    var actualAST = ParseCode(code);
+
+        //    AST expectedAST = new AST
+        //    (
+        //         new ProgramAST
+        //         (
+        //             new EmptyDecl(),
+        //             new EmptyDecl(),
+        //             new EmptyExpression()
+        //         )
+        //     );
+
+        //    Assert.AreEqual(expectedAST, actualAST);
+        //}
+
+        [Test]
+        public void Parse_lad_MakesAST()
+        {
+            string code = "lad var x = 0 i x slut";
+
+            var actualAST = ParseCode(code);
+
+            AST expectedAST = new AST
+            (
+                 new ProgramAST
+                 (
+                     new EmptyDecl(),
+                     new EmptyDecl(),
+                     new LetExpression
+                     (                        
+                        new Identifier(new Token("x", TokenType.identifier)),
+                        new ValueExpression(new Value(new Token("0", TokenType.heltal))),     
+                        new IdentifierExpression(new Identifier(new Token("x", TokenType.identifier)))
+                     )
+                 )
+             );
+
+            Assert.AreEqual(expectedAST, actualAST);
+        }
+
+        [Test]
+        public void Parse_multiplelad_MakesAST()
+        {
+            string code = "lad var x = 0; var y = 1; i x y slut";
+
+            var actualAST = ParseCode(code);
+
+            AST expectedAST = new AST
+            (
+                 new ProgramAST
+                 (
+                     new EmptyDecl(),
+                     new EmptyDecl(),
+                     new EmptyExpression()
+                 )
+             );
+
+            Assert.AreEqual(expectedAST, actualAST);
+        }
+
+        [Test]
+        public void Parse_Application_MakesAST()
+        {
+            string code = "f x";
+
+            var actualAST = ParseCode(code);
+
+            AST expectedAST = new AST
+            (
+                 new ProgramAST
+                 (
+                     new EmptyDecl(),
+                     new EmptyDecl(),
+                     new ApplicationExpression
+                     (
+                         new IdentifierExpression(new Identifier(new Token("f", TokenType.identifier))),
+                         new IdentifierExpression(new Identifier(new Token("x", TokenType.identifier)))
+                     )
+                 )
+             );
+
+            Assert.AreEqual(expectedAST, actualAST);
+        }
+
+        [Test]
+        public void Parse_SeqApplication_MakesAST()
+        {
+            string code = "f x y";
+
+            var actualAST = ParseCode(code);
+
+            AST expectedAST = new AST
+            (
+                 new ProgramAST
+                 (
+                     new EmptyDecl(),
+                     new EmptyDecl(),
+                     new ApplicationExpression
+                     (
+                         new ApplicationExpression
+                         (
+                            new IdentifierExpression(new Identifier(new Token("f", TokenType.identifier))),
+                            new IdentifierExpression(new Identifier(new Token("x", TokenType.identifier)))
+                         ),
+                         new IdentifierExpression(new Identifier(new Token("y", TokenType.identifier)))
+                     )
+                 )
+             );
+
+            Assert.AreEqual(expectedAST, actualAST);
+        }
+
         [Test]
         public void Parse_varDecl_MakesAST()
         {
@@ -95,6 +212,44 @@ namespace ParserTest
                             new ValueExpression(new Value(new Token("0", TokenType.heltal)))
                         ),
                         new EmptyDecl()
+                     ),
+                     new EmptyExpression()
+                 )
+             );
+
+            Assert.AreEqual(expectedAST, actualAST);
+        }
+
+        [Test]
+        public void Parse_MultipleVarDeclFunction_MakesAST()
+        {
+            string code = "funktion f(x) = 0; funktion g(x) = sand";
+
+            var actualAST = ParseCode(code);
+
+            AST expectedAST = new AST
+            (
+                 new ProgramAST
+                 (
+                     new EmptyDecl(),
+                     new VarDecl
+                     (
+                        new Identifier(new Token("f", TokenType.identifier)),
+                        new AnonFuncExpression
+                        (
+                            new Identifier(new Token("x", TokenType.identifier)),
+                            new ValueExpression(new Value(new Token("0", TokenType.heltal)))
+                        ),
+                        new VarDecl
+                        (
+                            new Identifier(new Token("g", TokenType.identifier)),
+                            new AnonFuncExpression
+                            (
+                                new Identifier(new Token("x", TokenType.identifier)),
+                                new ValueExpression(new Value(new Token("sand", TokenType.boolean)))
+                            ),
+                            new EmptyDecl()
+                        )
                      ),
                      new EmptyExpression()
                  )

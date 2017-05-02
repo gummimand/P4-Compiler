@@ -151,53 +151,12 @@ namespace Parserproject
             body = ParseClauseExp();
             exp = new AnonFuncExpression(arg, body);
 
+            if (TokenStream.peek().content == ";")
+                AcceptToken();
+
             VarDecl decl = new VarDecl(id, exp, ParseSingleVarDeclaration());
+
             return decl;
-
-                /// old
-            //var funLeaf = new Leaf(TokenStream.next());
-            //parent.AddChild(funLeaf);
-
-            //Identifier ident;
-            //Clause clause;
-            //Identifier[] args;
-
-
-            //var nextToken = TokenStream.peek();
-            //if (nextToken.Type == TokenType.identifier)
-            //{
-            //    parent.AddChild(new Leaf(TokenStream.next()));
-            //    ident = new Identifier(nextToken);
-            //}
-            //else
-            //{
-            //    throw new ArgumentException("Syntax error, expected identifier.");
-            //}
-
-            //nextToken= TokenStream.peek();
-            //if(nextToken.content == "(")
-            //{
-            //    parent.AddChild(new Leaf(TokenStream.next()));
-
-            //    args = DeclarationRow(parent);
-            //}
-            //else
-            //{
-            //    throw new ArgumentException("Syntax error, expected '('.");
-            //}
-
-            //if (TokenStream.peek().content == ")") {
-            //    parent.AddChild(new Leaf(TokenStream.next()));
-
-            //}
-            //else {
-            //    throw new ArgumentException("Syntax error, expected ')'.");
-            //}
-
-            //clause = ParseClause(parent);
-
-            //return new FuncDecl(ident, clause, args);
-
         }
 
         private Expression ParseClauseExp()
@@ -513,20 +472,29 @@ namespace Parserproject
 
             Expression exp = ParseSimpleExpression(expNode);
 
-            var nextToken = TokenStream.peek();
-            if(nextToken.Type == TokenType.op)
+            while(TokenStream.peek().Type != TokenType.EOF && !IsExpressionEnding(TokenStream.peek()))
             {
-                var operatorleaf = new Leaf(TokenStream.next());
-                expNode.AddChild(operatorleaf);
-
-                Operator op = new Operator(nextToken);
-
-                exp = new OperatorExpression(op, exp, ParseExpression(expNode));
+                Expression exp2 = ParseSimpleExpression(new Node("dummy"));
+                exp = new ApplicationExpression(exp, exp2);
             }
-            else if (nextToken.Type != TokenType.EOF && !IsExpressionEnding(nextToken) )
-            {
-                exp = new ApplicationExpression(exp, ParseExpression(expNode)); 
-            }
+
+
+            //var nextToken = TokenStream.peek();
+            //if(nextToken.Type == TokenType.op)
+            //{
+            //    var operatorleaf = new Leaf(TokenStream.next());
+            //    expNode.AddChild(operatorleaf);
+
+            //    Operator op = new Operator(nextToken);
+
+            //    exp = new OperatorExpression(op, exp, ParseExpression(expNode));
+            //}
+            //else if (nextToken.Type != TokenType.EOF && !IsExpressionEnding(nextToken) )
+            //{
+
+
+            //    exp = new ApplicationExpression(exp, ParseExpression(expNode)); 
+            //}
 
             return exp;        
         }
@@ -779,40 +747,65 @@ namespace Parserproject
 
         private LetExpression letEnvironment(Node parent)
         {
-            var nextToken = TokenStream.peek();
-            var ladLeaf = new Leaf(TokenStream.next());
-            parent.AddChild(ladLeaf);
+            
+            AcceptToken();
 
             LetExpression letexp;
-            Decl decl;
-            Expression exp;
+            Identifier id;
+            Expression exp1;
+            Expression exp2;
 
-            decl = ParseDeclarations(parent);
+            if (TokenStream.peek().Type== TokenType.decl)
+            {
+                AcceptToken();
+            }
+            else
+            {
+                throw new ArgumentException($"Expected 'var', but was {TokenStream.peek().content}");
+            }
 
-            nextToken = TokenStream.peek();
-            if(nextToken.content == "i")
+            if (TokenStream.peek().Type == TokenType.identifier)
+            {
+                id = new Identifier(TokenStream.next());
+            }
+            else
+            {
+                throw new ArgumentException($"Expected identifier, but was {TokenStream.peek().content}");
+            }
+
+            if (TokenStream.peek().content == "=")
+            {
+                AcceptToken();
+            }
+            else
+            {
+                throw new ArgumentException($"Expected '=', but was {TokenStream.peek().content}");
+            }
+
+            exp1 = ParseExpression(new Node("dummy"));
+
+            if(TokenStream.peek().content == "i")
             {
                 var iLeaf = new Leaf(TokenStream.next());
                 parent.AddChild(iLeaf);
 
-                exp = ParseExpression(parent);
+                exp2 = ParseExpression(parent);
             }
             else
             {
-                throw new ArgumentException($"Expexted keyword 'i', was {nextToken.content}");
+                throw new ArgumentException($"Expexted keyword 'i', was {TokenStream.peek().content}");
             }
 
-            nextToken = TokenStream.peek();
 
-            if (nextToken.content == "slut") {
+            if (TokenStream.peek().content == "slut") {
                 var slutLeaf = new Leaf(TokenStream.next());
                 parent.AddChild(slutLeaf);
             }
             else {
-                throw new ArgumentException($"Expexted keyword 'slut', was {nextToken.content}");
+                throw new ArgumentException($"Expexted keyword 'slut', was {TokenStream.peek().content}");
             }
 
-            letexp = new LetExpression(decl, exp);
+            letexp = new LetExpression(id, exp1, exp2);
             return letexp;
         }
 

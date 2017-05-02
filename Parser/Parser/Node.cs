@@ -369,17 +369,21 @@ namespace Parserproject
     public class LetExpression : Expression
     {
         private Decl decl;
-        private Expression exp;
+        private Identifier id;
+        private Expression exp1;
+        private Expression exp2;
 
         public override void accept(IVisitor v) { v.visit(this); }
 
-        public LetExpression(Decl decl, Expression exp) : base("LET_EXPRESSION")
+        public LetExpression(Identifier id, Expression exp1, Expression exp2) : base("LET_EXPRESSION")
         {
-            this.decl = decl;
-            this.exp = exp;
+            this.id = id;
+            this.exp1 = exp1;
+            this.exp2 = exp2;
 
-            AddChild(decl);
-            AddChild(exp);
+            AddChild(id);
+            AddChild(exp1);
+            AddChild(exp2);
         }
     }
 
