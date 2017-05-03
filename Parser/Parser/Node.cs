@@ -368,7 +368,6 @@ namespace Parserproject
 
     public class LetExpression : Expression
     {
-        private Decl decl;
         private Identifier id;
         private Expression exp1;
         private Expression exp2;
@@ -419,6 +418,37 @@ namespace Parserproject
         }
     }
 
+    public abstract class ConstantExpression : Expression
+    {
+        public ConstantExpression(string type) : base(type)
+        {
+        }
+    }
+
+    public class ListConst : ConstantExpression
+    {
+        public ListConst():base("LIST")
+        {
+        }
+    }
+
+    public class PairConst : ConstantExpression
+    {
+        public PairConst() : base("PAR")
+        {
+        }
+    }
+
+    public class ParenthesisExpression : Expression
+    {
+        private Expression exp;
+        public ParenthesisExpression(Expression exp) : base("PAREN_EXPRESSION")
+        {
+            this.exp = exp;
+            AddChild(exp);
+        }
+    }
+
     public class IdentifierExpression : Expression
     {
         private Identifier id;
@@ -448,19 +478,35 @@ namespace Parserproject
         }
     }
 
-    public class ListExpression : Expression
+    public abstract class ListExpressionBase : Expression
     {
-        Expression[] exps;
+        public ListExpressionBase(string type) : base(type) {}
+    }
+
+    public class ListExpression : ListExpressionBase
+    {
+        Expression head;
+        ListExpressionBase tail;
+    
 
         public override void accept(IVisitor v) { v.visit(this); }
 
-        public ListExpression(params Expression[] exps) : base("LIST_EXPRESSION")
+        public ListExpression(Expression head, ListExpressionBase tail) : base("LIST_EXPRESSION")
         {
-            this.exps = exps;
+            this.head = head;
+            this.tail = tail;
 
-            foreach (var exp in exps)
-                AddChild(exp);
+            AddChild(head);
+            AddChild(tail);
         }
+    }
+
+    public class EmptyListExpression : ListExpressionBase
+    {
+        public override void accept(IVisitor v) { v.visit(this); }
+
+        public EmptyListExpression() : base("EMPTY_LIST"){ }
+
     }
 
     public class TupleExpression : Expression
@@ -503,6 +549,7 @@ namespace Parserproject
 
 
     //PARSETREE CLASSESs, Maybe remove accept methods from here on and down. 
+    #region
     public class ProgramNode : Node
     {
         public ProgramNode() : base("Program") { }
@@ -586,3 +633,5 @@ namespace Parserproject
     }
 
 }
+
+#endregion

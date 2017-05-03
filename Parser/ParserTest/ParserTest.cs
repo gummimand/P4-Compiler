@@ -43,9 +43,164 @@ namespace ParserTest
         //}
 
         [Test]
+        public void Parse_ThreeElementPair_MakesAST()
+        {
+            string code = "(0, 1, 2)";
+
+            var actualAST = ParseCode(code);
+
+
+            // (par 0)(par 1 2)
+            AST expectedAST = new AST
+            (
+                 new ProgramAST
+                 (
+                     new EmptyDecl(),
+                     new EmptyDecl(),
+                     new ApplicationExpression
+                     (
+                        new ApplicationExpression
+                        (
+                            new PairConst(),
+                            new ValueExpression(new Value(new Token("0", TokenType.heltal)))
+                        ),
+                        new ApplicationExpression
+                        (
+                            new ApplicationExpression
+                            (
+                                new PairConst(),
+                                new ValueExpression(new Value(new Token("1", TokenType.heltal)))
+                            ),
+                            new ValueExpression(new Value(new Token("2", TokenType.heltal)))
+                        )
+                     )
+                 )
+             );
+
+            Assert.AreEqual(expectedAST, actualAST);
+        }
+
+        [Test]
+        public void Parse_TwoElementPair_MakesAST()
+        {
+            string code = "(0, 1)";
+
+            var actualAST = ParseCode(code);
+
+
+            // par 0 1
+            AST expectedAST = new AST
+            (
+                 new ProgramAST
+                 (
+                     new EmptyDecl(),
+                     new EmptyDecl(),
+                     new ApplicationExpression
+                     (
+                        new ApplicationExpression
+                        (
+                            new PairConst(),
+                            new ValueExpression(new Value(new Token("0", TokenType.heltal)))
+                        ),
+                        new ValueExpression(new Value(new Token("1", TokenType.heltal)))
+                     )
+                 )
+             );
+
+            Assert.AreEqual(expectedAST, actualAST);
+        }
+
+
+        [Test]
+        public void Parse_TwoElementList_MakesAST()
+        {
+            string code = "{0, 1}";
+
+            var actualAST = ParseCode(code);
+
+
+            // (list 0)(list 1 {})
+            AST expectedAST = new AST
+            (
+                 new ProgramAST
+                 (
+                     new EmptyDecl(),
+                     new EmptyDecl(),
+                     new ApplicationExpression
+                     (
+                        new ApplicationExpression
+                        (
+                            new ListConst(),
+                            new ValueExpression(new Value(new Token("0", TokenType.heltal)))
+                        ),
+                        new ApplicationExpression
+                        (
+                             new ApplicationExpression
+                             (
+                                new ListConst(),
+                                new ValueExpression(new Value(new Token("1", TokenType.heltal)))
+                             ),
+                             new EmptyListExpression()
+                        )
+                     )
+                 )
+             );
+
+            Assert.AreEqual(expectedAST, actualAST);
+        }
+
+        [Test]
+        public void Parse_singleElementList_MakesAST()
+        {
+            string code = "{0}";
+
+            var actualAST = ParseCode(code);
+
+            AST expectedAST = new AST
+            (
+                 new ProgramAST
+                 (
+                     new EmptyDecl(),
+                     new EmptyDecl(),
+                     new ApplicationExpression
+                     (
+                        new ApplicationExpression
+                        (
+                            new ListConst(),
+                            new ValueExpression(new Value(new Token("0", TokenType.heltal)))                        
+                        ),
+                        new EmptyListExpression()
+                     )
+                 )
+             );
+
+            Assert.AreEqual(expectedAST, actualAST);
+        }
+
+        [Test]
+        public void Parse_emptylist_MakesAST()
+        {
+            string code = "{}";
+
+            var actualAST = ParseCode(code);
+
+            AST expectedAST = new AST
+            (
+                 new ProgramAST
+                 (
+                     new EmptyDecl(),
+                     new EmptyDecl(),
+                     new EmptyListExpression()
+                 )
+             );
+
+            Assert.AreEqual(expectedAST, actualAST);
+        }
+
+        [Test]
         public void Parse_lad_MakesAST()
         {
-            string code = "lad var x = 0 i x slut";
+            string code = "lad var x = 0; i x slut";
 
             var actualAST = ParseCode(code);
 
@@ -80,7 +235,21 @@ namespace ParserTest
                  (
                      new EmptyDecl(),
                      new EmptyDecl(),
-                     new EmptyExpression()
+                     new LetExpression
+                     (
+                        new Identifier(new Token("x", TokenType.identifier)),
+                        new ValueExpression(new Value(new Token("0", TokenType.heltal))),
+                        new LetExpression
+                        (
+                            new Identifier(new Token("y", TokenType.identifier)),
+                            new ValueExpression(new Value(new Token("1", TokenType.heltal))),
+                            new ApplicationExpression
+                            (
+                                new IdentifierExpression(new Identifier(new Token("x", TokenType.identifier))),
+                                new IdentifierExpression(new Identifier(new Token("y", TokenType.identifier)))
+                            )
+                        )
+                     )
                  )
              );
 
@@ -362,8 +531,6 @@ namespace ParserTest
 
             Assert.AreEqual(expectedAST, actualAST);
         }
-
-
 
         [Test]
         public void Parse_nestedIfExpression_MakesAST()
