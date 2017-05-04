@@ -200,23 +200,6 @@ namespace Parserproject
         }
     }
 
-    public class AnonFuncExpression : Expression
-    {
-        private Identifier arg;
-        private Expression exp;
-
-        public override void accept(IVisitor v) { v.visit(this); }
-
-        public AnonFuncExpression(Identifier arg, Expression exp) : base("ANONFUNC_EXPRESSION")
-        {
-            this.exp = exp;
-            this.arg = arg;
-
-
-            AddChild(arg);
-            AddChild(exp);
-        }
-    }
 
     public class ValueExpression : Expression
     {
@@ -284,6 +267,24 @@ namespace Parserproject
         }
     }
 
+    public class AnonFuncExpression : ConstantExpression
+    {
+        private Identifier arg;
+        private Expression exp;
+
+        public override void accept(IVisitor v) { v.visit(this); }
+
+        public AnonFuncExpression(Identifier arg, Expression exp) : base("ANONFUNC_EXPRESSION")
+        {
+            this.exp = exp;
+            this.arg = arg;
+
+
+            AddChild(arg);
+            AddChild(exp);
+        }
+    }
+
     public class ListConst : ConstantExpression
     {
         public ListConst() : base("LIST")
@@ -317,7 +318,6 @@ namespace Parserproject
         public Identifier(Token t) : base(t) { }
         public override void accept(IVisitor v) { v.visit(this); }
         //Static polymorphism
-
     }
 
     public class Value : Leaf
