@@ -12,6 +12,8 @@ namespace ParserTest
     [TestFixture]
     public class ParserTest
     {
+
+        // helper method for parsing code string directly
         private AST ParseCode(string code)
         {
             var scanner = new Scanner(code);
@@ -42,6 +44,109 @@ namespace ParserTest
         //    Assert.AreEqual(expectedAST, actualAST);
         //}
 
+
+        [Test]
+        public void Parse_plusAndMinus_MakesAst()
+        {
+
+            // ((minus ((plus 0) 1)) 2)
+            string code = "0 + 1 - 2";
+
+            var actualAST = ParseCode(code);
+
+            AST expectedAST = new AST
+            (
+                 new ProgramAST
+                 (
+                     new EmptyDecl(),
+                     new ApplicationExpression
+                     (
+                         new ApplicationExpression
+                         (
+                            new MinusConst(),
+                            new ApplicationExpression
+                            (
+                                new ApplicationExpression
+                                (
+                                    new PlusConst(),
+                                    new ValueExpression(new Value(new Token("0", TokenType.heltal)))
+                                ),
+                                new ValueExpression(new Value(new Token("1", TokenType.heltal)))
+                             )
+                         ),
+                         new ValueExpression(new Value(new Token("2", TokenType.heltal)))
+                     )
+                 )
+             );
+
+            Assert.AreEqual(expectedAST, actualAST);
+        }
+
+
+        [Test]
+        public void Parse_plusMultiple_MakesAst()
+        {
+
+            // ((plus ((plus 0) 1)) 2)
+            string code = "0 + 1 + 2";
+
+            var actualAST = ParseCode(code);
+
+            AST expectedAST = new AST
+            (
+                 new ProgramAST
+                 (
+                     new EmptyDecl(),
+                     new ApplicationExpression
+                     (
+                         new ApplicationExpression
+                         (
+                            new PlusConst(), 
+                            new ApplicationExpression
+                            (
+                                new ApplicationExpression
+                                (
+                                    new PlusConst(),
+                                    new ValueExpression(new Value(new Token("0", TokenType.heltal)))
+                                ),
+                                new ValueExpression(new Value(new Token("1", TokenType.heltal)))
+                             )
+                         ),
+                         new ValueExpression(new Value(new Token("2", TokenType.heltal)))
+                     )
+                 )
+             );
+
+            Assert.AreEqual(expectedAST, actualAST);
+        }
+
+        [Test]
+        public void Parse_plus_MakesAst()
+        {
+            string code = "0 + 1";
+
+            var actualAST = ParseCode(code);
+
+            AST expectedAST = new AST
+            (
+                 new ProgramAST
+                 (
+                     new EmptyDecl(),
+                       new ApplicationExpression
+                     (
+                        new ApplicationExpression
+                        (
+                            new PlusConst(),
+                            new ValueExpression(new Value(new Token("0", TokenType.heltal)))
+                        ),
+                        new ValueExpression(new Value(new Token("1", TokenType.heltal)))
+                     )
+                 )
+             );
+
+            Assert.AreEqual(expectedAST, actualAST);
+        }
+
         [Test]
         public void Parse_ThreeElementPair_MakesAST()
         {
@@ -55,7 +160,6 @@ namespace ParserTest
             (
                  new ProgramAST
                  (
-                     new EmptyDecl(),
                      new EmptyDecl(),
                      new ApplicationExpression
                      (
@@ -94,7 +198,6 @@ namespace ParserTest
                  new ProgramAST
                  (
                      new EmptyDecl(),
-                     new EmptyDecl(),
                      new ApplicationExpression
                      (
                         new ApplicationExpression
@@ -124,7 +227,6 @@ namespace ParserTest
             (
                  new ProgramAST
                  (
-                     new EmptyDecl(),
                      new EmptyDecl(),
                      new ApplicationExpression
                      (
@@ -161,7 +263,6 @@ namespace ParserTest
                  new ProgramAST
                  (
                      new EmptyDecl(),
-                     new EmptyDecl(),
                      new ApplicationExpression
                      (
                         new ApplicationExpression
@@ -189,7 +290,6 @@ namespace ParserTest
                  new ProgramAST
                  (
                      new EmptyDecl(),
-                     new EmptyDecl(),
                      new EmptyListExpression()
                  )
              );
@@ -208,7 +308,6 @@ namespace ParserTest
             (
                  new ProgramAST
                  (
-                     new EmptyDecl(),
                      new EmptyDecl(),
                      new LetExpression
                      (                        
@@ -233,7 +332,6 @@ namespace ParserTest
             (
                  new ProgramAST
                  (
-                     new EmptyDecl(),
                      new EmptyDecl(),
                      new LetExpression
                      (
@@ -268,7 +366,6 @@ namespace ParserTest
                  new ProgramAST
                  (
                      new EmptyDecl(),
-                     new EmptyDecl(),
                      new ApplicationExpression
                      (
                          new IdentifierExpression(new Identifier(new Token("f", TokenType.identifier))),
@@ -291,7 +388,6 @@ namespace ParserTest
             (
                  new ProgramAST
                  (
-                     new EmptyDecl(),
                      new EmptyDecl(),
                      new ApplicationExpression
                      (
@@ -319,7 +415,6 @@ namespace ParserTest
             (
                  new ProgramAST
                  (
-                     new EmptyDecl(),
                      new VarDecl(
                         new Identifier(new Token("x", TokenType.identifier)),
                         new ValueExpression(new Value(new Token("0", TokenType.heltal))),
@@ -343,7 +438,6 @@ namespace ParserTest
             (
                  new ProgramAST
                  (
-                     new EmptyDecl(),
                      new VarDecl(
                         new Identifier(new Token("x", TokenType.identifier)),
                         new ValueExpression(new Value(new Token("0", TokenType.heltal))),
@@ -371,7 +465,6 @@ namespace ParserTest
             (
                  new ProgramAST
                  (
-                     new EmptyDecl(),
                      new VarDecl
                      (
                         new Identifier(new Token("f", TokenType.identifier)),
@@ -400,7 +493,6 @@ namespace ParserTest
             (
                  new ProgramAST
                  (
-                     new EmptyDecl(),
                      new VarDecl
                      (
                         new Identifier(new Token("f", TokenType.identifier)),
@@ -438,7 +530,6 @@ namespace ParserTest
             (
                  new ProgramAST
                  (
-                     new EmptyDecl(),
                      new VarDecl
                      (
                         new Identifier(new Token("f", TokenType.identifier)),
@@ -473,7 +564,6 @@ namespace ParserTest
                  new ProgramAST
                  (
                      new EmptyDecl(),
-                     new EmptyDecl(),
                      new IdentifierExpression
                      (
                          new Identifier(new Token("x", TokenType.identifier))
@@ -496,7 +586,6 @@ namespace ParserTest
                  new ProgramAST
                  (
                      new EmptyDecl(),
-                     new EmptyDecl(),
                      new ValueExpression
                      (
                          new Value(new Token("1", TokenType.heltal))
@@ -518,7 +607,6 @@ namespace ParserTest
             (
                 new ProgramAST
                 (
-                    new EmptyDecl(),
                     new EmptyDecl(), 
                     new IfExpression
                     (
@@ -543,7 +631,6 @@ namespace ParserTest
             (
                 new ProgramAST
                 (
-                    new EmptyDecl(),
                     new EmptyDecl(),
                     new IfExpression
                     (

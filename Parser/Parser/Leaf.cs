@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Parserproject
 {
-    public class Leaf:ASTNode
+    public class Leaf : ASTNode
     {
         public Token token { get; set; }
 
