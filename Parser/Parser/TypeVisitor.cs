@@ -8,6 +8,28 @@ namespace Parserproject
 {
     public class TypeVisitor : IVisitor
     {
+        public Dictionary<string, string> typeEnvironment = new Dictionary<string, string>();
+        public Dictionary<string, string> sigmaConstants = new Dictionary<string, string>() {
+            {"PLUS","heltal->heltal->heltal"},
+            {"PLUS2","tal->heltal->tal" },
+            {"MINUS","heltal->heltal->heltal"},
+            {"MINUS2","tal->heltal->tal" },
+            {"GANGE","heltal->heltal->heltal"},
+            {"DIVIDER","heltal->heltal->heltal"},
+            {"MODULUS","heltal->heltal->heltal"},
+            {"POTENS","heltal->heltal->heltal"},
+            {"NOT","bool->bool"},
+            {"OG","bool->bool->bool"},
+            {"ELLER","bool->bool->bool"},
+            {"STØRRE","heltal->heltal->bool"},
+            {"MINDRE","heltal->heltal->bool"},
+            {"STØRREELLERLIGMED","heltal->heltal->bool"},
+            {"MINDREELLERLIGMED","heltal->heltal->bool"},
+            {"LIGMED","heltal->heltal->bool"},
+            {"PAR","a->b->a*b"},//Better placeholder.
+            {"LISTE","a->{a}->{a}"}//Better placeholder.
+        };
+
         public void visit(Node node) {
             throw new NotImplementedException();
         }
@@ -128,7 +150,46 @@ namespace Parserproject
         }
 
         public void visit(ValueExpression node) {
-            throw new NotImplementedException();
+            foreach (var n in node.Children)
+                n.accept(this);
+
+            //Made possible to exchange to string. //Should maybe be moved to Value visit?
+            Value v = (Value)node.Children[0];
+            switch (v.type) {
+                case TokenType.streng:
+                    node.type = (TokenType)Enum.Parse(typeof(TokenType), sigmaConstants["STRENG"]); //TODO MISSING IN SHARELATEX+DICTIONARY
+                    break;
+                case TokenType.heltal:
+                    node.type = (TokenType)Enum.Parse(typeof(TokenType), sigmaConstants["HELTAL"]);//TODO MISSING IN SHARELATEX+DICTIONARY
+                    break;
+                case TokenType.tal:
+                    node.type = (TokenType)Enum.Parse(typeof(TokenType), sigmaConstants["TAL"]);//TODO MISSING IN SHARELATEX+DICTIONARY
+                    break;
+                case TokenType.boolean:
+                    node.type = (TokenType)Enum.Parse(typeof(TokenType), sigmaConstants["BOOL"]);//TODO MISSING IN SHARELATEX+DICTIONARY
+                    break;
+                case TokenType.keyword:
+                    node.type = (TokenType)Enum.Parse(typeof(TokenType), sigmaConstants["KEYWORD"]);//TODO MISSING IN SHARELATEX+DICTIONARY
+                    break;
+                case TokenType.decl:
+                    break;
+                case TokenType.typeDecl:
+                    break;
+                case TokenType.op:
+                    break;
+                case TokenType.parentes:
+                    break;
+                case TokenType.seperator:
+                    break;
+                case TokenType.EOF:
+                    break;
+                default:
+                    throw new Exception("Type of value not found for: "+ v.type);
+            }
+            
+
+
+             
         }
 
         public void visit(StructureExpression node) {
@@ -184,7 +245,17 @@ namespace Parserproject
         }
 
         public void visit(VarDecl node) {
-            throw new NotImplementedException();
+            foreach (var child in node.Children) {
+                child.accept(this);
+            }
+            Identifier id = (Identifier)node.Children[0];
+            Expression exp = (Expression)node.Children[1];
+            if (!typeEnvironment.ContainsKey(id.token.content)) {
+                typeEnvironment.Add(id.token.content, exp.type.ToString());//An example/idea to add to typeenvironment (casting type to string.)
+            }
+            else {
+                throw new Exception("Variable already declared of type: " + typeEnvironment[id.token.content]);
+            }
         }
 
         public void visit(ProgramAST node) {
@@ -198,7 +269,7 @@ namespace Parserproject
         public void visit(Identifier node) {
             Tuple<string, string> id;
 
-            if (AST.table.TryGetValue(node.token.content, out id))
+            if (AST.table.TryGetValue(node.token.content, out id))//Table from parsing
                 node.type = (TokenType)Enum.Parse(typeof(TokenType), id.Item1); //Lookup for type of identifier in enum
             else
                 throw new Exception("Identifier not found in symboltable");
