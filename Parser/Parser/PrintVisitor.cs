@@ -13,10 +13,10 @@ namespace Parserproject
             throw new NotImplementedException();
         }
 
-        public void visit(Operator node)
-        {
-            throw new NotImplementedException();
-        }
+        //public void visit(Operator node)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         public void visit(Value node)
         {
@@ -28,35 +28,35 @@ namespace Parserproject
             throw new NotImplementedException();
         }
 
-        public void visit(SeqDecl node)
-        {
-            throw new NotImplementedException();
-        }
+        //public void visit(SeqDecl node)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public void visit(TypeDecl node)
-        {
-            throw new NotImplementedException();
-        }
+        //public void visit(TypeDecl node)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public void visit(DatatypeLabelPair node)
-        {
-            throw new NotImplementedException();
-        }
+        //public void visit(DatatypeLabelPair node)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public void visit(DefaultClause node)
-        {
-            throw new NotImplementedException();
-        }
+        //public void visit(DefaultClause node)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         public void visit(Expression node)
         {
             throw new NotImplementedException();
         }
 
-        public void visit(OperatorExpression node)
-        {
-            throw new NotImplementedException();
-        }
+        //public void visit(OperatorExpression node)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         public void visit(LetExpression node)
         {
@@ -68,15 +68,15 @@ namespace Parserproject
             throw new NotImplementedException();
         }
 
-        public void visit(StructureExpression node)
-        {
-            throw new NotImplementedException();
-        }
+        //public void visit(StructureExpression node)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public void visit(TupleExpression node)
-        {
-            throw new NotImplementedException();
-        }
+        //public void visit(TupleExpression node)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         public void visit(EmptyExpression node)
         {
@@ -88,10 +88,10 @@ namespace Parserproject
             throw new NotImplementedException();
         }
 
-        public void visit(ListExpression node)
-        {
-            throw new NotImplementedException();
-        }
+        //public void visit(ListExpression node)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         public void visit(IdentifierExpression node)
         {
@@ -108,30 +108,30 @@ namespace Parserproject
             throw new NotImplementedException();
         }
 
-        public void visit(ConstrExpression node)
-        {
-            throw new NotImplementedException();
-        }
+        //public void visit(ConstrExpression node)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public void visit(ConditionalClause node)
-        {
-            throw new NotImplementedException();
-        }
+        //public void visit(ConditionalClause node)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public void visit(Clause node)
-        {
-            throw new NotImplementedException();
-        }
+        //public void visit(Clause node)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         public void visit(EmptyDecl node)
         {
             throw new NotImplementedException();
         }
 
-        public void visit(FuncDecl node)
-        {
-            throw new NotImplementedException();
-        }
+        //public void visit(FuncDecl node)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         public void visit(VarDecl node)
         {
@@ -143,10 +143,10 @@ namespace Parserproject
             throw new NotImplementedException();
         }
 
-        public void visit(Constructor node)
-        {
-            throw new NotImplementedException();
-        }
+        //public void visit(Constructor node)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         public void visit(Identifier node)
         {

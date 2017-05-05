@@ -9,15 +9,11 @@ namespace Parserproject
 
     public abstract class ASTNode
     {
-        
         public Node Parent { get; set; }
         public TokenType type;
-
         public abstract void PreOrderWalk();
         public abstract void PrintPretty(string indent, bool last);
         public abstract void accept(IVisitor v);
-
-        
     }
 
     public class Node : ASTNode
@@ -108,53 +104,22 @@ namespace Parserproject
         }
     }
 
-    public class Identifier : Leaf
-    {
-        public Identifier(Token t) : base(t) { }
-        public override void accept(IVisitor v) { v.visit(this); }
-        //Static polymorphism
-
-    }
-
-    public class Operator : Leaf
-    {
-        public Operator(Token t) : base(t) { }
-        public override void accept(IVisitor v) { v.visit(this); }
-
-    }
-
-    public class Constructor : Leaf
-    {
-        public Constructor(Token t) : base(t) { }
-        public override void accept(IVisitor v) { v.visit(this); }
-
-    }
-
-    public class Value : Leaf
-    {
-        public Value(Token t) : base(t) { }
-        public override void accept(IVisitor v) { v.visit(this); }
-    }
-
     public class ProgramAST : Node
     {
-        private Decl typeDecl;
         private Decl varDecl;
         private Expression exp;
 
         public override void accept(IVisitor v) { v.visit(this); }
 
-        public ProgramAST(Decl typeDecl, Decl varDecl, Expression exp) : base("Program") {
-            this.typeDecl = typeDecl;
+        public ProgramAST(Decl varDecl, Expression exp) : base("Program")
+        {
             this.varDecl = varDecl;
             this.exp = exp;
 
-            AddChild(typeDecl);
             AddChild(varDecl);
             AddChild(exp);
         }
     }
-
 
     public abstract class Decl : Node
     {
@@ -182,167 +147,16 @@ namespace Parserproject
         }
     }
 
-    public class SeqDecl : Decl
-    {
-        private Decl decl1;
-        private Decl decl2;
-
-        public override void accept(IVisitor v) { v.visit(this); }
-
-        public SeqDecl(Decl decl1, Decl decl2) : base("SEQ_DECL")
-        {
-            this.decl1 = decl1;
-            this.decl2 = decl2;
-
-            AddChild(decl1);
-            AddChild(decl2);
-        }
-    } // TODO remove
-
-    public class FuncDecl : Decl
-    {
-        private Identifier id;
-        private Clause cl;
-        private Identifier[] args;
-
-        public override void accept(IVisitor v) { v.visit(this); }
-
-        public FuncDecl(Identifier id, Clause cl, params Identifier[] args) : base("FUNC_DECL")
-        {
-            this.id = id;
-            this.cl = cl;
-            this.args = args;
-
-            AddChild(id);
-            foreach (var arg in args)
-                AddChild(arg);
-            AddChild(cl);
-        }
-    } // TODO remove
-
-    public class TypeDecl : Decl
-    {
-        private Identifier id;
-        private DatatypeLabelPair[] labels; // Todo type expression
-        private Decl nextDecl;
-
-        public override void accept(IVisitor v) { v.visit(this); }
-
-        public TypeDecl(Identifier id, Decl nextDecl, params DatatypeLabelPair[] labels) : base("TYPE_DECL")
-        {
-            this.id = id;
-            this.labels = labels;
-
-            AddChild(id);
-            foreach (var label in labels)
-                AddChild(label);
-
-            AddChild(nextDecl);
-        }
-    }
-
     public class EmptyDecl : Decl
     {
         public EmptyDecl() : base("EMPTY_DECL") { }
         public override void accept(IVisitor v) { v.visit(this); }
     }
 
-    public class DatatypeLabelPair : Node
-    {
-        Identifier label;
-        public Identifier elementType;
-
-        public override void accept(IVisitor v) { v.visit(this); }
-
-        public DatatypeLabelPair(Identifier label, Identifier type) : base("DATATYPELABEL_PAIR")
-        {
-            this.label = label;
-            this.elementType = type;
-
-            AddChild(label);
-            AddChild(type);
-        }
-    }
-
-    public abstract class Clause : Node
-    {
-        public Clause(string type) : base(type) { }
-        public override void accept(IVisitor v) { v.visit(this); }
-    }
-
-    public class DefaultClause : Clause
-    {
-        private Expression exp;
-
-        public override void accept(IVisitor v) { v.visit(this); }
-
-        public DefaultClause(Expression exp) : base("DEFAULT_CLAUSE")
-        {
-            this.exp = exp;
-            AddChild(exp);
-        }
-    }
-
-    public class ConditionalClause : Clause
-    {
-        private Expression condition;
-        private Expression exp;
-        private Clause altClause;
-
-        public override void accept(IVisitor v) { v.visit(this); }
-
-        public ConditionalClause(Expression condition, Expression exp, Clause altClause) : base("CONDITIONAL_CLAUSE")
-        {
-            this.condition = condition;
-            this.exp = exp;
-            this.altClause = altClause;
-
-            AddChild(condition);
-            AddChild(exp);
-            AddChild(altClause);
-        }
-    }
-
     public abstract class Expression : Node
     {
         public Expression(string type) : base(type) { }
         public override void accept(IVisitor v) { v.visit(this); }
-    }
-
-    public class ConstrExpression : Expression
-    {
-        private Constructor constructor;
-        private Expression[] exps;
-
-        public override void accept(IVisitor v) { v.visit(this); }
-
-        public ConstrExpression(Constructor constructor, params Expression[] exps) : base("CONSTR_EXPRESSION")
-        {
-            this.constructor = constructor;
-            this.exps = exps;
-
-            AddChild(constructor);
-            foreach (var exp in exps)
-                AddChild(exp);
-        }
-    }
-
-    public class OperatorExpression : Expression
-    {
-        private Operator op;
-        private Expression[] exps;
-
-        public override void accept(IVisitor v) { v.visit(this); }
-
-        public OperatorExpression(Operator op, params Expression[] exps) : base("OPERATOR_EXPRESSION")
-        {
-            this.op = op;
-            this.exps = exps;
-
-            AddChild(op);
-            foreach (var exp in exps)
-                AddChild(exp);
-        }
     }
 
     public class IfExpression : Expression
@@ -386,23 +200,6 @@ namespace Parserproject
         }
     }
 
-    public class AnonFuncExpression : Expression
-    {
-        private Identifier arg;
-        private Expression exp;
-
-        public override void accept(IVisitor v) { v.visit(this); }
-
-        public AnonFuncExpression(Identifier arg, Expression exp) : base("ANONFUNC_EXPRESSION")
-        {
-            this.exp = exp;
-            this.arg = arg;
-
-            
-            AddChild(arg);
-            AddChild(exp);
-        }
-    }
 
     public class ValueExpression : Expression
     {
@@ -415,37 +212,6 @@ namespace Parserproject
             this.value = value;
 
             AddChild(value);
-        }
-    }
-
-    public abstract class ConstantExpression : Expression
-    {
-        public ConstantExpression(string type) : base(type)
-        {
-        }
-    }
-
-    public class ListConst : ConstantExpression
-    {
-        public ListConst():base("LIST")
-        {
-        }
-    }
-
-    public class PairConst : ConstantExpression
-    {
-        public PairConst() : base("PAR")
-        {
-        }
-    }
-
-    public class ParenthesisExpression : Expression
-    {
-        private Expression exp;
-        public ParenthesisExpression(Expression exp) : base("PAREN_EXPRESSION")
-        {
-            this.exp = exp;
-            AddChild(exp);
         }
     }
 
@@ -463,68 +229,15 @@ namespace Parserproject
         }
     }
 
-    public class StructureExpression : Expression
-    {
-        Expression[] exps;
-
-        public override void accept(IVisitor v) { v.visit(this); }
-
-        public StructureExpression(params Expression[] exps) : base("STRUCTURE_EXPRESSION")
-        {
-            this.exps = exps;
-
-            foreach (var exp in exps)
-                AddChild(exp);
-        }
-    }
-
-    public abstract class ListExpressionBase : Expression
-    {
-        public ListExpressionBase(string type) : base(type) {}
-    }
-
-    public class ListExpression : ListExpressionBase
-    {
-        Expression head;
-        ListExpressionBase tail;
-    
-
-        public override void accept(IVisitor v) { v.visit(this); }
-
-        public ListExpression(Expression head, ListExpressionBase tail) : base("LIST_EXPRESSION")
-        {
-            this.head = head;
-            this.tail = tail;
-
-            AddChild(head);
-            AddChild(tail);
-        }
-    }
-
-    public class EmptyListExpression : ListExpressionBase
+    public class EmptyListExpression : Expression
     {
         public override void accept(IVisitor v) { v.visit(this); }
 
-        public EmptyListExpression() : base("EMPTY_LIST"){ }
+        public EmptyListExpression() : base("EMPTY_LIST") { }
 
     }
 
-    public class TupleExpression : Expression
-    {
-        Expression[] exps;
-
-        public override void accept(IVisitor v) { v.visit(this); }
-
-        public TupleExpression(params Expression[] exps) : base("TUPLE_EXPRESSION")
-        {
-            this.exps = exps;
-
-            foreach (var exp in exps)
-                AddChild(exp);
-        }
-    }
-
-    public class ApplicationExpression: Expression
+    public class ApplicationExpression : Expression
     {
         private Expression rator;
         private Expression rand;
@@ -547,91 +260,70 @@ namespace Parserproject
         public override void accept(IVisitor v) { v.visit(this); }
     }
 
-
-    //PARSETREE CLASSESs, Maybe remove accept methods from here on and down. 
-    #region
-    public class ProgramNode : Node
+    public abstract class ConstantExpression : Expression
     {
-        public ProgramNode() : base("Program") { }
-        public override void accept(IVisitor v) { v.visit(this); }
+        public ConstantExpression(string type) : base(type)
+        {
+        }
     }
 
-    public class TypeDeclarartionNode : Node
+    public class AnonFuncExpression : ConstantExpression
     {
-        public TypeDeclarartionNode() : base("TypeDeclarartion") { }
+        private Identifier arg;
+        private Expression exp;
+
         public override void accept(IVisitor v) { v.visit(this); }
+
+        public AnonFuncExpression(Identifier arg, Expression exp) : base("ANONFUNC_EXPRESSION")
+        {
+            this.exp = exp;
+            this.arg = arg;
+
+
+            AddChild(arg);
+            AddChild(exp);
+        }
     }
 
-    public class DeclarartionsNode : Node
+    public class ListConst : ConstantExpression
     {
-        public DeclarartionsNode() : base("Declarations") { }
-        public override void accept(IVisitor v) { v.visit(this); }
+        public ListConst() : base("LIST")
+        {
+        }
     }
 
-    public class FunctionDeclarartionNode : Node
+    public class PairConst : ConstantExpression
     {
-        public FunctionDeclarartionNode() : base("FunctionDeclarartion") { }
-        public override void accept(IVisitor v) { v.visit(this); }
-    }
-    public class ClauseNode : Node
-    {
-        public ClauseNode() : base("Clause") { }
-        public override void accept(IVisitor v) { v.visit(this); }
-    }
-    public class DefaultClauseNode : Node
-    {
-        public DefaultClauseNode() : base("DefaultClause") { }
-        public override void accept(IVisitor v) { v.visit(this); }
+        public PairConst() : base("PAR")
+        {
+        }
     }
 
-    public class ExpressionNode : Node
+    public class PlusConst : ConstantExpression
     {
-        public ExpressionNode() : base("Expression") { }
-        public override void accept(IVisitor v) { v.visit(this); }
+        public PlusConst() : base("PLUS")
+        {
+        }
     }
 
-    public class IfExpressionNode : Expression
+    public class MinusConst : ConstantExpression
     {
-        public IfExpressionNode() : base("IfExpression") { }
-        public override void accept(IVisitor v) { v.visit(this); }
+        public MinusConst() : base("MINUS")
+        {
+        }
     }
 
-    public class LetExpressionNode : Node
+    public class Identifier : Leaf
     {
-        public LetExpressionNode() : base("LetExpression") { }
+        public Identifier(Token t) : base(t) { }
         public override void accept(IVisitor v) { v.visit(this); }
+        //Static polymorphism
     }
 
-    public class AnonFuncNode : Node
+    public class Value : Leaf
     {
-        public AnonFuncNode() : base("AnonFunc") { }
+        public Value(Token t) : base(t) { }
         public override void accept(IVisitor v) { v.visit(this); }
     }
-
-    public class StructureExpressionNode : Node
-    {
-        public StructureExpressionNode() : base("StructureExpression") { }
-        public override void accept(IVisitor v) { v.visit(this); }
-    }
-
-    public class ListExpressionNode : Node
-    {
-        public ListExpressionNode() : base("ListExpression") { }
-        public override void accept(IVisitor v) { v.visit(this); }
-    }
-
-    public class TupleExpressionNode : Node
-    {
-        public TupleExpressionNode() : base("TupleExpression") { }
-        public override void accept(IVisitor v) { v.visit(this); }
-    }
-
-    public class ConstantExpressionNode : Node
-    {
-        public ConstantExpressionNode() : base("ConstantExpression") { }
-        public override void accept(IVisitor v) { v.visit(this); }
-    }
-
 }
 
-#endregion
