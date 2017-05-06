@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ConsoleApplication2
 {
-    abstract class BasicType : ConstructedType
+    class BasicType : ConstructedType
     {
         string TestValue;
     }
