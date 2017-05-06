@@ -44,26 +44,36 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AST.cs" />
+    <Compile Include="BasicTypes\BasicType.cs" />
+    <Compile Include="BasicTypes\BoolType.cs" />
     <Compile Include="CharacterStream.cs" />
-    <Compile Include="IVisitor.cs" />
+    <Compile Include="ComplicatedTypes\ConstructedType.cs" />
+    <Compile Include="ComplicatedTypes\FunctionType.cs" />
+    <Compile Include="BasicTypes\HeltalType.cs" />
+    <Compile Include="ComplicatedTypes\ListType.cs" />
+    <Compile Include="SigmaFunctions.cs" />
+    <Compile Include="BasicTypes\StrengType.cs" />
+    <Compile Include="SymbolTable\Symboltable.cs" />
+    <Compile Include="Visitors\IVisitor.cs" />
     <Compile Include="Leaf.cs" />
     <Compile Include="Node.cs" />
     <Compile Include="Parser.cs" />
-    <Compile Include="PrintVisitor.cs" />
+    <Compile Include="Visitors\PrintVisitor.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Scanner.cs" />
-    <Compile Include="Token.cs" />
-    <Compile Include="TokenStream.cs" />
-    <Compile Include="TypeVisitor.cs" />
+    <Compile Include="Scanner\Scanner.cs" />
+    <Compile Include="SymbolTable\SymbolTableLevel.cs" />
+    <Compile Include="BasicTypes\TalType.cs" />
+    <Compile Include="Scanner\Token.cs" />
+    <Compile Include="Scanner\TokenStream.cs" />
+    <Compile Include="ComplicatedTypes\TupleType.cs" />
+    <Compile Include="Visitors\TypeVisitor.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="ClassDiagram1.cd" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Visitors\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
