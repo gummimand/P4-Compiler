@@ -71,12 +71,20 @@ namespace Parserproject
             var nextToken = TokenStream.peek();
 
             if (nextToken.content == "var")
+            {
+                AcceptToken();
                 decl = VariableDeclaration();
+            }
             else if (nextToken.content == "funktion")
+            {
+                AcceptToken();
                 decl = FunctionDeclaration();
+            }
             else
+            {
                 decl = new EmptyDecl();
-            
+            }
+                
             return decl;
         }
 
@@ -87,21 +95,19 @@ namespace Parserproject
             Expression functionBody;
             Expression functionExpression;
 
-            AcceptToken("funktion");
-
             functionName = new Identifier(AcceptToken(TokenType.identifier));
 
             AcceptToken("(");
+
             argument = new Identifier(AcceptToken(TokenType.identifier));
+
             AcceptToken(")");
 
             functionBody = ParseClauseExp();
 
             functionExpression = new AnonFuncExpression(argument, functionBody);
 
-            // optional ';'
-            if (TokenStream.peek().content == ";")
-                AcceptToken();
+            AcceptToken(";");
 
             return new VarDecl(functionName, functionExpression, ParseSingleVarDeclaration());
         }
@@ -140,47 +146,29 @@ namespace Parserproject
             {
                 throw new ArgumentException("Syntax error, expected clause.");
             }
+
             return clause;
         }
 
         private VarDecl VariableDeclaration()
         {
-            // accept 'var'
-            AcceptToken();
             Identifier id;
-            
+            Expression exp;
 
-            var nextToken = TokenStream.peek();
-            if(nextToken.Type == TokenType.identifier)
-            {
-                id = new Identifier(TokenStream.next());
-            }
-            else
-            {
-                throw new ArgumentException("Syntax error, expected identifier.");
-            }
+            id = new Identifier(AcceptToken(TokenType.identifier));
 
-            nextToken = TokenStream.peek();
-            
-            if (nextToken.content == "=") {
-                // accept '='
-                AcceptToken();
-            }
-            else {
-                throw new ArgumentException("Syntax error, expected '='.");
-            }
+            AcceptToken("=");
 
-            Expression exp = ParseExpression( );
+            exp = ParseExpression();
 
-            if (TokenStream.peek().content == ";")
-                AcceptToken();
+            AcceptToken(";");
 
             return new VarDecl(id, exp, ParseSingleVarDeclaration());
         }
 
         private Expression ParseExpression()
         {
-            Expression exp = ParseSimpleExpression();
+            Expression exp1 = ParseSimpleExpression();
 
             while(TokenStream.peek().Type == TokenType.op)
             {
@@ -188,16 +176,16 @@ namespace Parserproject
 
                 Expression exp2 = ParseSimpleExpression();
 
-                exp = new ApplicationExpression(new ApplicationExpression(op, exp),exp2);
+                exp1 = new ApplicationExpression(new ApplicationExpression(op, exp1), exp2);
             }
 
             while(TokenStream.peek().Type != TokenType.EOF && !IsExpressionEnding(TokenStream.peek()))
             {
                 Expression exp2 = ParseSimpleExpression();
-                exp = new ApplicationExpression(exp, exp2);
+                exp1 = new ApplicationExpression(exp1, exp2);
             }
 
-            return exp;        
+            return exp1;        
         }
 
         private Expression GetOperationConst(string content)
@@ -225,6 +213,7 @@ namespace Parserproject
             }
             switch (token.content)
             {
+                case "=>":
                 case ")":
                 case "}":
                 case "]": b = true; break;
@@ -250,6 +239,7 @@ namespace Parserproject
             }
             else if (TokenStream.peek().content == "hvis")
             {
+                AcceptToken();
                 exp = ifStatement();
             }
             else if (TokenStream.peek().content == "lad")
@@ -259,6 +249,7 @@ namespace Parserproject
             }
             else if (TokenStream.peek().content == "fn")
             {
+                AcceptToken();
                 exp = AnonFunction();
             }
             else if (TokenStream.peek().content == "{")
@@ -268,6 +259,7 @@ namespace Parserproject
             }
             else if (TokenStream.peek().content == "(")
             {
+                AcceptToken();
                 exp = ParseTuple();
             }
             else
@@ -292,37 +284,25 @@ namespace Parserproject
 
         private Expression ParseTuple()
         {
-            AcceptToken();
-            Expression exp;
+            Expression first;
 
             if (TokenStream.peek().content == ")")
                 throw new ArgumentException("emty pair");
 
-            Expression head = ParseExpression( );
-            exp = new ApplicationExpression(new PairConst(), head);
+            first = ParseExpression();
 
             if (TokenStream.peek().content == ")")
-                return head;
+                return first;
             else
             {
-                
-                while (TokenStream.peek().content ==",")
-                {
-                    AcceptToken();
-                    Expression tail = ParseExpression( );
-                    if (TokenStream.peek().content == ")")
-                    {
-                        exp = new ApplicationExpression(exp, tail);
-                    }
-                    else
-                    {
-                        Expression nextPair = new ApplicationExpression(new PairConst(), tail);
-                        exp = new ApplicationExpression(exp, new ApplicationExpression(nextPair, ParseTuple()));
-                    }
-     
-                }
+                AcceptToken(",");
+
+                Expression firstPair = new ApplicationExpression(new PairConst(), first);
+                Expression second = ParseTuple();
+
+                return new ApplicationExpression(firstPair, second);
             }
-            return exp;
+            
         }
 
         private Expression ParseList()
@@ -335,7 +315,7 @@ namespace Parserproject
             else
             {
                 Expression head;
-                head = ParseExpression( );
+                head = ParseExpression();
 
                 Expression exp = new ApplicationExpression(new ListConst(), head);
 
@@ -350,56 +330,22 @@ namespace Parserproject
 
         private AnonFuncExpression AnonFunction()
         {
-            // accept 'fn'
-            AcceptToken();
-
-            AnonFuncExpression anonexp;
-            Expression exp;
             Identifier arg;
+            Expression exp;
 
-            if (TokenStream.peek().content == "(")
-            {
-                // Accept '('
-                AcceptToken();
-                
-            }
-            else
-            {
-                throw new ArgumentException($"Expected '(', but was {TokenStream.peek().content}");
-            }
+            AcceptToken("(");
 
-            if (TokenStream.peek().Type == TokenType.identifier)
-            {
-                arg = new Identifier(TokenStream.next());
-            }
-            else
-            {
-                throw new ArgumentException($"Expected identifier, but was {TokenStream.peek().content}");
-            }
+            arg = new Identifier(AcceptToken(TokenType.identifier));
 
-            if (TokenStream.peek().content == ")")
-            {
-                // Accept ')'
-                AcceptToken();
-            }
-            else
-            {
-                throw new ArgumentException($"Expected ')', but was {TokenStream.peek().content}");
-            }
-            if (TokenStream.peek().content == "=>")
-            {
-                // accept '=>'
-                AcceptToken();
-                exp = ParseExpression( );
-            }
-            else
-            {
-                throw new ArgumentException($"Expected '=>', but was {TokenStream.peek().content}");
-            }
+            AcceptToken(")");
 
+            AcceptToken("=>");
 
-            anonexp = new AnonFuncExpression(arg, exp);
-            return anonexp;
+            exp = ParseExpression();
+
+            return new AnonFuncExpression(arg, exp);
+
+            //AnonFuncExpression(arg, ParseAnonFunction());
 
         }
 
@@ -409,52 +355,27 @@ namespace Parserproject
             Expression exp1;
             Expression exp2;
 
-            if (TokenStream.peek().Type == TokenType.decl)
-                AcceptToken();
-            else
-                throw new ArgumentException($"Expected 'var', but was {TokenStream.peek().content}");
+            AcceptToken(TokenType.decl);
 
-            if (TokenStream.peek().Type == TokenType.identifier)
-                id = new Identifier(TokenStream.next());
-            else
-                throw new ArgumentException($"Expected identifier, but was {TokenStream.peek().content}");
+            id = new Identifier(AcceptToken(TokenType.identifier));
 
-            if (TokenStream.peek().content == "=")
-                AcceptToken();
-            else
-                throw new ArgumentException($"Expected '=', but was {TokenStream.peek().content}");
+            AcceptToken("=");
+    
+            exp1 = ParseExpression();
 
-            exp1 = ParseExpression( );
-
-            if (TokenStream.peek().content == ";")
-                AcceptToken();
-            else
-                throw new ArgumentException($"Expected ';', but was {TokenStream.peek().content}");
-
+            AcceptToken(";");
 
             if (TokenStream.peek().Type == TokenType.decl)
             {
                 exp2 = ParseLetExpression();
             }
-            else if (TokenStream.peek().content == "i")
-            {
-                // accept 'i'
-                AcceptToken();
-                exp2 = ParseExpression( );
-
-                if (TokenStream.peek().content == "slut")
-                {
-                    // Accept 'slut'
-                    AcceptToken();
-                }
-                else
-                {
-                    throw new ArgumentException($"Expexted keyword 'slut', was {TokenStream.peek().content}");
-                }
-            }
             else
             {
-                throw new ArgumentException($"Expexted keyword 'i' or 'var', was {TokenStream.peek().content}");
+                AcceptToken("i");
+
+                exp2 = ParseExpression( );
+
+                AcceptToken("slut");
             }
 
             return new LetExpression(id, exp1, exp2);
@@ -462,46 +383,21 @@ namespace Parserproject
 
         private IfExpression ifStatement()
         {
-            // accept 'if'
-            AcceptToken();
-
-            IfExpression ifexp;
             Expression condition;
             Expression alt1;
             Expression alt2;
 
+            condition = ParseExpression();
 
+            AcceptToken("så");
 
-            condition = ParseExpression( );
+            alt1 = ParseExpression();
 
-            if (TokenStream.peek().content == "så")
-            {
-                // accept 'så'
-                AcceptToken();
-                alt1 = ParseExpression( );
-            }
-            else
-            {
-                throw new ArgumentException($"Expexted keyword 'så', was {TokenStream.peek().content}");
-            }
+            AcceptToken("ellers");
 
-            if (TokenStream.peek().content == "ellers")
-            {
-                // accept 'ellers'
-                AcceptToken();
+            alt2 = ParseExpression();
 
-                alt2 = ParseExpression( );
-            }
-            else
-            {
-                throw new ArgumentException($"Expexted keyword 'ellers', was {TokenStream.peek().content}");
-            }
-
-            ifexp = new IfExpression(condition, alt1, alt2);
-            return ifexp;
-            
+            return new IfExpression(condition, alt1, alt2);            
         }
-        
-
     }
 }

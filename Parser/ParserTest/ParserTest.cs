@@ -44,6 +44,29 @@ namespace ParserTest
         //    Assert.AreEqual(expectedAST, actualAST);
         //}
 
+        [Test]
+        public void Parse_anonfunc_MakesAST()
+        {
+            string code = "fn (x) => x";
+
+            var actualAST = ParseCode(code);
+
+            AST expectedAST = new AST
+            (
+                 new ProgramAST
+                 (
+                     new EmptyDecl(),
+                     new AnonFuncExpression
+                     (
+                         new Identifier(new Token("x", TokenType.identifier)),
+                         new IdentifierExpression(new Identifier(new Token("x", TokenType.identifier)))
+                     )
+                 )
+             );
+
+            Assert.AreEqual(expectedAST, actualAST);
+        }
+
 
         [Test]
         public void Parse_plusAndMinus_MakesAst()
@@ -407,7 +430,7 @@ namespace ParserTest
         [Test]
         public void Parse_varDecl_MakesAST()
         {
-            string code = "var x = 0";
+            string code = "var x = 0;";
 
             var actualAST = ParseCode(code);
 
@@ -430,7 +453,7 @@ namespace ParserTest
         [Test]
         public void Parse_multipleVarDecls_MakesAST()
         {
-            string code = "var x = 0; var y = 1";
+            string code = "var x = 0; var y = 1;";
 
             var actualAST = ParseCode(code);
 
@@ -457,7 +480,7 @@ namespace ParserTest
         [Test]
         public void Parse_varDeclFunction_MakesAST()
         {
-            string code = "funktion f(x) = 0";
+            string code = "funktion f(x) = 0;";
 
             var actualAST = ParseCode(code);
 
@@ -485,7 +508,7 @@ namespace ParserTest
         [Test]
         public void Parse_MultipleVarDeclFunction_MakesAST()
         {
-            string code = "funktion f(x) = 0; funktion g(x) = sand";
+            string code = "funktion f(x) = 0; funktion g(x) = sand;";
 
             var actualAST = ParseCode(code);
 
@@ -522,7 +545,7 @@ namespace ParserTest
         [Test]
         public void Parse_varDeclFunctionClauses_MakesAST()
         {
-            string code = "funktion f(x){sand} = 1 | = 0";
+            string code = "funktion f(x){sand} = 1 | = 0;";
 
             var actualAST = ParseCode(code);
 

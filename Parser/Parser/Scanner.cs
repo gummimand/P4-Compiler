@@ -165,6 +165,11 @@ namespace Parserproject
                     output += cs.GetNextChar();
                     return new Token(output, type);
                 }
+                else if (cs.Peek() == '>')
+                {
+                    output += cs.GetNextChar();
+                    return new Token(output, type);
+                }
                 else
                     return new Token(output, type);
             }
@@ -247,6 +252,7 @@ namespace Parserproject
                 case "tag":
                 case "smid":
                 case "fejl":
+                case "fn":
                     return new Token(lexeme, TokenType.keyword);
                 case "var":
                 case "funktion":
