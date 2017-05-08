@@ -313,6 +313,15 @@ namespace Parserproject
         }
     }
 
+    //public class Id : ConstantExpression
+    //{
+    //    public string Content;
+    //    public Id(string content) : base("Identifier")
+    //    {
+    //        Content = content;
+    //    }
+    //}
+
     public class Identifier : Leaf
     {
         public Identifier(Token t) : base(t) { }
