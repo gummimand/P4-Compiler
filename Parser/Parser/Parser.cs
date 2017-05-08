@@ -345,8 +345,6 @@ namespace Parserproject
 
             return new AnonFuncExpression(arg, exp);
 
-            //AnonFuncExpression(arg, ParseAnonFunction());
-
         }
 
         private LetExpression ParseLetExpression()

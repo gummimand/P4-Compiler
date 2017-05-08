@@ -269,19 +269,19 @@ namespace Parserproject
         public void visit(Identifier node) {
             Tuple<string, string> id;
 
-            if (AST.table.TryGetValue(node.token.content, out id))//Table from parsing
-                node.type = (TokenType)Enum.Parse(typeof(TokenType), id.Item1); //Lookup for type of identifier in enum
-            else
-                throw new Exception("Identifier not found in symboltable");
+            //if (AST.table.TryGetValue(node.token.content, out id))//Table from parsing
+            //    node.type = (TokenType)Enum.Parse(typeof(TokenType), id.Item1); //Lookup for type of identifier in enum
+            //else
+            //    throw new Exception("Identifier not found in symboltable");
         }
 
         public void visit(Leaf leaf) {
             Tuple<string, string> id;
 
-            if (AST.table.TryGetValue(leaf.token.content, out id))
-                leaf.type = (TokenType)Enum.Parse(typeof(TokenType), id.Item1); //Lookup for type of identifier in enum
-            else
-                leaf.type = leaf.token.Type;
+            //if (AST.table.TryGetValue(leaf.token.content, out id))
+            //    leaf.type = (TokenType)Enum.Parse(typeof(TokenType), id.Item1); //Lookup for type of identifier in enum
+            //else
+            //    leaf.type = leaf.token.Type;
         }
 
         public void visit(ASTNode node) {
