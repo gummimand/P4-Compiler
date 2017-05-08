@@ -17,7 +17,7 @@ namespace Parserproject
 
         public AST Parse()
         {
-            Decl varDecl = ParseSingleVarDeclaration();
+            Decl varDecl = ParseDeclaration();
 
             Expression exp;
 
@@ -64,7 +64,7 @@ namespace Parserproject
             }
         }
 
-        private Decl ParseSingleVarDeclaration()
+        private Decl ParseDeclaration()
         {
 
             Decl decl;
@@ -109,7 +109,7 @@ namespace Parserproject
 
             AcceptToken(";");
 
-            return new VarDecl(functionName, functionExpression, ParseSingleVarDeclaration());
+            return new VarDecl(functionName, functionExpression, ParseDeclaration());
         }
 
         private Expression ParseClauseExp()
@@ -163,7 +163,7 @@ namespace Parserproject
 
             AcceptToken(";");
 
-            return new VarDecl(id, exp, ParseSingleVarDeclaration());
+            return new VarDecl(id, exp, ParseDeclaration());
         }
 
         private Expression ParseExpression()
