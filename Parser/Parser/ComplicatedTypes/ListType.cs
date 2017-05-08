@@ -14,11 +14,7 @@ namespace Parserproject
         {
             ListElementType = T;
         }
-        
-        public void test()
-        {
 
-        }
 
     }
 }

@@ -35,7 +35,9 @@ namespace Parserproject
 
         public ConstructedType Lookup(string constant)
         {
-            if (constant.All(char.IsDigit))
+            ConstructedType output;
+
+            if (constant.All(char.IsDigit)) // handle .
             {
                 return new TalType();
             }
@@ -47,7 +49,7 @@ namespace Parserproject
             {
                 return new BoolType();
             }
-            else if (SigmaTable.TryGetValue(constant, out ConstructedType output))
+            else if (SigmaTable.TryGetValue(constant, out  output))
             {
                 return output;
             }
