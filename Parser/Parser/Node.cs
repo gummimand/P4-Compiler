@@ -106,8 +106,8 @@ namespace Parserproject
 
     public class ProgramAST : Node
     {
-        private Decl varDecl;
-        private Expression exp;
+        public Decl varDecl;
+        public Expression exp;
 
         public override void accept(IVisitor v) { v.visit(this); }
 
@@ -129,9 +129,9 @@ namespace Parserproject
 
     public class VarDecl : Decl
     {
-        private Identifier id;
-        private Expression exp;
-        private Decl nextDecl;
+        public Identifier id;
+        public Expression exp;
+        public Decl nextDecl;
 
         public override void accept(IVisitor v) { v.visit(this); }
 
@@ -162,9 +162,9 @@ namespace Parserproject
     public class IfExpression : Expression
     {
 
-        private Expression condition;
-        private Expression alt1;
-        private Expression alt2;
+        public Expression condition;
+        public Expression alt1;
+        public Expression alt2;
 
         public override void accept(IVisitor v) { v.visit(this); }
 
@@ -182,9 +182,9 @@ namespace Parserproject
 
     public class LetExpression : Expression
     {
-        private Identifier id;
-        private Expression exp1;
-        private Expression exp2;
+        public Identifier id;
+        public Expression exp1;
+        public Expression exp2;
 
         public override void accept(IVisitor v) { v.visit(this); }
 
@@ -203,7 +203,7 @@ namespace Parserproject
 
     public class ValueExpression : Expression
     {
-        private Value value;
+        public Value value;
 
         public override void accept(IVisitor v) { v.visit(this); }
 
@@ -217,7 +217,7 @@ namespace Parserproject
 
     public class IdentifierExpression : Expression
     {
-        private Identifier id;
+        public Identifier id;
 
         public override void accept(IVisitor v) { v.visit(this); }
 
@@ -239,8 +239,8 @@ namespace Parserproject
 
     public class ApplicationExpression : Expression
     {
-        private Expression rator;
-        private Expression rand;
+        public Expression rator;
+        public Expression rand;
 
         public override void accept(IVisitor v) { v.visit(this); }
 
@@ -269,8 +269,8 @@ namespace Parserproject
 
     public class AnonFuncExpression : ConstantExpression
     {
-        private Identifier arg;
-        private Expression exp;
+        public Identifier arg;
+        public Expression exp;
 
         public override void accept(IVisitor v) { v.visit(this); }
 
@@ -278,7 +278,6 @@ namespace Parserproject
         {
             this.exp = exp;
             this.arg = arg;
-
 
             AddChild(arg);
             AddChild(exp);
