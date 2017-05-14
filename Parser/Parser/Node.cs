@@ -62,41 +62,41 @@ namespace Parserproject
                 Children[i].PrintPretty(indent, i == Children.Count - 1);
         }
 
-        public override bool Equals(object obj)
-        {
-            Node other = obj as Node;
-            if (other != null)
-            {
-                if (this.NodeLabel == other.NodeLabel)
-                {
-                    int thisChildren = this.Children.Count;
-                    int otherChildren = other.Children.Count;
+        //public override bool Equals(object obj)
+        //{
+        //    Node other = obj as Node;
+        //    if (other != null)
+        //    {
+        //        if (this.NodeLabel == other.NodeLabel)
+        //        {
+        //            int thisChildren = this.Children.Count;
+        //            int otherChildren = other.Children.Count;
 
-                    if (thisChildren == otherChildren)
-                    {
-                        if (thisChildren == 0)
-                        {
-                            return true;
-                        }
-                        else
-                        {
-                            bool isEqual = true;
-                            int i = 0;
+        //            if (thisChildren == otherChildren)
+        //            {
+        //                if (thisChildren == 0)
+        //                {
+        //                    return true;
+        //                }
+        //                else
+        //                {
+        //                    bool isEqual = true;
+        //                    int i = 0;
 
-                            while (isEqual && i < thisChildren)
-                            {
-                                isEqual = isEqual && this.Children[i].Equals(other.Children[i]);
-                                i++;
-                            }
+        //                    while (isEqual && i < thisChildren)
+        //                    {
+        //                        isEqual = isEqual && this.Children[i].Equals(other.Children[i]);
+        //                        i++;
+        //                    }
 
-                            return isEqual;
-                        }
-                    }
-                }
-            }
+        //                    return isEqual;
+        //                }
+        //            }
+        //        }
+        //    }
 
-            return false;
-        }
+        //    return false;
+        //}
 
         public override int GetHashCode()
         {
@@ -119,6 +119,26 @@ namespace Parserproject
             AddChild(varDecl);
             AddChild(exp);
         }
+
+        public override bool Equals(object obj)
+        {
+            ProgramAST other = obj as ProgramAST;
+
+            if (other != null)
+            {
+                return this.varDecl.Equals(other.varDecl) && this.exp.Equals(other.exp);
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
     }
 
     public abstract class Decl : Node
@@ -145,12 +165,31 @@ namespace Parserproject
             AddChild(exp);
             AddChild(nextDecl);
         }
+
+        public override bool Equals(object obj)
+        {
+            VarDecl other = obj as VarDecl;
+
+            if (other != null)
+            {
+                return this.id.Equals(other.id) && this.exp.Equals(other.exp) && this.nextDecl.Equals(other.nextDecl);
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 
     public class EmptyDecl : Decl
     {
         public EmptyDecl() : base("EMPTY_DECL") { }
         public override void accept(IVisitor v) { v.visit(this); }
+
+        public override bool Equals(object obj)
+        {
+            return obj is EmptyDecl;
+        }
     }
 
     public abstract class Expression : Node
@@ -178,6 +217,20 @@ namespace Parserproject
             AddChild(alt1);
             AddChild(alt2);
         }
+
+        public override bool Equals(object obj)
+        {
+            IfExpression other = obj as IfExpression;
+
+            if (other != null)
+            {
+                return this.condition.Equals(other.condition) && this.alt1.Equals(other.alt1) && this.alt2.Equals(other.alt2);
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 
     public class LetExpression : Expression
@@ -198,6 +251,20 @@ namespace Parserproject
             AddChild(exp1);
             AddChild(exp2);
         }
+
+        public override bool Equals(object obj)
+        {
+            LetExpression other = obj as LetExpression;
+
+            if (other != null)
+            {
+                return this.id.Equals(other.id) && this.exp1.Equals(other.exp1) && this.exp2.Equals(other.exp2);
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 
 
@@ -213,6 +280,20 @@ namespace Parserproject
 
             AddChild(value);
         }
+
+        public override bool Equals(object obj)
+        {
+            ValueExpression other = obj as ValueExpression;
+
+            if (other != null)
+            {
+                return this.value.Equals(other.value);
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 
     public class IdentifierExpression : Expression
@@ -227,6 +308,21 @@ namespace Parserproject
 
             AddChild(id);
         }
+
+        public override bool Equals(object obj)
+        {
+            IdentifierExpression other = obj as IdentifierExpression;
+
+            if (other != null)
+            {
+                return this.id.Equals(other.id);
+            }
+            else
+            {
+                return false;
+            }
+        }
+
     }
 
     public class EmptyListExpression : Expression
@@ -234,6 +330,11 @@ namespace Parserproject
         public override void accept(IVisitor v) { v.visit(this); }
 
         public EmptyListExpression() : base("EMPTY_LIST") { }
+
+        public override bool Equals(object obj)
+        {
+            return obj is EmptyListExpression;
+        }
 
     }
 
@@ -252,12 +353,31 @@ namespace Parserproject
             AddChild(rator);
             AddChild(rand);
         }
+
+        public override bool Equals(object obj)
+        {
+            ApplicationExpression other = obj as ApplicationExpression;
+
+            if (other != null)
+            {
+                return this.rator.Equals(other.rator) && this.rand.Equals(other.rand);
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 
     public class EmptyExpression : Expression
     {
         public EmptyExpression() : base("EMPTY_EXPRESSION") { }
         public override void accept(IVisitor v) { v.visit(this); }
+
+        public override bool Equals(object obj)
+        {
+            return obj is EmptyExpression;
+        }
     }
 
     public abstract class ConstantExpression : Expression
@@ -282,12 +402,31 @@ namespace Parserproject
             AddChild(arg);
             AddChild(exp);
         }
+
+        public override bool Equals(object obj)
+        {
+            AnonFuncExpression other = obj as AnonFuncExpression;
+
+            if (other != null)
+            {
+                return this.arg.Equals(other.arg) && this.exp.Equals(other.exp);
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 
     public class ListConst : ConstantExpression
     {
         public ListConst() : base("LIST")
         {
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is ListConst;
         }
     }
 
@@ -296,6 +435,11 @@ namespace Parserproject
         public PairConst() : base("PAR")
         {
         }
+
+        public override bool Equals(object obj)
+        {
+            return obj is PairConst;
+        }
     }
 
     public class PlusConst : ConstantExpression
@@ -303,12 +447,22 @@ namespace Parserproject
         public PlusConst() : base("PLUS")
         {
         }
+
+        public override bool Equals(object obj)
+        {
+            return obj is PlusConst;
+        }
     }
 
     public class MinusConst : ConstantExpression
     {
         public MinusConst() : base("MINUS")
         {
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is MinusConst;
         }
     }
 
@@ -326,12 +480,40 @@ namespace Parserproject
         public Identifier(Token t) : base(t) { }
         public override void accept(IVisitor v) { v.visit(this); }
         //Static polymorphism
+
+        public override bool Equals(object obj)
+        {
+            Identifier other = obj as Identifier;
+
+            if (other != null)
+            {
+                return this.token.Equals(other.token);
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 
     public class Value : Leaf
     {
         public Value(Token t) : base(t) { }
         public override void accept(IVisitor v) { v.visit(this); }
+
+        public override bool Equals(object obj)
+        {
+            Value other = obj as Value;
+
+            if (other != null)
+            {
+                return this.token.Equals(other.token);
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 }
 
