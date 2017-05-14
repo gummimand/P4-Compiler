@@ -28,4 +28,26 @@ namespace Parserproject
 
         //One for each node ... zzzz
     }
+
+
+    public interface IVisitor<T>
+    {
+        T visit(ASTNode node);
+        T visit(Leaf leaf);
+        T visit(Node node);
+        T visit(Identifier node);
+        T visit(Value node);
+        T visit(ProgramAST node);
+        T visit(Decl node);
+        T visit(VarDecl node);
+        T visit(EmptyDecl node);
+        T visit(Expression node);
+        T visit(IfExpression node);
+        T visit(LetExpression node);
+        T visit(AnonFuncExpression node);
+        T visit(ValueExpression node);
+        T visit(IdentifierExpression node);
+        T visit(ApplicationExpression node);
+        T visit(EmptyExpression node);
+    }
 }
