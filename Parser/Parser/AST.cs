@@ -9,7 +9,7 @@ namespace Parserproject
     public class AST
     {
         public ASTNode Root { get; set; }
-        public Symboltable SymbolTable;
+       
 
 
         public AST(ASTNode root)

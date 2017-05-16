@@ -11,14 +11,14 @@ namespace Parserproject
     {
         static void Main(string[] args)
         {
-            string path = @"C:\Users\Kamilla\Desktop\code.txt";
+            string path = @"C:\Users\Nicol\Desktop\test3.txt";
 
             string sourcecode = System.IO.File.ReadAllText(path);
 
             Console.WriteLine(sourcecode);
 
             var scanner = new Scanner(sourcecode);
-            var tokens = scanner.Scan();
+            var tokens = scanner.Scan();   
 
             var length = tokens.Count;
             for (int i = 0; i < length; i++)
@@ -32,6 +32,11 @@ namespace Parserproject
             var ast = parser.Parse();
 
             ast.print();
+
+            Console.ReadKey();
+
+            var interpreter = new Interpreter();
+            interpreter.Interpret(ast);
 
             Console.ReadKey();
 

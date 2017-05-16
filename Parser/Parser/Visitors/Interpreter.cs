@@ -4,145 +4,174 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Parserproject.Visitors
+namespace Parserproject
 {
-    public class Interpreter : IVisitor<Node>
+    public class Interpreter : IVisitor
     {
 
-        public Node Interpret(AST ast)
+        public Symboltable<Expression> env = new Symboltable<Expression>();
+
+        public void Interpret(AST ast)
         {
-            return visit(ast.Root);
+            visit(ast.Root);
+
+            env.Print();
+        }
+
+        private Expression Apply(ConstantExpression c, Expression exp)
+        {
+            string value;
+            TokenType type;
+
+            return new Expression();
         }
 
 
-        public Node visit(Node node)
+        public void visit(ASTNode node)
         {
-            throw new NotImplementedException();
+            node.accept(this);
         }
 
-        public Node visit(Value node)
+
+        public void visit(EmptyDecl node)
         {
-            // return node.value;
-            throw new NotImplementedException();
+            // do nothing
         }
 
-        public Node visit(Decl node)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Node visit(EmptyDecl node)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Node visit(IfExpression node)
+        public void visit(IfExpression node)
         {
 
             // if1
             // hvis node.condition er et udtryk, reducer condition
+
             //if2
             // hvis node.condition = sand reducer node.alt1
+
             //if3
             // hvis node.condition = falsk reducer node.alt1
+            visit(node.condition);
 
-            bool cond = true; // todo skal bruge resultatet af visit(condition)
+            bool truth;
 
-            object condition = visit(node.condition); //returner værdien
-            var a = condition as Value;
-            if (a != null)
-            {
-                cond = a.token.content == "sand";
-            }
-            else
-            {
-                throw new Exception("aaaaaaaaaaaaaaaaaaaaaaaaaarh!");
-            }
+            // TODO clean up + handle exceptions
 
+            object val = node.condition.Value;
+            ValueExpression valexp = val as ValueExpression;
+            string valString = valexp.value.token.content;
+
+            truth = valString == "sand";
             
-            if (cond)
+            if (truth)
             {
-                return visit(node.alt1);
+                visit(node.alt1);
+                node.Value = node.alt1.Value;
             }
             else
             {
-                return visit(node.alt2);
+                visit(node.alt2);
+                node.Value = node.alt2.Value;
             }
         }
 
-        public Node visit(AnonFuncExpression node)
+        public void visit(AnonFuncExpression node)
         {
-            return node;
+            // er sin egen værdi (fingers crossed)
+            node.Value = node;
         }
 
-        public Node visit(IdentifierExpression node)
+        public void visit(EmptyListExpression node)
+        {
+            node.Value = node;
+        }
+
+        public void visit(PairConst node)
+        {
+            node.Value = node;
+        }
+
+        public void visit(MinusConst node)
+        {
+            node.Value = node;
+        }
+
+        public void visit(PlusConst node)
+        {
+            node.Value = node;
+        }
+
+        public void visit(ListConst node)
+        {
+            node.Value = node;
+        }
+
+        public void visit(ClosureExpression node)
         {
             throw new NotImplementedException();
         }
 
-        public Node visit(EmptyExpression node)
+        public void visit(IdentifierExpression node)
         {
-            return node;
+            node.Value = env.LookUp(node.id.token.content);
         }
 
-        public Node visit(ApplicationExpression node)
+        public void visit(EmptyExpression node)
         {
-            Node operand = visit(node.rand); //app1
-            Node rator = visit(node.rator); //app2
+            // do nothing
+        }
 
-            if (rator is ConstantExpression) // hvis rator er const
+        public void visit(ApplicationExpression node)
+        {
+            visit(node.argument); //app1
+            visit(node.function); //app2
+
+            if (node.function.Value is ConstantExpression) // hvis funk er const
             {
-                //apply(c, rand)
+                //apply(c, argument)
             }
-            else if(rator is AnonFuncExpression) // hvis rator er Anonfunk
+            else if(node.function.Value is AnonFuncExpression) // hvis funk er Anonfunk
             {
-                AnonFuncExpression function = rator as AnonFuncExpression;
+                AnonFuncExpression function = node.function.Value as AnonFuncExpression;
 
-                //E[function.arg -> rand]
-                return visit(function.exp);
+                env.Add(function.arg.token.content, node.argument.Value);
+                visit(function.exp);
+                node.Value = function.exp.Value;
+                env.Remove();
             }
-
-            throw new NotImplementedException();
+            else
+            {
+                throw new Exception("SHit!");
+            }
         }
 
-        public Node visit(ValueExpression node)
+        public void visit(ValueExpression node)
         {
-            return visit(node.value);
+            node.Value = node;
         }
 
-        public Node visit(LetExpression node)
+        public void visit(LetExpression node)
         {
-            throw new NotImplementedException();
+            //[LET1]
+            visit(node.exp1);
+
+            //[LET2]
+            env.Add(node.id.token.content, node.exp1.Value);
+            visit(node.exp2);
+            node.Value = node.exp2.Value;
+            env.Remove();
         }
 
-        public Node visit(Expression node)
+        public void visit(VarDecl node)
         {
-            throw new NotImplementedException();
+            visit(node.exp);
+            env.Add(node.id.token.content, node.exp.Value);
+            visit(node.nextDecl);
         }
 
-        public Node visit(VarDecl node)
+        // [PROG]
+        public void visit(ProgramAST node)
         {
-            throw new NotImplementedException();
-        }
-
-        public Node visit(ProgramAST node)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Node visit(Identifier node)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Node visit(Leaf leaf)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Node visit(ASTNode node)
-        {
-            throw new NotImplementedException();
+            visit(node.varDecl);
+            visit(node.exp);
         }
     }
 }

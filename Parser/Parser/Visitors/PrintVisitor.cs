@@ -88,6 +88,36 @@ namespace Parserproject
             throw new NotImplementedException();
         }
 
+        public void visit(EmptyListExpression node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void visit(PairConst node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void visit(MinusConst node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void visit(PlusConst node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void visit(ListConst node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void visit(ClosureExpression node)
+        {
+            throw new NotImplementedException();
+        }
+
         //public void visit(ListExpression node)
         //{
         //    throw new NotImplementedException();

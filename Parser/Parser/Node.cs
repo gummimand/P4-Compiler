@@ -61,47 +61,6 @@ namespace Parserproject
             for (int i = 0; i < Children.Count; i++)
                 Children[i].PrintPretty(indent, i == Children.Count - 1);
         }
-
-        //public override bool Equals(object obj)
-        //{
-        //    Node other = obj as Node;
-        //    if (other != null)
-        //    {
-        //        if (this.NodeLabel == other.NodeLabel)
-        //        {
-        //            int thisChildren = this.Children.Count;
-        //            int otherChildren = other.Children.Count;
-
-        //            if (thisChildren == otherChildren)
-        //            {
-        //                if (thisChildren == 0)
-        //                {
-        //                    return true;
-        //                }
-        //                else
-        //                {
-        //                    bool isEqual = true;
-        //                    int i = 0;
-
-        //                    while (isEqual && i < thisChildren)
-        //                    {
-        //                        isEqual = isEqual && this.Children[i].Equals(other.Children[i]);
-        //                        i++;
-        //                    }
-
-        //                    return isEqual;
-        //                }
-        //            }
-        //        }
-        //    }
-
-        //    return false;
-        //}
-
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
-        }
     }
 
     public class ProgramAST : Node
@@ -194,6 +153,7 @@ namespace Parserproject
 
     public abstract class Expression : Node
     {
+        public Expression Value;
         public Expression(string type) : base(type) { }
         public override void accept(IVisitor v) { v.visit(this); }
     }
@@ -265,6 +225,33 @@ namespace Parserproject
                 return false;
             }
         }
+    }
+
+    public class ClosureExpression : Expression
+    {
+        public Expression exp;
+        public Symboltable<Node> env;
+
+        public ClosureExpression(Expression exp, Symboltable<Node> env) : base("CLOSURE_EXPRESSION")
+        {
+            this.exp = exp;
+            this.env = env;
+        }
+
+        public override bool Equals(object obj)
+        {
+            ClosureExpression other = obj as ClosureExpression;
+
+            if (other != null)
+            {
+                return this.exp.Equals(other.exp);
+            }
+            else
+            {
+                return false;
+            }
+        }
+
     }
 
 
@@ -340,18 +327,18 @@ namespace Parserproject
 
     public class ApplicationExpression : Expression
     {
-        public Expression rator;
-        public Expression rand;
+        public Expression function;
+        public Expression argument;
 
         public override void accept(IVisitor v) { v.visit(this); }
 
-        public ApplicationExpression(Expression rator, Expression rand) : base("APPLICATION_EXPRESSION")
+        public ApplicationExpression(Expression function, Expression argument) : base("APPLICATION_EXPRESSION")
         {
-            this.rator = rator;
-            this.rand = rand;
+            this.function = function;
+            this.argument = argument;
 
-            AddChild(rator);
-            AddChild(rand);
+            AddChild(function);
+            AddChild(argument);
         }
 
         public override bool Equals(object obj)
@@ -360,7 +347,7 @@ namespace Parserproject
 
             if (other != null)
             {
-                return this.rator.Equals(other.rator) && this.rand.Equals(other.rand);
+                return this.function.Equals(other.function) && this.argument.Equals(other.argument);
             }
             else
             {
@@ -444,6 +431,8 @@ namespace Parserproject
 
     public class PlusConst : ConstantExpression
     {
+        public override void accept(IVisitor v) { v.visit(this); }
+
         public PlusConst() : base("PLUS")
         {
         }
@@ -456,6 +445,8 @@ namespace Parserproject
 
     public class MinusConst : ConstantExpression
     {
+        public override void accept(IVisitor v) { v.visit(this); }
+
         public MinusConst() : base("MINUS")
         {
         }

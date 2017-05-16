@@ -8,6 +8,8 @@ namespace Parserproject
 {
     public class TypeVisitor : IVisitor
     {
+        public Symboltable<ConstructedType> E = new Symboltable<ConstructedType>();
+
         public Dictionary<string, string> typeEnvironment = new Dictionary<string, string>();
         public Dictionary<string, string> sigmaConstants = new Dictionary<string, string>() {
             {"PLUS","heltal->heltal->heltal"},
@@ -300,6 +302,36 @@ namespace Parserproject
             else {
                 return TokenType.heltal;
             }
+        }
+
+        public void visit(ClosureExpression node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void visit(EmptyListExpression node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void visit(ListConst node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void visit(PairConst node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void visit(PlusConst node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void visit(MinusConst node)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -9,15 +9,9 @@ namespace Parserproject
     public interface IVisitor
     {
         void visit(ASTNode node);
-        void visit(Leaf leaf);
-        void visit(Node node);
-        void visit(Identifier node);
-        void visit(Value node);
         void visit(ProgramAST node);
-        void visit(Decl node);
         void visit(VarDecl node);
         void visit(EmptyDecl node);
-        void visit(Expression node);
         void visit(IfExpression node);
         void visit(LetExpression node);
         void visit(AnonFuncExpression node);
@@ -25,6 +19,12 @@ namespace Parserproject
         void visit(IdentifierExpression node);
         void visit(ApplicationExpression node);
         void visit(EmptyExpression node);
+        void visit(ClosureExpression node);
+        void visit(EmptyListExpression node);
+        void visit(ListConst node);
+        void visit(PairConst node);
+        void visit(PlusConst node);
+        void visit(MinusConst node);
 
         //One for each node ... zzzz
     }
