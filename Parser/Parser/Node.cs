@@ -10,7 +10,7 @@ namespace Parserproject
     public abstract class ASTNode
     {
         public Node Parent { get; set; }
-        public TypeScheme Type;
+        public ConstructedType Type;
         public TypeSubstitution sigma;
         public abstract void PreOrderWalk();
         public abstract void PrintPretty(string indent, bool last);
@@ -424,6 +424,11 @@ namespace Parserproject
                 return false;
             }
         }
+
+        public override string ToString()
+        {
+            return "temp string";
+        }
     }
 
     public class ListConst : ConstantExpression
@@ -515,6 +520,20 @@ namespace Parserproject
         public override bool Equals(object obj)
         {
             return obj is MinusConst;
+        }
+    }
+
+    public class ConstantFuncs : ConstantExpression
+    {
+        public string name;
+
+        public ConstantFuncs(string Name) : base("CONSTANTFUNCTION")
+        {
+            name = Name;
+        }
+        public override bool Equals(object obj)
+        {
+            return obj is ConstantFuncs;
         }
     }
 

@@ -11,7 +11,7 @@ namespace Parserproject
     {
         static void Main(string[] args)
         {
-            string path = @"C:\Users\Nicol\Desktop\test3.txt";
+            string path = @"C:\Users\Christian\Desktop\test3.txt";
 
             string sourcecode = System.IO.File.ReadAllText(path);
 

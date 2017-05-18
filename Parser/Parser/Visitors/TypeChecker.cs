@@ -8,7 +8,8 @@ namespace Parserproject
 {
     public class TypeChecker : IVisitor
     {
-        public Symboltable<TypeScheme> E = new Symboltable<TypeScheme>();
+        public Symboltable<ConstructedType> E = new Symboltable<ConstructedType>();
+        public SigmaFunctions Sigmatabel = new SigmaFunctions();
 
         public Dictionary<string, string> sigmaConstants = new Dictionary<string, string>() {
             {"PLUS","heltal->heltal->heltal"},
@@ -74,11 +75,6 @@ namespace Parserproject
             throw new NotImplementedException();
         }
 
-        public void visit(PlusConst node)
-        {
-            throw new NotImplementedException();
-        }
-
         public void visit(ListConst node)
         {
             throw new NotImplementedException();
@@ -109,6 +105,11 @@ namespace Parserproject
             node.Type = sigma.Substitute(a);
         }
 
+        private TypeSubstitution Unify(ConstructedType constructedType, FunctionType functionType)
+        {
+            throw new NotImplementedException();
+        }
+
         public void visit(ValueExpression node)
         {
             // har allerede type
@@ -120,11 +121,7 @@ namespace Parserproject
             var sigma1 = node.exp1.sigma;
             var t1 = node.exp1.Type;
 
-            var closure = close()
-
-
-
-
+            //var closure = close();
         }
 
         public void visit(EmptyDecl node)
@@ -145,6 +142,11 @@ namespace Parserproject
         public void visit(ASTNode node)
         {
             throw new NotImplementedException();
+        }
+
+        public void visit(ConstantFuncs node)
+        {
+            node.Type = Sigmatabel.Lookup(node.name); 
         }
     }
 }

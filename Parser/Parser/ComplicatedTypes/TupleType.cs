@@ -6,25 +6,20 @@ using System.Threading.Tasks;
 
 namespace Parserproject
 {
-    class TupleType : ConstructedType
+    public class TupleType : ConstructedType
     {
-        object Element1;
-        object Element2;
+        public ConstructedType Element1;
+        public ConstructedType Element2;
 
-        public TupleType(BasicType T1, BasicType T2)
-        {
-            Element1 = T1;
-            Element2 = T2;
-        }
-        public TupleType(BasicType T1, ConstructedType T2)
-        {
-            Element1 = T1;
-            Element2 = T2;
-        }
         public TupleType(ConstructedType T1, ConstructedType T2)
         {
             Element1 = T1;
             Element2 = T2;
+        }
+
+        public override ConstructedType accept(TypeSubstitution typeSub)
+        {
+            return typeSub.Substitute(this);
         }
     }
 }

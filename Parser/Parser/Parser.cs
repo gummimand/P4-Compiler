@@ -190,15 +190,7 @@ namespace Parserproject
 
         private Expression GetOperationConst(string content)
         {
-            switch (content)
-            {
-                case "+":
-                    return new PlusConst();
-                case "-":
-                    return new MinusConst();
-                default:
-                    throw new ArgumentException($"Unknown operator. Was {content}");
-            }
+            return new ConstantFuncs(content);
         }
 
         private bool IsExpressionEnding(Token token)
@@ -301,7 +293,7 @@ namespace Parserproject
             {
                 AcceptToken(",");
 
-                Expression firstPair = new ApplicationExpression(new PairConst(), first);
+                Expression firstPair = new ApplicationExpression(new ConstantFuncs("Par"), first);
                 Expression second = ParseTuple();
 
                 return new ApplicationExpression(firstPair, second);
@@ -321,7 +313,7 @@ namespace Parserproject
                 Expression head;
                 head = ParseExpression();
 
-                Expression exp = new ApplicationExpression(new ListConst(), head);
+                Expression exp = new ApplicationExpression(new ConstantFuncs("Liste"), head);
 
                 if (TokenStream.peek().content == ",")
                 {

@@ -6,15 +6,19 @@ using System.Threading.Tasks;
 
 namespace Parserproject
 {
-    class ListType : ConstructedType
+    public class ListType : ConstructedType
     {
-        ConstructedType ListElementType;
+        public ConstructedType ListElementType;
 
-        ListType(ConstructedType T)
+        public ListType(ConstructedType T)
         {
             ListElementType = T;
         }
 
+        public override ConstructedType accept(TypeSubstitution typeSub)
+        {
+            return typeSub.Substitute(this);
+        }
 
     }
 }

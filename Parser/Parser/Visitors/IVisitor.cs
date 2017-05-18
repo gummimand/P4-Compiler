@@ -23,8 +23,8 @@ namespace Parserproject
         void visit(EmptyListExpression node);
         void visit(ListConst node);
         void visit(PairConst node);
-        void visit(PlusConst node);
-        void visit(MinusConst node);
+        void visit(ConstantFuncs node);
+
 
         //One for each node ... zzzz
     }

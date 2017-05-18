@@ -11,8 +11,11 @@ namespace Parserproject
 
         public HeltalType()
         {
-           
         }
-
+        
+        public override ConstructedType accept(TypeSubstitution typeSub)
+        {
+            return typeSub.Substitute(this);
+        }
     }
 }

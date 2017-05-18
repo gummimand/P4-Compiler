@@ -15,7 +15,7 @@ namespace Parserproject
             FillSigmaTable();
         }
 
-        public void FillSigmaTable() //Contains operators only, numbers, strings and bools are handled by the lookup method.
+        public void FillSigmaTable()
         {
             SigmaTable.Add("!", new FunctionType(new BoolType(), new BoolType()));
             SigmaTable.Add("+", new FunctionType(new FunctionType(new TalType(), new TalType()), new TalType()));
@@ -30,26 +30,16 @@ namespace Parserproject
             SigmaTable.Add(">=", new FunctionType(new FunctionType(new TalType(), new TalType()), new BoolType()));
             SigmaTable.Add("==", new FunctionType(new FunctionType(new BasicType(), new BasicType()), new BoolType())); //Antager at man kan sammenligne om to bool udtryk evaluerer til den samme sandheds værdi.
             SigmaTable.Add("!=", new FunctionType(new FunctionType(new BasicType(), new BasicType()), new BoolType()));
-        }
+            SigmaTable.Add("Par", 
+            SigmaTable.Add("Liste"
 
+        }
 
         public ConstructedType Lookup(string constant)
         {
             ConstructedType output;
 
-            if (constant.All(char.IsDigit)) // handle .
-            {
-                return new TalType();
-            }
-            else if (constant.First() == '"' && constant.Last() == '"')
-            {
-                return new StrengType();
-            }
-            else if (constant == "false" || constant == "true") //Maybe also "TRUE", "True", "FALSE" osv.. 
-            {
-                return new BoolType();
-            }
-            else if (SigmaTable.TryGetValue(constant, out  output))
+            if (SigmaTable.TryGetValue(constant, out  output))
             {
                 return output;
             }

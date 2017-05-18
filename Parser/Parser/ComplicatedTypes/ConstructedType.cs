@@ -9,5 +9,10 @@ namespace Parserproject
     public class ConstructedType: TypeScheme
     {
         public ConstructedType() { } //So the other classes can have constructors
+
+        public virtual ConstructedType accept(TypeSubstitution typeSub)
+        {
+            return typeSub.Substitute(this);
+        }
     }
 }

@@ -16,7 +16,14 @@ namespace Parserproject
             this.inputType = input;
             this.outputType = output;
         }
-        
+
+        public override ConstructedType accept(TypeSubstitution typeSub)
+        {
+            return typeSub.Substitute(this);
+        }
+
+
+
     }
 
 }

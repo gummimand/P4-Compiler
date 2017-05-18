@@ -25,14 +25,39 @@ namespace Parserproject
             return new FunctionType(Substitute(type.inputType), Substitute(type.outputType));
         }
 
+        public ConstructedType Substitute(ListType type)
+        {
+            return new ListType(Substitute(type.ListElementType));
+        }
+
+        public ConstructedType Substitute(TupleType type)
+        {
+            return new TupleType(Substitute(type.Element1),Substitute(type.Element2));
+        }
+
+        public ConstructedType Substitute(BasicType type)
+        {
+            return type;
+        }
+
+        public ConstructedType Substitute(ConstructedType type)
+        {
+            return type.accept(this);
+        }
+
         public TypeSubstitution Compose(TypeSubstitution sigma)
         {
             TypeSubstitution newSigma = new TypeSubstitution();
             foreach (var sigmaItem in sigma.table)
             {
-                var newtype = Substitute(sigmaItem.Item2);
-                newSigma.Add(sigmaItem.Item1, newtype); 
+                newSigma.Add(sigmaItem.Item1, Substitute(sigmaItem.Item2)); 
             }
+            foreach (var sigmaItem in table)
+            {
+                newSigma.Add(sigmaItem.Item1, sigmaItem.Item2);
+            }
+
+            return newSigma;
         }
 
 

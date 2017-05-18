@@ -8,6 +8,10 @@ namespace Parserproject
 {
     public class BasicType : ConstructedType
     {
-        
+
+        public override ConstructedType accept(TypeSubstitution typeSub)
+        {
+            return typeSub.Substitute(this);
+        }
     }
 }

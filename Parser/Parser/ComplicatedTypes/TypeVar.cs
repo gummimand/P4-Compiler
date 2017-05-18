@@ -46,5 +46,10 @@ namespace Parserproject
             return new TypeVar("this.id");
         }
 
+        public override ConstructedType accept(TypeSubstitution typeSub)
+        {
+            return typeSub.Substitute(this);
+        }
+
     }
 }

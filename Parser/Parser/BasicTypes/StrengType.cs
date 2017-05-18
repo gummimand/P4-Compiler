@@ -9,5 +9,10 @@ namespace Parserproject
 {
     class StrengType : BasicType
     {
+        public override ConstructedType accept(TypeSubstitution typeSub)
+        {
+            return typeSub.Substitute(this);
+        }
+
     }
 }
