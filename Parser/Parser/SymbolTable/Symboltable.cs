@@ -35,9 +35,10 @@ namespace Parserproject
 
         public void Print()
         {
-            foreach (var entry in table)
+
+            for (int i = table.Count - 1; i >= 0; i--)
             {
-                Console.WriteLine(entry.Item1 + " = " + entry.Item2.ToString());
+                Console.WriteLine(table[i].Item1 + " = " + table[i].Item2.ToString());
             }
         }
 

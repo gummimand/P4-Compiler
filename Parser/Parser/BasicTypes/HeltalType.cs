@@ -6,18 +6,13 @@ using System.Threading.Tasks;
 
 namespace Parserproject
 {
-    class HeltalType : BasicType
+    public class HeltalType : BasicType
     {
-        string testvalue;
 
-        public HeltalType(string i)
+        public HeltalType()
         {
-            testvalue = i;
+           
         }
 
-        public override string ToString()
-        {
-            return testvalue;
-        }
     }
 }

@@ -51,6 +51,9 @@
     <Compile Include="ComplicatedTypes\FunctionType.cs" />
     <Compile Include="BasicTypes\HeltalType.cs" />
     <Compile Include="ComplicatedTypes\ListType.cs" />
+    <Compile Include="ComplicatedTypes\TypeScheme.cs" />
+    <Compile Include="ComplicatedTypes\TypeSubstitution.cs" />
+    <Compile Include="ComplicatedTypes\TypeVar.cs" />
     <Compile Include="SigmaFunctions.cs" />
     <Compile Include="BasicTypes\StrengType.cs" />
     <Compile Include="SymbolTable\Symboltable.cs" />
@@ -67,7 +70,7 @@
     <Compile Include="Scanner\Token.cs" />
     <Compile Include="Scanner\TokenStream.cs" />
     <Compile Include="ComplicatedTypes\TupleType.cs" />
-    <Compile Include="Visitors\TypeVisitor.cs" />
+    <Compile Include="Visitors\TypeChecker.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

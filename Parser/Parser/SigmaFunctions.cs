@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Parserproject
 {
-    class SigmaFunctions
+    public class SigmaFunctions
     {
         Dictionary<string, ConstructedType> SigmaTable = new Dictionary<string, ConstructedType>();
 

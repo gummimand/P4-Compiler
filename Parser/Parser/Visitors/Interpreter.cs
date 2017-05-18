@@ -20,10 +20,36 @@ namespace Parserproject
 
         private Expression Apply(ConstantExpression c, Expression exp)
         {
-            string value;
-            TokenType type;
+            if (c is PlusConst && exp.Value is ValueExpression)
+            {
+                ValueExpression valExp = exp.Value as ValueExpression;
+                return new PlusConstN(valExp);                
+            }
+            else if(c is PlusConstN && exp.Value is ValueExpression)
+            {
+                PlusConstN constExp = c as PlusConstN;
+                ValueExpression valExp = exp.Value as ValueExpression;
 
-            return new Expression();
+                if (constExp.Nval.Type is TalType || valExp.Type is TalType)
+                {
+                    double n = double.Parse(constExp.Nval.val);
+                    double m = double.Parse(valExp.val);
+
+                    return new ValueExpression((n + m).ToString(), TokenType.tal);
+                }
+                else
+                {
+                    int n = int.Parse(constExp.Nval.val);
+                    int m = int.Parse(valExp.val);
+
+                    return new ValueExpression((n + m).ToString(), TokenType.heltal);
+                }
+
+            }
+            else
+            {
+                throw new Exception("no!");
+            }
         }
 
 
@@ -57,7 +83,7 @@ namespace Parserproject
 
             object val = node.condition.Value;
             ValueExpression valexp = val as ValueExpression;
-            string valString = valexp.value.token.content;
+            string valString = valexp.val;
 
             truth = valString == "sand";
             
@@ -111,7 +137,7 @@ namespace Parserproject
 
         public void visit(IdentifierExpression node)
         {
-            node.Value = env.LookUp(node.id.token.content);
+            node.Value = env.LookUp(node.varName);
         }
 
         public void visit(EmptyExpression node)
@@ -126,7 +152,8 @@ namespace Parserproject
 
             if (node.function.Value is ConstantExpression) // hvis funk er const
             {
-                //apply(c, argument)
+                ConstantExpression c = node.function.Value as ConstantExpression;
+                node.Value = Apply(c, node.argument);
             }
             else if(node.function.Value is AnonFuncExpression) // hvis funk er Anonfunk
             {

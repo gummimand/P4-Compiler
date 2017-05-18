@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Parserproject
 {
-    class BasicType : ConstructedType
+    public class BasicType : ConstructedType
     {
-        string TestValue;
+        
     }
 }

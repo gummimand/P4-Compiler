@@ -10,7 +10,8 @@ namespace Parserproject
     public abstract class ASTNode
     {
         public Node Parent { get; set; }
-        public TokenType type;
+        public TypeScheme Type;
+        public TypeSubstitution sigma;
         public abstract void PreOrderWalk();
         public abstract void PrintPretty(string indent, bool last);
         public abstract void accept(IVisitor v);
@@ -257,15 +258,32 @@ namespace Parserproject
 
     public class ValueExpression : Expression
     {
-        public Value value;
+        //public Value value;
+        public string val;
 
         public override void accept(IVisitor v) { v.visit(this); }
 
-        public ValueExpression(Value value) : base("VALUE_EXPRESSION")
+        public ValueExpression(string val, TokenType tokenType) : base("VALUE_EXPRESSION")
         {
-            this.value = value;
+            this.val = val;
 
-            AddChild(value);
+            switch (tokenType)
+            {
+                case TokenType.streng:
+                    Type = new StrengType();
+                    break;
+                case TokenType.heltal:
+                    Type = new HeltalType();
+                    break;
+                case TokenType.tal:
+                    Type = new TalType();
+                    break;
+                case TokenType.boolean:
+                    Type = new BoolType();
+                    break;
+                default:
+                    throw new Exception($"Fuck you, this is not a value! was {tokenType.ToString()}");
+            }
         }
 
         public override bool Equals(object obj)
@@ -274,26 +292,29 @@ namespace Parserproject
 
             if (other != null)
             {
-                return this.value.Equals(other.value);
+                return this.val == other.val;
             }
             else
             {
                 return false;
             }
         }
+
+        public override string ToString()
+        {
+            return val;
+        }
     }
 
     public class IdentifierExpression : Expression
     {
-        public Identifier id;
+        public string varName;
 
         public override void accept(IVisitor v) { v.visit(this); }
 
-        public IdentifierExpression(Identifier id) : base("IDENTIFIER_EXPRESSION")
+        public IdentifierExpression(string varName) : base("IDENTIFIER_EXPRESSION")
         {
-            this.id = id;
-
-            AddChild(id);
+            this.varName = varName;
         }
 
         public override bool Equals(object obj)
@@ -302,7 +323,7 @@ namespace Parserproject
 
             if (other != null)
             {
-                return this.id.Equals(other.id);
+                return this.varName == other.varName;
             }
             else
             {
@@ -374,7 +395,7 @@ namespace Parserproject
         }
     }
 
-    public class AnonFuncExpression : ConstantExpression
+    public class AnonFuncExpression : Expression
     {
         public Identifier arg;
         public Expression exp;
@@ -440,6 +461,46 @@ namespace Parserproject
         public override bool Equals(object obj)
         {
             return obj is PlusConst;
+        }
+    }
+
+    public class PlusConstN: ConstantExpression 
+    {
+        public override void accept(IVisitor v) { v.visit(this); }
+
+        public double Nd;
+        public int Ni;
+        public bool isInt = false;
+        public ValueExpression Nval;
+
+        public PlusConstN(ValueExpression n) : base("PLUSN")
+        {
+            this.Nval = n;
+        }
+
+        public PlusConstN(double n) : base("PLUSN")
+        {
+            this.Nd = n;
+        }
+
+        public PlusConstN(int n) : base("PLUSN")
+        {
+            this.Ni = n;
+            isInt = true;
+        }
+
+        public override bool Equals(object obj)
+        {
+            PlusConstN other = obj as PlusConstN;
+
+            if (other != null)
+            {
+                return this.Nd == other.Nd;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 

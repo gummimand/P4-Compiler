@@ -229,12 +229,13 @@ namespace Parserproject
             if (IsConst(TokenStream.peek().Type) || TokenStream.peek().Type == TokenType.identifier)
             {
                 if(TokenStream.peek().Type == TokenType.identifier) {
-                    Identifier identifier = new Identifier(TokenStream.next());
-                    exp = new IdentifierExpression(identifier);
+                    //Identifier identifier = new Identifier(TokenStream.next());
+                    exp = new IdentifierExpression(TokenStream.next().content);
                 }
-                else {
-                    Value value = new Value(TokenStream.next());
-                    exp = new ValueExpression(value);
+                else
+                {
+                    Token valueToken =TokenStream.next();
+                    exp = new ValueExpression(valueToken.content, valueToken.Type);
                 }
             }
             else if (TokenStream.peek().content == "hvis")
@@ -287,12 +288,15 @@ namespace Parserproject
             Expression first;
 
             if (TokenStream.peek().content == ")")
-                throw new ArgumentException("emty pair");
+                throw new ArgumentException("empty pair");
 
             first = ParseExpression();
 
             if (TokenStream.peek().content == ")")
+            {
+                AcceptToken();
                 return first;
+            }
             else
             {
                 AcceptToken(",");

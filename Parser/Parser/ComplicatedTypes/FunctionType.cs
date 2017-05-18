@@ -6,25 +6,15 @@ using System.Threading.Tasks;
 
 namespace Parserproject
 {
-    class FunctionType : ConstructedType
+    public class FunctionType : ConstructedType
     {
-        object input;
-        object output;
+        public ConstructedType inputType;
+        public ConstructedType outputType;
 
-        public FunctionType(BasicType T1, BasicType T2)
+        public FunctionType(ConstructedType input, ConstructedType output)
         {
-            input = T1;
-            output = T2;
-        }
-        public FunctionType(BasicType T1, ConstructedType T2)
-        {
-            input = T1;
-            output = T2;
-        }
-        public FunctionType(ConstructedType T1, ConstructedType T2)
-        {
-            input = T1;
-            output = T2;
+            this.inputType = input;
+            this.outputType = output;
         }
         
     }
