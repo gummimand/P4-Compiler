@@ -24,6 +24,19 @@ namespace Parserproject
         void visit(ListConst node);
         void visit(PairConst node);
         void visit(ConstantFuncs node);
+        void visit(PlusConst node);
+        void visit(MinusConst node);
+        void visit(TimesConst node);
+        void visit(DivideConst node);
+        void visit(PotensConst node);
+        void visit(ModuloConst node);
+        void visit(EqualConst node);
+        void visit(NotEqualConst node);
+        void visit(LesserThanConst node);
+        void visit(LesserThanOrEqualConst node);
+        void visit(GreaterThanConst node);
+        void visit(GreaterThanOrEqualConst node);
+
 
 
         //One for each node ... zzzz

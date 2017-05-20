@@ -148,5 +148,60 @@ namespace Parserproject
         {
             node.Type = Sigmatabel.Lookup(node.name); 
         }
+
+        public void visit(PlusConst node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void visit(TimesConst node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void visit(DivideConst node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void visit(PotensConst node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void visit(ModuloConst node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void visit(EqualConst node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void visit(NotEqualConst node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void visit(LesserThanConst node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void visit(GreaterThanConst node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void visit(GreaterThanOrEqualConst node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void visit(LesserThanOrEqualConst node)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

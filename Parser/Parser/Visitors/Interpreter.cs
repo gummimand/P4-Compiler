@@ -8,7 +8,6 @@ namespace Parserproject
 {
     public class Interpreter : IVisitor
     {
-
         public Symboltable<Expression> env = new Symboltable<Expression>();
 
         public void Interpret(AST ast)
@@ -20,44 +19,357 @@ namespace Parserproject
 
         private Expression Apply(ConstantExpression c, Expression exp)
         {
-            if (c is PlusConst && exp.Value is ValueExpression)
+            if (exp.Value is ValueExpression)
             {
-                ValueExpression valExp = exp.Value as ValueExpression;
-                return new PlusConstN(valExp);                
-            }
-            else if(c is PlusConstN && exp.Value is ValueExpression)
-            {
-                PlusConstN constExp = c as PlusConstN;
-                ValueExpression valExp = exp.Value as ValueExpression;
-
-                if (constExp.Nval.Type is TalType || valExp.Type is TalType)
+                if (c is PlusConst)
                 {
-                    double n = double.Parse(constExp.Nval.val);
-                    double m = double.Parse(valExp.val);
-
-                    return new ValueExpression((n + m).ToString(), TokenType.tal);
+                    ValueExpression valExp = exp.Value as ValueExpression;
+                    return new PlusConstN(valExp);
                 }
-                else
+                else if (c is PlusConstN)
                 {
-                    int n = int.Parse(constExp.Nval.val);
-                    int m = int.Parse(valExp.val);
+                    PlusConstN constExp = c as PlusConstN;
+                    ValueExpression valExp = exp.Value as ValueExpression;
 
-                    return new ValueExpression((n + m).ToString(), TokenType.heltal);
+                    if (constExp.Nval.Type is TalType || valExp.Type is TalType)
+                    {
+                        double n = double.Parse(constExp.Nval.val);
+                        double m = double.Parse(valExp.val);
+
+                        return new ValueExpression((n + m).ToString(), TokenType.tal);
+                    }
+                    else
+                    {
+                        int n = int.Parse(constExp.Nval.val);
+                        int m = int.Parse(valExp.val);
+
+                        return new ValueExpression((n + m).ToString(), TokenType.heltal);
+                    }
+                }
+                else if (c is MinusConst)
+                {
+                    ValueExpression valExp = exp.Value as ValueExpression;
+                    return new MinusConstN(valExp);
+                }
+                else if (c is MinusConstN)
+                {
+                    MinusConstN constExp = c as MinusConstN;
+                    ValueExpression valExp = exp.Value as ValueExpression;
+
+                    if (constExp.Nval.Type is TalType || valExp.Type is TalType)
+                    {
+                        double n = double.Parse(constExp.Nval.val);
+                        double m = double.Parse(valExp.val);
+
+                        return new ValueExpression((n - m).ToString(), TokenType.tal);
+                    }
+                    else
+                    {
+                        int n = int.Parse(constExp.Nval.val);
+                        int m = int.Parse(valExp.val);
+
+                        return new ValueExpression((n - m).ToString(), TokenType.heltal);
+                    }
+                }
+                else if (c is TimesConst)
+                {
+                    ValueExpression valExp = exp.Value as ValueExpression;
+                    return new TimesConstN(valExp);
+                }
+                else if (c is TimesConstN)
+                {
+                    TimesConstN constExp = c as TimesConstN;
+                    ValueExpression valExp = exp.Value as ValueExpression;
+
+                    if (constExp.Nval.Type is TalType || valExp.Type is TalType)
+                    {
+                        double n = double.Parse(constExp.Nval.val);
+                        double m = double.Parse(valExp.val);
+
+                        return new ValueExpression((n * m).ToString(), TokenType.tal);
+                    }
+                    else
+                    {
+                        int n = int.Parse(constExp.Nval.val);
+                        int m = int.Parse(valExp.val);
+
+                        return new ValueExpression((n * m).ToString(), TokenType.heltal);
+                    }
+                }
+                else if (c is DivideConst)
+                {
+                    ValueExpression valExp = exp.Value as ValueExpression;
+                    return new DivideConstN(valExp);
+                }
+                else if (c is DivideConstN)
+                {
+                    DivideConstN constExp = c as DivideConstN;
+                    ValueExpression valExp = exp.Value as ValueExpression;
+
+                    if (constExp.Nval.Type is TalType || valExp.Type is TalType)
+                    {
+                        double n = double.Parse(constExp.Nval.val);
+                        double m = double.Parse(valExp.val);
+
+                        return new ValueExpression((n / m).ToString(), TokenType.tal);
+                    }
+                    else
+                    {
+                        int n = int.Parse(constExp.Nval.val);
+                        int m = int.Parse(valExp.val);
+
+                        return new ValueExpression((n / m).ToString(), TokenType.heltal);
+                    }
+                }
+                else if (c is PotensConst)
+                {
+                    ValueExpression valExp = exp.Value as ValueExpression;
+                    return new PotensConstN(valExp);
+                }
+                else if (c is PotensConstN)
+                {
+                    PotensConstN constExp = c as PotensConstN;
+                    ValueExpression valExp = exp.Value as ValueExpression;
+
+                    int n = int.Parse(valExp.val);
+                    int m = int.Parse(constExp.Nval.val);
+
+                    return new ValueExpression((n ^ m).ToString(), TokenType.tal);
+
+                }
+                else if (c is ModuloConst)
+                {
+                    ValueExpression valExp = exp.Value as ValueExpression;
+                    return new ModuloConstN(valExp);
+                }
+                else if (c is ModuloConstN)
+                {
+                    ModuloConstN constExp = c as ModuloConstN;
+                    ValueExpression valExp = exp.Value as ValueExpression;
+
+                    if (constExp.Nval.Type is TalType || valExp.Type is TalType)
+                    {
+                        double n = double.Parse(constExp.Nval.val);
+                        double m = double.Parse(valExp.val);
+
+                        return new ValueExpression((n + m).ToString(), TokenType.tal);
+                    }
+                    else
+                    {
+                        int n = int.Parse(constExp.Nval.val);
+                        int m = int.Parse(valExp.val);
+
+                        return new ValueExpression((n + m).ToString(), TokenType.heltal);
+                    }
+                }
+                else if (c is EqualConst)
+                {
+                    ValueExpression valExp = exp.Value as ValueExpression;
+                    return new EqualConstN(valExp);
+                }
+                else if (c is EqualConstN)
+                {
+                    EqualConstN constExp = c as EqualConstN;
+                    ValueExpression valExp = exp.Value as ValueExpression;
+
+                    if (constExp.Nval.Type is BoolType && valExp.Type is BoolType)
+                    {
+                        bool n = bool.Parse(constExp.Nval.val);
+                        bool m = bool.Parse(valExp.val);
+
+                        return new ValueExpression((n == m).ToString(), TokenType.boolean);
+                    }
+                    else if (constExp.Nval.Type is TalType)
+                    {
+                        double n = double.Parse(constExp.Nval.val);
+                        double m = double.Parse(valExp.val);
+
+                        return new ValueExpression((n == m).ToString(), TokenType.boolean);
+                    }
+                    else
+                    {
+                        int n = int.Parse(constExp.Nval.val);
+                        int m = int.Parse(valExp.val);
+
+                        return new ValueExpression((n == m).ToString(), TokenType.boolean);
+                    }
                 }
 
+                else if (c is NotEqualConst)
+                {
+                    ValueExpression valExp = exp.Value as ValueExpression;
+                    return new EqualConstN(valExp);
+                }
+                else if (c is NotEqualConstN)
+                {
+                    NotEqualConstN constExp = c as NotEqualConstN;
+                    ValueExpression valExp = exp.Value as ValueExpression;
+
+                    if (constExp.Nval.Type is BoolType && valExp.Type is BoolType)
+                    {
+                        bool n = bool.Parse(constExp.Nval.val);
+                        bool m = bool.Parse(valExp.val);
+
+                        return new ValueExpression((n != m).ToString(), TokenType.boolean);
+                    }
+                    else if (constExp.Nval.Type is TalType)
+                    {
+                        double n = double.Parse(constExp.Nval.val);
+                        double m = double.Parse(valExp.val);
+
+                        return new ValueExpression((n != m).ToString(), TokenType.boolean);
+                    }
+                    else
+                    {
+                        int n = int.Parse(constExp.Nval.val);
+                        int m = int.Parse(valExp.val);
+
+                        return new ValueExpression((n != m).ToString(), TokenType.boolean);
+                    }
+                }
+
+                else if (c is NotEqualConst)
+                {
+                    ValueExpression valExp = exp.Value as ValueExpression;
+                    return new EqualConstN(valExp);
+                }
+                else if (c is NotEqualConstN)
+                {
+                    NotEqualConstN constExp = c as NotEqualConstN;
+                    ValueExpression valExp = exp.Value as ValueExpression;
+
+                    if (constExp.Nval.Type is BoolType && valExp.Type is BoolType)
+                    {
+                        bool n = bool.Parse(constExp.Nval.val);
+                        bool m = bool.Parse(valExp.val);
+
+                        return new ValueExpression((n != m).ToString(), TokenType.boolean);
+                    }
+                    else if (constExp.Nval.Type is TalType)
+                    {
+                        double n = double.Parse(constExp.Nval.val);
+                        double m = double.Parse(valExp.val);
+
+                        return new ValueExpression((n != m).ToString(), TokenType.boolean);
+                    }
+                    else
+                    {
+                        int n = int.Parse(constExp.Nval.val);
+                        int m = int.Parse(valExp.val);
+
+                        return new ValueExpression((n != m).ToString(), TokenType.boolean);
+                    }
+                }
+
+                else if (c is LesserThanConst)
+                {
+                    ValueExpression valExp = exp.Value as ValueExpression;
+                    return new LesserThenConstN(valExp);
+                }
+                else if (c is LesserThenConstN)
+                {
+                    LesserThenConstN constExp = c as LesserThenConstN;
+                    ValueExpression valExp = exp.Value as ValueExpression;
+
+                    if (constExp.Nval.Type is TalType)
+                    {
+                        double n = double.Parse(constExp.Nval.val);
+                        double m = double.Parse(valExp.val);
+
+                        return new ValueExpression((n < m).ToString(), TokenType.boolean);
+                    }
+                    else
+                    {
+                        int n = int.Parse(constExp.Nval.val);
+                        int m = int.Parse(valExp.val);
+
+                        return new ValueExpression((n < m).ToString(), TokenType.boolean);
+                    }
+                }
+                else if (c is LesserThanOrEqualConst)
+                {
+                    ValueExpression valExp = exp.Value as ValueExpression;
+                    return new LesserThenOrEqualConstN(valExp);
+                }
+                else if (c is LesserThenOrEqualConstN)
+                {
+                    LesserThenOrEqualConstN constExp = c as LesserThenOrEqualConstN;
+                    ValueExpression valExp = exp.Value as ValueExpression;
+
+                    if (constExp.Nval.Type is TalType)
+                    {
+                        double n = double.Parse(constExp.Nval.val);
+                        double m = double.Parse(valExp.val);
+
+                        return new ValueExpression((n <= m).ToString(), TokenType.boolean);
+                    }
+                    else
+                    {
+                        int n = int.Parse(constExp.Nval.val);
+                        int m = int.Parse(valExp.val);
+
+                        return new ValueExpression((n <= m).ToString(), TokenType.boolean);
+                    }
+                }
+                else if (c is GreaterThanConst)
+                {
+                    ValueExpression valExp = exp.Value as ValueExpression;
+                    return new GreaterThenConstN(valExp);
+                }
+                else if (c is GreaterThenConstN)
+                {
+                    GreaterThenConstN constExp = c as GreaterThenConstN;
+                    ValueExpression valExp = exp.Value as ValueExpression;
+
+                    if (constExp.Nval.Type is TalType)
+                    {
+                        double n = double.Parse(constExp.Nval.val);
+                        double m = double.Parse(valExp.val);
+
+                        return new ValueExpression((n > m).ToString(), TokenType.boolean);
+                    }
+                    else
+                    {
+                        int n = int.Parse(constExp.Nval.val);
+                        int m = int.Parse(valExp.val);
+
+                        return new ValueExpression((n > m).ToString(), TokenType.boolean);
+                    }
+                }
+                else if (c is GreaterThanOrEqualConst)
+                {
+                    ValueExpression valExp = exp.Value as ValueExpression;
+                    return new GreaterThenOrEqualConstN(valExp);
+                }
+                else if (c is GreaterThenOrEqualConstN)
+                {
+                    GreaterThenOrEqualConstN constExp = c as GreaterThenOrEqualConstN;
+                    ValueExpression valExp = exp.Value as ValueExpression;
+
+                    if (constExp.Nval.Type is TalType)
+                    {
+                        double n = double.Parse(constExp.Nval.val);
+                        double m = double.Parse(valExp.val);
+
+                        return new ValueExpression((n >= m).ToString(), TokenType.boolean);
+                    }
+                    else
+                    {
+                        int n = int.Parse(constExp.Nval.val);
+                        int m = int.Parse(valExp.val);
+
+                        return new ValueExpression((n >= m).ToString(), TokenType.boolean);
+                    }
+                }
+                else { throw new Exception("no!"); }
             }
-            else
-            {
-                throw new Exception("no!");
-            }
+            else { throw new Exception("no!"); }
         }
-
 
         public void visit(ASTNode node)
         {
             node.accept(this);
         }
-
 
         public void visit(EmptyDecl node)
         {
@@ -121,6 +433,21 @@ namespace Parserproject
         }
 
         public void visit(PlusConst node)
+        {
+            node.Value = node;
+        }
+
+        public void visit(TimesConst node)
+        {
+            node.Value = node;
+        }
+
+        public void visit(DivideConst node)
+        {
+            node.Value = node;
+        }
+
+        public void visit(PotensConst node)
         {
             node.Value = node;
         }
@@ -194,11 +521,50 @@ namespace Parserproject
             visit(node.nextDecl);
         }
 
-        // [PROG]
         public void visit(ProgramAST node)
         {
             visit(node.varDecl);
             visit(node.exp);
+        }
+
+        public void visit(ConstantFuncs node)
+        {
+
+        }
+
+        public void visit(ModuloConst node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void visit(EqualConst node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void visit(NotEqualConst node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void visit(LesserThanConst node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void visit(GreaterThanConst node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void visit(GreaterThanOrEqualConst node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void visit(LesserThanOrEqualConst node)
+        {
+            throw new NotImplementedException();
         }
     }
 }

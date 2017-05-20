@@ -13,6 +13,11 @@ namespace Parserproject
             throw new NotImplementedException();
         }
 
+        public void visit(ConstantFuncs node)
+        {
+
+        }
+
         //public void visit(Operator node)
         //{
         //    throw new NotImplementedException();
@@ -94,6 +99,56 @@ namespace Parserproject
         }
 
         public void visit(PairConst node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void visit(TimesConst node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void visit(PotensConst node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void visit(EqualConst node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void visit(LesserThanConst node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void visit(GreaterThanOrEqualConst node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void visit(LesserThanOrEqualConst node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void visit(GreaterThanConst node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void visit(NotEqualConst node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void visit(ModuloConst node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void visit(DivideConst node)
         {
             throw new NotImplementedException();
         }

@@ -30,8 +30,8 @@ namespace Parserproject
             SigmaTable.Add(">=", new FunctionType(new FunctionType(new TalType(), new TalType()), new BoolType()));
             SigmaTable.Add("==", new FunctionType(new FunctionType(new BasicType(), new BasicType()), new BoolType())); //Antager at man kan sammenligne om to bool udtryk evaluerer til den samme sandheds værdi.
             SigmaTable.Add("!=", new FunctionType(new FunctionType(new BasicType(), new BasicType()), new BoolType()));
-            SigmaTable.Add("Par", 
-            SigmaTable.Add("Liste"
+            //SigmaTable.Add("Par", 
+            //SigmaTable.Add("Liste"
 
         }
 
