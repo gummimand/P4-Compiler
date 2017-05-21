@@ -36,6 +36,9 @@ namespace Parserproject
 
             Console.ReadKey();
 
+            var typeChecker = new TypeChecker();
+            typeChecker.CheckType(ast);
+
             var interpreter = new Interpreter();
             interpreter.Interpret(ast);
 

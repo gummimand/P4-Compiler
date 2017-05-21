@@ -8,7 +8,7 @@ namespace Parserproject
 {
     public class Symboltable<T>
     {
-        private List<Tuple<string, T>> table = new List<Tuple<string, T>>();
+        public List<Tuple<string, T>> table = new List<Tuple<string, T>>();
 
         public Symboltable()
         {
@@ -20,6 +20,11 @@ namespace Parserproject
             table.Insert(0, Tuple.Create(varName, input));
         }
 
+        protected void AddTuple(Tuple<string, T> tuple)
+        {
+            table.Add(tuple);
+        }
+
         public void Remove()
         {
             if (table.Count > 0)
@@ -27,6 +32,8 @@ namespace Parserproject
                 table.RemoveAt(0);
             }
         }
+
+     
 
         public T LookUp(string varName) // black magic
         {
@@ -43,4 +50,23 @@ namespace Parserproject
         }
 
     }
+
+
+    public class TypeEnv : Symboltable<ConstructedType>
+    {
+
+        public TypeEnv Clone()
+        {
+            TypeEnv clone = new TypeEnv();
+
+            foreach (var item in table)
+            {
+                clone.AddTuple(item);
+            }
+
+            return clone;
+        }
+
+    }
+
 }

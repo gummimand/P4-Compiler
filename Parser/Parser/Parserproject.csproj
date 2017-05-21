@@ -51,6 +51,7 @@
     <Compile Include="ComplicatedTypes\FunctionType.cs" />
     <Compile Include="BasicTypes\HeltalType.cs" />
     <Compile Include="ComplicatedTypes\ListType.cs" />
+    <Compile Include="ComplicatedTypes\OkType.cs" />
     <Compile Include="ComplicatedTypes\TypeScheme.cs" />
     <Compile Include="ComplicatedTypes\TypeSubstitution.cs" />
     <Compile Include="ComplicatedTypes\TypeUnifier.cs" />

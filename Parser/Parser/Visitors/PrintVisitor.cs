@@ -158,11 +158,6 @@ namespace Parserproject
             throw new NotImplementedException();
         }
 
-        public void visit(ConstantFuncs node)
-        {
-            throw new NotImplementedException();
-        }
-
         public void visit(PlusConst node)
         {
             throw new NotImplementedException();
