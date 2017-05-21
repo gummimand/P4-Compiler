@@ -190,7 +190,35 @@ namespace Parserproject
 
         private Expression GetOperationConst(string content)
         {
-            return new ConstantFuncs(content);
+            switch (content)
+            {
+                case "+":
+                    return new PlusConst();
+                case "-":
+                    return new MinusConst();
+                case "*":
+                    return new TimesConst();
+                case "/":
+                    return new DivideConst();
+                case "^":
+                    return new PotensConst();
+                case "%":
+                    return new ModuloConst();
+                case "<":
+                    return new LesserThanConst();
+                case ">":
+                    return new GreaterThanConst();
+                case "==":
+                    return new EqualConst();
+                case "!=":
+                    return new NotEqualConst();
+                case "<=":
+                    return new LesserThanOrEqualConst();
+                case ">=":
+                    return new GreaterThanOrEqualConst();
+                default:
+                    throw new ArgumentException($"Unknown operator. was {content}");
+            };
         }
 
         private bool IsExpressionEnding(Token token)

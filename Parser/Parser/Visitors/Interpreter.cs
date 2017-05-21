@@ -134,7 +134,7 @@ namespace Parserproject
                     int n = int.Parse(valExp.val);
                     int m = int.Parse(constExp.Nval.val);
 
-                    return new ValueExpression((n ^ m).ToString(), TokenType.tal);
+                    return new ValueExpression((n^m).ToString(), TokenType.tal);
 
                 }
                 else if (c is ModuloConst)
@@ -152,14 +152,14 @@ namespace Parserproject
                         double n = double.Parse(constExp.Nval.val);
                         double m = double.Parse(valExp.val);
 
-                        return new ValueExpression((n + m).ToString(), TokenType.tal);
+                        return new ValueExpression((n % m).ToString(), TokenType.tal);
                     }
                     else
                     {
                         int n = int.Parse(constExp.Nval.val);
                         int m = int.Parse(valExp.val);
 
-                        return new ValueExpression((n + m).ToString(), TokenType.heltal);
+                        return new ValueExpression((n % m).ToString(), TokenType.heltal);
                     }
                 }
                 else if (c is EqualConst)
@@ -534,37 +534,37 @@ namespace Parserproject
 
         public void visit(ModuloConst node)
         {
-            throw new NotImplementedException();
+            node.Value = node;
         }
 
         public void visit(EqualConst node)
         {
-            throw new NotImplementedException();
+            node.Value = node;
         }
 
         public void visit(NotEqualConst node)
         {
-            throw new NotImplementedException();
+            node.Value = node;
         }
 
         public void visit(LesserThanConst node)
         {
-            throw new NotImplementedException();
+            node.Value = node;
         }
 
         public void visit(GreaterThanConst node)
         {
-            throw new NotImplementedException();
+            node.Value = node;
         }
 
         public void visit(GreaterThanOrEqualConst node)
         {
-            throw new NotImplementedException();
+            node.Value = node;
         }
 
         public void visit(LesserThanOrEqualConst node)
         {
-            throw new NotImplementedException();
+            node.Value = node;
         }
     }
 }
