@@ -200,5 +200,10 @@ namespace Parserproject
             visit(node.varDecl);
             visit(node.exp);
         }
+
+        public void visit(ConstantFuncs node)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

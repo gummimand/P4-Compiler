@@ -23,6 +23,9 @@ namespace Parserproject
             this.TypeScheme = A;
         }
 
-
+        public override string ToString()
+        {
+            return "\u2200" + TypeVariable.ToString() + "." + TypeScheme.ToString();
+        }
     }
 }

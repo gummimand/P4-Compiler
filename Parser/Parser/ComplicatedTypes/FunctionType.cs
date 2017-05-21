@@ -17,12 +17,29 @@ namespace Parserproject
             this.outputType = output;
         }
 
+        public override bool Equals(object obj)
+        {
+            FunctionType other = obj as FunctionType;
+
+            if (other != null)
+            {
+                return this.inputType.Equals(other.inputType) && this.outputType.Equals(other.outputType);
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         public override ConstructedType accept(TypeSubstitution typeSub)
         {
             return typeSub.Substitute(this);
         }
 
-
+        public override string ToString()
+        {
+            return inputType.ToString() +" -> "+ outputType.ToString();
+        }
 
     }
 

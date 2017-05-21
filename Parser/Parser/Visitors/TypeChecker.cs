@@ -11,6 +11,8 @@ namespace Parserproject
         public Symboltable<ConstructedType> E = new Symboltable<ConstructedType>();
         public SigmaFunctions Sigmatabel = new SigmaFunctions();
 
+        private TypeUnifier uni = new TypeUnifier();
+
         public Dictionary<string, string> sigmaConstants = new Dictionary<string, string>() {
             {"PLUS","heltal->heltal->heltal"},
             {"PLUS2","tal->heltal->tal" },
@@ -99,15 +101,10 @@ namespace Parserproject
 
             TypeVar a = new TypeVar();
 
-            var sigma = Unify(sigma2.Substitute(t1), new FunctionType(t2, a));
+            TypeSubstitution sigma = uni.Unify(sigma2.Substitute(t1), new FunctionType(t2, a));
 
             node.sigma = sigma.Compose(sigma1.Compose(sigma2));
             node.Type = sigma.Substitute(a);
-        }
-
-        private TypeSubstitution Unify(ConstructedType constructedType, FunctionType functionType)
-        {
-            throw new NotImplementedException();
         }
 
         public void visit(ValueExpression node)
@@ -148,5 +145,8 @@ namespace Parserproject
         {
             node.Type = Sigmatabel.Lookup(node.name); 
         }
+
+
+
     }
 }

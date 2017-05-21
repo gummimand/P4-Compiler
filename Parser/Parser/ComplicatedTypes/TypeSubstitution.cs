@@ -17,7 +17,7 @@ namespace Parserproject
 
         public ConstructedType Substitute(TypeVar typevar)
         {
-            return table.Find(type => type.Item1.id == typevar.id).Item2;
+            return table.Find(type => type.Item1.Equals(typevar)).Item2;
         }
 
         public ConstructedType Substitute(FunctionType type)

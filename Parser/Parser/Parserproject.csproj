@@ -53,6 +53,7 @@
     <Compile Include="ComplicatedTypes\ListType.cs" />
     <Compile Include="ComplicatedTypes\TypeScheme.cs" />
     <Compile Include="ComplicatedTypes\TypeSubstitution.cs" />
+    <Compile Include="ComplicatedTypes\TypeUnifier.cs" />
     <Compile Include="ComplicatedTypes\TypeVar.cs" />
     <Compile Include="SigmaFunctions.cs" />
     <Compile Include="BasicTypes\StrengType.cs" />

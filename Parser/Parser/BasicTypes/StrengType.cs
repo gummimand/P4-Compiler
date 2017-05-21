@@ -14,5 +14,14 @@ namespace Parserproject
             return typeSub.Substitute(this);
         }
 
+        public override bool Equals(object obj)
+        {
+            return obj is StrengType;
+        }
+
+        public override string ToString()
+        {
+            return "Streng";
+        }
     }
 }
