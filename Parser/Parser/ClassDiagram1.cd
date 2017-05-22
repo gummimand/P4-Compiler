@@ -133,7 +133,8 @@
       <FileName>Node.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Parserproject.PairConst" Collapsed="true">
+  <Class Name="Parserproject.
+         Const" Collapsed="true">
     <Position X="20.75" Y="6.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>

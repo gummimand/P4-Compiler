@@ -135,7 +135,6 @@ namespace Parserproject
                     int m = int.Parse(constExp.Nval.val);
 
                     return new ValueExpression((n^m).ToString(), TokenType.tal);
-
                 }
                 else if (c is ModuloConst)
                 {
@@ -361,6 +360,42 @@ namespace Parserproject
                         return new ValueExpression((n >= m).ToString(), TokenType.boolean);
                     }
                 }
+                else if (c is PairConst)
+                {
+                    ValueExpression valExp = exp.Value as ValueExpression;
+                    return new PairConstN(valExp);
+                }
+                else if (c is PairConstN)
+                {
+                    GreaterThenOrEqualConstN constExp = c as GreaterThenOrEqualConstN;
+                    ValueExpression valExp = exp.Value as ValueExpression;
+
+                    return new ValueExpression(Tuple.Create(constExp.Nval.val, valExp.val).ToString(), TokenType.datatype);
+                }
+                else if (c is ListConst)
+                {
+                    ValueExpression valExp = exp.Value as ValueExpression;
+                    return new ListConstN(valExp);
+                }
+
+                else if (c is ListConstN)
+                {
+                    GreaterThenOrEqualConstN constExp = c as GreaterThenOrEqualConstN;
+                    ValueExpression valExp = exp.Value as ValueExpression;
+
+                    if (constExp.Nval.Type == valExp.Type)
+                    {
+                        List<string> list = new List<string>();
+                        list.Add(valExp.val);
+                        list.Add(constExp.Nval.val);
+                        return new ValueExpression(list.ToString(), TokenType.datatype);
+                    }
+                    else
+                        throw new Exception("Lister skal bestå af samme typer"); 
+
+                }
+
+
                 else { throw new Exception("no!"); }
             }
             else { throw new Exception("no!"); }
@@ -566,5 +601,7 @@ namespace Parserproject
         {
             node.Value = node;
         }
+
+
     }
 }

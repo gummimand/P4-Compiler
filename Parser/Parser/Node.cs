@@ -505,9 +505,49 @@ namespace Parserproject
         }
     }
 
+    public class ListConstN : ConstantExpression
+    {
+        public override void accept(IVisitor v) { v.visit(this); }
+
+        public double Nd;
+        public int Ni;
+        public bool isInt = false;
+        public ValueExpression Nval;
+
+        public ListConstN(ValueExpression n) : base("LISTN")
+        {
+            this.Nval = n;
+        }
+
+        public ListConstN(double n) : base("LISTN")
+        {
+            this.Nd = n;
+        }
+
+        public ListConstN(int n) : base("LISTN")
+        {
+            this.Ni = n;
+            isInt = true;
+        }
+
+        public override bool Equals(object obj)
+        {
+            ListConstN other = obj as ListConstN;
+
+            if (other != null)
+            {
+                return this.Nd == other.Nd;
+            }
+            else
+            {
+                return false;
+            }
+        }
+    }
+
     public class PairConst : ConstantExpression
     {
-        public PairConst() : base("PAR")
+        public PairConst() : base("PAIR")
         {
         }
 
@@ -517,7 +557,45 @@ namespace Parserproject
         }
     }
 
+    public class PairConstN : ConstantExpression
+    {
+        public override void accept(IVisitor v) { v.visit(this); }
 
+        public double Nd;
+        public int Ni;
+        public bool isInt = false;
+        public ValueExpression Nval;
+
+        public PairConstN(ValueExpression n) : base("PAIRN")
+        {
+            this.Nval = n;
+        }
+
+        public PairConstN(double n) : base("PAIRN")
+        {
+            this.Nd = n;
+        }
+
+        public PairConstN(int n) : base("PAIRN")
+        {
+            this.Ni = n;
+            isInt = true;
+        }
+
+        public override bool Equals(object obj)
+        {
+            PairConstN other = obj as PairConstN;
+
+            if (other != null)
+            {
+                return this.Nd == other.Nd;
+            }
+            else
+            {
+                return false;
+            }
+        }
+    }
     
     public class PlusConst : ConstantExpression
     {
