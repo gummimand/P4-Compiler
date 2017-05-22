@@ -131,10 +131,21 @@ namespace Parserproject
                     PotensConstN constExp = c as PotensConstN;
                     ValueExpression valExp = exp.Value as ValueExpression;
 
+                    if (constExp.Nval.Type is TalType || valExp.Type is TalType)
+                    {
+                        double n = double.Parse(valExp.val);
+                        double m = double.Parse(constExp.Nval.val);
+
+                        return new ValueExpression(Math.Pow(n, m).ToString(), TokenType.tal);
+                    }
+                    else { 
+
                     int n = int.Parse(valExp.val);
                     int m = int.Parse(constExp.Nval.val);
 
-                    return new ValueExpression((n^m).ToString(), TokenType.tal);
+                    return new ValueExpression(Math.Pow(n,m).ToString(), TokenType.heltal);
+                    }
+
                 }
                 else if (c is ModuloConst)
                 {
