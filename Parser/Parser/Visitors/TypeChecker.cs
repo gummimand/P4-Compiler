@@ -203,5 +203,15 @@ namespace Parserproject
         {
             throw new NotImplementedException();
         }
+
+        //public void visit(ConcatConst node)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        public void visit(NotConst node)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

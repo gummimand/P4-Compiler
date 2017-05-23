@@ -857,7 +857,6 @@ namespace Parserproject
 
     }
 
-
     public class EqualConst : ConstantExpression
     {
         public override void accept(IVisitor v) { v.visit(this); }
@@ -976,7 +975,7 @@ namespace Parserproject
         }
     }
 
-    public class LesserThenConstN : ConstantExpression
+    public class LesserThanConstN : ConstantExpression
     {
         public double Nd;
         public int Ni;
@@ -985,17 +984,17 @@ namespace Parserproject
 
         public override void accept(IVisitor v) { v.visit(this); }
 
-        public LesserThenConstN(ValueExpression n) : base("LESSERTHANN")
+        public LesserThanConstN(ValueExpression n) : base("LESSERTHANN")
         {
             this.Nval = n;
         }
 
-        public LesserThenConstN(double n) : base("LESSERTHANN")
+        public LesserThanConstN(double n) : base("LESSERTHANN")
         {
             this.Nd = n;
         }
 
-        public LesserThenConstN(int n) : base("LESSERTHANN")
+        public LesserThanConstN(int n) : base("LESSERTHANN")
         {
             this.Ni = n;
             isInt = true;
@@ -1003,7 +1002,7 @@ namespace Parserproject
 
         public override bool Equals(object obj)
         {
-            LesserThenConstN other = obj as LesserThenConstN;
+            LesserThanConstN other = obj as LesserThanConstN;
 
             if (other != null)
             {
@@ -1120,7 +1119,6 @@ namespace Parserproject
                 return false;
             }
         }
-
     }
 
     public class GreaterThanOrEqualConst : ConstantExpression
@@ -1176,6 +1174,7 @@ namespace Parserproject
 
     }
 
+    /*
     public class ConcatConst : ConstantExpression
     {
         public double Nd;
@@ -1239,6 +1238,7 @@ namespace Parserproject
             }
         }
     }
+*/
 
     public class NotConst : ConstantExpression
     {

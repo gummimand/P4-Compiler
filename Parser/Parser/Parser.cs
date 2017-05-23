@@ -216,6 +216,8 @@ namespace Parserproject
                     return new LesserThanOrEqualConst();
                 case ">=":
                     return new GreaterThanOrEqualConst();
+                case ":":
+                    return new ListConst();
                 default:
                     throw new ArgumentException($"Unknown operator. was {content}");
             };

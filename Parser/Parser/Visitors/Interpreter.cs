@@ -131,10 +131,20 @@ namespace Parserproject
                     PotensConstN constExp = c as PotensConstN;
                     ValueExpression valExp = exp.Value as ValueExpression;
 
-                    int n = int.Parse(valExp.val);
-                    int m = int.Parse(constExp.Nval.val);
+                    if (constExp.Nval.Type is TalType || valExp.Type is TalType)
+                    {
+                        double n = double.Parse(constExp.Nval.val);
+                        double m = double.Parse(valExp.val);
 
-                    return new ValueExpression((n^m).ToString(), TokenType.tal);
+                        return new ValueExpression((Math.Pow(n,m)).ToString(), TokenType.tal);
+                    }
+                    else
+                    {
+                        int n = int.Parse(constExp.Nval.val);
+                        int m = int.Parse(valExp.val);
+
+                        return new ValueExpression((Math.Pow(n,m)).ToString(), TokenType.heltal);
+                    }
                 }
                 else if (c is ModuloConst)
                 {
@@ -170,27 +180,30 @@ namespace Parserproject
                 {
                     EqualConstN constExp = c as EqualConstN;
                     ValueExpression valExp = exp.Value as ValueExpression;
-
+                                            
                     if (constExp.Nval.Type is BoolType && valExp.Type is BoolType)
                     {
                         bool n = bool.Parse(constExp.Nval.val);
                         bool m = bool.Parse(valExp.val);
+                        string truthvalue = n == m ? "sand" : "falsk";
 
-                        return new ValueExpression((n == m).ToString(), TokenType.boolean);
+                        return new ValueExpression(truthvalue, TokenType.boolean);
                     }
                     else if (constExp.Nval.Type is TalType)
                     {
                         double n = double.Parse(constExp.Nval.val);
                         double m = double.Parse(valExp.val);
+                        string truthvalue = n == m ? "sand" : "falsk";
 
-                        return new ValueExpression((n == m).ToString(), TokenType.boolean);
+                        return new ValueExpression(truthvalue, TokenType.boolean);
                     }
                     else
                     {
                         int n = int.Parse(constExp.Nval.val);
                         int m = int.Parse(valExp.val);
+                        string truthvalue = n == m ? "sand" : "falsk";
 
-                        return new ValueExpression((n == m).ToString(), TokenType.boolean);
+                        return new ValueExpression(truthvalue, TokenType.boolean);
                     }
                 }
 
@@ -208,81 +221,53 @@ namespace Parserproject
                     {
                         bool n = bool.Parse(constExp.Nval.val);
                         bool m = bool.Parse(valExp.val);
+                        string truthvalue = n != m ? "sand" : "falsk";
 
-                        return new ValueExpression((n != m).ToString(), TokenType.boolean);
+                        return new ValueExpression(truthvalue, TokenType.boolean);
                     }
                     else if (constExp.Nval.Type is TalType)
                     {
                         double n = double.Parse(constExp.Nval.val);
                         double m = double.Parse(valExp.val);
+                        string truthvalue = n != m ? "sand" : "falsk";
 
-                        return new ValueExpression((n != m).ToString(), TokenType.boolean);
+                        return new ValueExpression(truthvalue, TokenType.boolean);
                     }
                     else
                     {
                         int n = int.Parse(constExp.Nval.val);
                         int m = int.Parse(valExp.val);
+                        string truthvalue = n != m ? "sand" : "falsk";
 
-                        return new ValueExpression((n != m).ToString(), TokenType.boolean);
-                    }
-                }
-
-                else if (c is NotEqualConst)
-                {
-                    ValueExpression valExp = exp.Value as ValueExpression;
-                    return new EqualConstN(valExp);
-                }
-                else if (c is NotEqualConstN)
-                {
-                    NotEqualConstN constExp = c as NotEqualConstN;
-                    ValueExpression valExp = exp.Value as ValueExpression;
-
-                    if (constExp.Nval.Type is BoolType && valExp.Type is BoolType)
-                    {
-                        bool n = bool.Parse(constExp.Nval.val);
-                        bool m = bool.Parse(valExp.val);
-
-                        return new ValueExpression((n != m).ToString(), TokenType.boolean);
-                    }
-                    else if (constExp.Nval.Type is TalType)
-                    {
-                        double n = double.Parse(constExp.Nval.val);
-                        double m = double.Parse(valExp.val);
-
-                        return new ValueExpression((n != m).ToString(), TokenType.boolean);
-                    }
-                    else
-                    {
-                        int n = int.Parse(constExp.Nval.val);
-                        int m = int.Parse(valExp.val);
-
-                        return new ValueExpression((n != m).ToString(), TokenType.boolean);
+                        return new ValueExpression(truthvalue, TokenType.boolean);
                     }
                 }
 
                 else if (c is LesserThanConst)
                 {
                     ValueExpression valExp = exp.Value as ValueExpression;
-                    return new LesserThenConstN(valExp);
+                    return new LesserThanConstN(valExp);
                 }
-                else if (c is LesserThenConstN)
+                else if (c is LesserThanConstN)
                 {
-                    LesserThenConstN constExp = c as LesserThenConstN;
+                    LesserThanConstN constExp = c as LesserThanConstN;
                     ValueExpression valExp = exp.Value as ValueExpression;
 
                     if (constExp.Nval.Type is TalType)
                     {
                         double n = double.Parse(constExp.Nval.val);
                         double m = double.Parse(valExp.val);
+                        string truthvalue = n < m ? "sand" : "falsk";
 
-                        return new ValueExpression((n < m).ToString(), TokenType.boolean);
+                        return new ValueExpression(truthvalue, TokenType.boolean);
                     }
                     else
                     {
                         int n = int.Parse(constExp.Nval.val);
                         int m = int.Parse(valExp.val);
+                        string truthvalue = n < m ? "sand" : "falsk";
 
-                        return new ValueExpression((n < m).ToString(), TokenType.boolean);
+                        return new ValueExpression(truthvalue, TokenType.boolean);
                     }
                 }
                 else if (c is LesserThanOrEqualConst)
@@ -299,15 +284,17 @@ namespace Parserproject
                     {
                         double n = double.Parse(constExp.Nval.val);
                         double m = double.Parse(valExp.val);
+                        string truthvalue = n <= m ? "sand" : "falsk";
 
-                        return new ValueExpression((n <= m).ToString(), TokenType.boolean);
+                        return new ValueExpression(truthvalue, TokenType.boolean);
                     }
                     else
                     {
                         int n = int.Parse(constExp.Nval.val);
                         int m = int.Parse(valExp.val);
+                        string truthvalue = n <= m ? "sand" : "falsk";
 
-                        return new ValueExpression((n <= m).ToString(), TokenType.boolean);
+                        return new ValueExpression(truthvalue, TokenType.boolean);
                     }
                 }
                 else if (c is GreaterThanConst)
@@ -324,15 +311,17 @@ namespace Parserproject
                     {
                         double n = double.Parse(constExp.Nval.val);
                         double m = double.Parse(valExp.val);
+                        string truthvalue = n > m ? "sand" : "falsk";
 
-                        return new ValueExpression((n > m).ToString(), TokenType.boolean);
+                        return new ValueExpression(truthvalue, TokenType.boolean);
                     }
                     else
                     {
                         int n = int.Parse(constExp.Nval.val);
                         int m = int.Parse(valExp.val);
+                        string truthvalue = n > m ? "sand" : "falsk";
 
-                        return new ValueExpression((n > m).ToString(), TokenType.boolean);
+                        return new ValueExpression(truthvalue, TokenType.boolean);
                     }
                 }
                 else if (c is GreaterThanOrEqualConst)
@@ -349,15 +338,17 @@ namespace Parserproject
                     {
                         double n = double.Parse(constExp.Nval.val);
                         double m = double.Parse(valExp.val);
+                        string truthvalue = n >= m ? "sand" : "falsk";
 
-                        return new ValueExpression((n >= m).ToString(), TokenType.boolean);
+                        return new ValueExpression(truthvalue, TokenType.boolean);
                     }
                     else
                     {
                         int n = int.Parse(constExp.Nval.val);
                         int m = int.Parse(valExp.val);
+                        string truthvalue = n >= m ? "sand" : "falsk";
 
-                        return new ValueExpression((n >= m).ToString(), TokenType.boolean);
+                        return new ValueExpression(truthvalue, TokenType.boolean);
                     }
                 }
                 else if (c is PairConst)
@@ -367,10 +358,10 @@ namespace Parserproject
                 }
                 else if (c is PairConstN)
                 {
-                    GreaterThanOrEqualConstN constExp = c as GreaterThanOrEqualConstN;
+                    PairConstN constExp = c as PairConstN;
                     ValueExpression valExp = exp.Value as ValueExpression;
 
-                    return new ValueExpression(Tuple.Create(constExp.Nval.val, valExp.val).ToString(), TokenType.datatype);
+                    return new ValueExpression(Tuple.Create(constExp.exp.Value, valExp.val).ToString(), TokenType.datatype);
                 }
                 else if (c is ListConst)
                 {
@@ -387,7 +378,6 @@ namespace Parserproject
                     list.Add(valExp.val);
                     list.Add(constExp.exp.Value.ToString());
                     return new ValueExpression(list.ToString(), TokenType.datatype);
-
                 }
                 else { throw new Exception("no!"); }
             }
@@ -599,10 +589,11 @@ namespace Parserproject
         {
             node.Value = node;
         }
-
+        /*
         public void visit(ConcatConst node)
         {
             node.Value = node;
         }
+        */
     }
 }
