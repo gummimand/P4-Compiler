@@ -1174,7 +1174,6 @@ namespace Parserproject
 
     }
 
-    /*
     public class ConcatConst : ConstantExpression
     {
         public double Nd;
@@ -1238,7 +1237,6 @@ namespace Parserproject
             }
         }
     }
-*/
 
     public class NotConst : ConstantExpression
     {

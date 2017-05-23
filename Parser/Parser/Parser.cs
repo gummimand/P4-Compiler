@@ -217,7 +217,7 @@ namespace Parserproject
                 case ">=":
                     return new GreaterThanOrEqualConst();
                 case ":":
-                    return new ListConst();
+                    return new ConcatConst();
                 default:
                     throw new ArgumentException($"Unknown operator. was {content}");
             };
