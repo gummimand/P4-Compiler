@@ -321,7 +321,7 @@ namespace Parserproject
             {
                 AcceptToken(",");
 
-                Expression firstPair = new ApplicationExpression(new ConstantFuncs("Par"), first);
+                Expression firstPair = new ApplicationExpression(new PairConst(), first);
                 Expression second = ParseTuple();
 
                 return new ApplicationExpression(firstPair, second);
@@ -341,7 +341,7 @@ namespace Parserproject
                 Expression head;
                 head = ParseExpression();
 
-                Expression exp = new ApplicationExpression(new ConstantFuncs("Liste"), head);
+                Expression exp = new ApplicationExpression(new ListConst(), head);
 
                 if (TokenStream.peek().content == ",")
                 {

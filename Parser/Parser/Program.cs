@@ -9,19 +9,41 @@ namespace Parserproject
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main(string[] args)  
         {
+            string path = @"C:\";
+            string sourcecode;
+            string input;
 
-            string path = @"C:\Users\nicol\Desktop\test3.txt";
+            Console.WriteLine("Please enter file path, remember file ending");
 
-            string sourcecode = System.IO.File.ReadAllText(path);
+            input = Console.ReadLine();
 
+            if (input.StartsWith("-cp"))
+            {
+                Properties.Settings.Default.String = (input.Substring(3, input.Length - 3) + "\\"); //sætter default til input udover de første 3 tegn (-cp)
+                Properties.Settings.Default.Save();
+                path = Properties.Settings.Default.String;
+                Console.WriteLine("Default path changed");
+                Main(args);
+               // pathchanged = true;
+            }
+
+            path = Properties.Settings.Default.String;
+
+            if (!File.Exists(path + input)) {
+                Main(args);
+            } ;
+
+            sourcecode = System.IO.File.ReadAllText(path + input);
+            
+            Properties.Settings.Default.Save();
             Console.WriteLine(sourcecode);
 
             var scanner = new Scanner(sourcecode);
             var tokens = scanner.Scan();
-
             var length = tokens.Count;
+
             for (int i = 0; i < length; i++)
             {
                 Console.WriteLine(tokens[i].content + "  " + tokens[i].Type.ToString());
@@ -43,6 +65,17 @@ namespace Parserproject
             interpreter.Interpret(ast);
 
             Console.ReadKey();
+            }
+        }
+    }
+
+          
+        
+         
+
+            
+
+            
 
 
 
@@ -56,7 +89,3 @@ namespace Parserproject
 
             //ast.print();
             //Console.ReadKey();
-
-        }
-    }
-}

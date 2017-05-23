@@ -56,6 +56,11 @@
     <Compile Include="ComplicatedTypes\TypeSubstitution.cs" />
     <Compile Include="ComplicatedTypes\TypeUnifier.cs" />
     <Compile Include="ComplicatedTypes\TypeVar.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Include="SigmaFunctions.cs" />
     <Compile Include="BasicTypes\StrengType.cs" />
     <Compile Include="SymbolTable\Symboltable.cs" />
@@ -77,6 +82,10 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="ClassDiagram1.cd" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
