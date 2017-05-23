@@ -380,18 +380,14 @@ namespace Parserproject
 
                 else if (c is ListConstN)
                 {
-                    GreaterThanOrEqualConstN constExp = c as GreaterThanOrEqualConstN;
+                    ListConstN constExp = c as ListConstN;
                     ValueExpression valExp = exp.Value as ValueExpression;
 
-                    if (constExp.Nval.Type == valExp.Type)
-                    {
-                        List<string> list = new List<string>();
-                        list.Add(valExp.val);
-                        list.Add(constExp.Nval.val);
-                        return new ValueExpression(list.ToString(), TokenType.datatype);
-                    }
-                    else
-                        throw new Exception("Lister skal bestå af samme typer"); 
+                    List<string> list = new List<string>();
+                    list.Add(valExp.val);
+                    list.Add(constExp.exp.Value.ToString());
+                    return new ValueExpression(list.ToString(), TokenType.datatype);
+
                 }
                 else { throw new Exception("no!"); }
             }
