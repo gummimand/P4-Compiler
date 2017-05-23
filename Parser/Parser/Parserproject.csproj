@@ -50,8 +50,10 @@
     <Compile Include="ComplicatedTypes\ConstructedType.cs" />
     <Compile Include="ComplicatedTypes\FunctionType.cs" />
     <Compile Include="BasicTypes\HeltalType.cs" />
+    <Compile Include="ComplicatedTypes\ITypeVisitor.cs" />
     <Compile Include="ComplicatedTypes\ListType.cs" />
     <Compile Include="ComplicatedTypes\OkType.cs" />
+    <Compile Include="ComplicatedTypes\TypeCloser.cs" />
     <Compile Include="ComplicatedTypes\TypeScheme.cs" />
     <Compile Include="ComplicatedTypes\TypeSubstitution.cs" />
     <Compile Include="ComplicatedTypes\TypeUnifier.cs" />
@@ -64,6 +66,7 @@
     <Compile Include="SigmaFunctions.cs" />
     <Compile Include="BasicTypes\StrengType.cs" />
     <Compile Include="SymbolTable\Symboltable.cs" />
+    <Compile Include="SymbolTable\TypeEnv.cs" />
     <Compile Include="Visitors\Interpreter.cs" />
     <Compile Include="Visitors\IVisitor.cs" />
     <Compile Include="Leaf.cs" />

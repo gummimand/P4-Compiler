@@ -27,6 +27,17 @@ namespace Parserproject
             return newE;
         }
 
+
+        public ConstructedType Substitute(TypeScheme A)
+        {
+            return A.accept(this);
+        }
+
+        public ConstructedType Substitute(Polytype poly)
+        {
+            return Substitute(poly.TypeScheme);
+        }
+
         public ConstructedType Substitute(TypeVar typevar)
         {
             if (table.Exists(p => p.Item1.Equals(typevar)))

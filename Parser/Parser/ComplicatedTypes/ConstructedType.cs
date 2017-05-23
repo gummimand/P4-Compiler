@@ -10,9 +10,14 @@ namespace Parserproject
     {
         public ConstructedType() { } //So the other classes can have constructors
 
-        public virtual ConstructedType accept(TypeSubstitution typeSub)
+        public override ConstructedType accept(TypeSubstitution typeSub)
         {
             return typeSub.Substitute(this);
+        }
+
+        public override List<TypeVar> Accept(TypeCloser C)
+        {
+            return C.FTV(this);
         }
     }
 }

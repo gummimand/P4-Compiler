@@ -36,6 +36,11 @@ namespace Parserproject
             return typeSub.Substitute(this);
         }
 
+        public override List<TypeVar> Accept(TypeCloser C)
+        {
+            return C.FTV(this);
+        }
+
         public override string ToString()
         {
             return inputType.ToString() +" -> "+ outputType.ToString();

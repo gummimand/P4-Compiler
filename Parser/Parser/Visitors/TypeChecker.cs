@@ -8,37 +8,101 @@ namespace Parserproject
 {
     public class TypeChecker : IVisitor
     {
-        public TypeEnv typeEnvironment = new TypeEnv();
-        public SigmaFunctions Sigmatabel = new SigmaFunctions();
+        #region Fields
+
+        public TypeEnv typeEnvironment = new TypeEnv(); //obsolete
+
+        private Dictionary<ConstantExpression, ConstructedType> Signatures = new Dictionary<ConstantExpression, ConstructedType>
+        {
+            {new PlusConst(), new FunctionType(new TalType(), new FunctionType(new TalType(), new TalType()))},
+            {new MinusConst(), new FunctionType(new TalType(), new FunctionType(new TalType(), new TalType()))},
+            {new TimesConst(), new FunctionType(new TalType(), new FunctionType(new TalType(), new TalType()))},
+            {new DivideConst(), new FunctionType(new TalType(), new FunctionType(new TalType(), new TalType()))},
+            {new ModuloConst(), new FunctionType(new TalType(), new FunctionType(new TalType(), new TalType()))},
+            {new PotensConst(), new FunctionType(new TalType(), new FunctionType(new TalType(), new TalType()))}
+        }; //obsolete
 
         private TypeUnifier uni = new TypeUnifier();
+        private TypeCloser clo = new TypeCloser();
 
-        public Dictionary<string, string> sigmaConstants = new Dictionary<string, string>() {
-            {"PLUS","heltal->heltal->heltal"},
-            {"PLUS2","tal->heltal->tal" },
-            {"MINUS","heltal->heltal->heltal"},
-            {"MINUS2","tal->heltal->tal" },
-            {"GANGE","heltal->heltal->heltal"},
-            {"DIVIDER","heltal->heltal->heltal"},
-            {"MODULUS","heltal->heltal->heltal"},
-            {"POTENS","heltal->heltal->heltal"},
-            {"NOT","bool->bool"},
-            {"OG","bool->bool->bool"},
-            {"ELLER","bool->bool->bool"},
-            {"STØRRE","heltal->heltal->bool"},
-            {"MINDRE","heltal->heltal->bool"},
-            {"STØRREELLERLIGMED","heltal->heltal->bool"},
-            {"MINDREELLERLIGMED","heltal->heltal->bool"},
-            {"LIGMED","heltal->heltal->bool"},
-            {"PAR","a->b->a*b"},//Better placeholder.
-            {"LISTE","a->{a}->{a}"}//Better placeholder.
-        };
+        #endregion
 
         public void CheckType(AST ast)
         {
             visit(ast.Root);
         }
 
+        public void visit(ASTNode node)
+        {
+            node.accept(this);
+        }
+
+        #region Visitor methods for Program node
+
+        public void visit(ProgramAST node)
+        {
+            TypeEnv E = new TypeEnv();
+
+            node.varDecl.E = E;
+            visit(node.varDecl);
+
+            ConstructedType type = node.varDecl.Type;
+            TypeSubstitution sigma = node.varDecl.sigma;
+
+            if (!(type is OkType))
+            {
+                throw new Exception("Program was not well typed");
+            }
+
+            node.exp.E = E;
+            visit(node.exp);
+
+            node.Type = node.exp.Type;
+        }
+
+        #endregion
+
+        #region Visitor methods for Declaration nodes
+
+        public void visit(EmptyDecl node)
+        {
+            node.Type = new OkType();
+        }
+
+        public void visit(VarDecl node)
+        {
+            TypeEnv E = node.E;
+
+            string x = node.id.token.content;
+
+            node.exp.E = E;
+            visit(node.exp);
+
+            TypeSubstitution sigma = node.exp.sigma;
+            ConstructedType type = node.exp.Type;
+
+            TypeEnv E_ = E;
+            E_.Add(x, type);
+
+            node.nextDecl.E = E_;
+            visit(node.nextDecl);
+
+            if (node.nextDecl.Type is OkType)
+            {
+                node.Type = new OkType();
+                node.sigma = node.nextDecl.sigma;
+            }
+            else
+            {
+                throw new Exception("Declaration was not well typed");
+            }
+        }
+
+        #endregion
+
+        #region Visitor methods for Expression nodes
+
+        // [HVIS]-rule
         public void visit(IfExpression node)
         {
             TypeEnv E = node.E.Clone();
@@ -73,6 +137,7 @@ namespace Parserproject
             node.Type = sigma.Substitute(type2);
         }
 
+        // [APP]-rule
         public void visit(AnonFuncExpression node)
         {
             string x = node.arg.token.content;// todo make arg identifierExpression an replace node.arg.varName;
@@ -91,10 +156,29 @@ namespace Parserproject
             node.Type = new FunctionType(sigma.Substitute(a), type);
         }
 
+        // [VAR]-rule
         public void visit(IdentifierExpression node)
         {
-            node.Type = node.E.LookUp(node.varName);
+            node.Type = GetTypeFromTypeScheme(node.E.LookUp(node.varName));
             node.sigma = new TypeSubstitution();
+        }
+
+        private ConstructedType GetTypeFromTypeScheme(TypeScheme A)
+        {
+            if (A is ConstructedType)
+            {
+                return A as ConstructedType;
+            }
+            else if (A is Polytype)
+            {
+                Polytype a = A as Polytype;
+                return GetTypeFromTypeScheme(a.TypeScheme);
+            }
+            else
+            {
+                throw new Exception($"Could not retrieve type of {A.ToString()}");
+            }
+
         }
 
         public void visit(EmptyExpression node)
@@ -102,31 +186,12 @@ namespace Parserproject
             // no type
         }
 
-        public void visit(EmptyListExpression node)
-        {
-            node.Type = new ListType(new TypeVar());
-        }
-
-        public void visit(PairConst node)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void visit(MinusConst node)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void visit(ListConst node)
-        {
-            throw new NotImplementedException();
-        }
-
         public void visit(ClosureExpression node)
         {
-            throw new NotImplementedException();
+            visit(node.exp);
         }
 
+        // [ANON]-rule
         public void visit(ApplicationExpression node)
         {
             TypeEnv E = node.E.Clone();
@@ -136,7 +201,7 @@ namespace Parserproject
             TypeSubstitution sigma1 = node.function.sigma;
             ConstructedType type1 = node.function.Type;
 
-            node.argument.E = sigma1.Substitute(E); 
+            node.argument.E = sigma1.Substitute(E);
             visit(node.argument);
 
             TypeSubstitution sigma2 = node.argument.sigma;
@@ -156,6 +221,7 @@ namespace Parserproject
             node.sigma = new TypeSubstitution();
         }
 
+        // [LAD]-rule
         public void visit(LetExpression node)
         {
             TypeEnv E = node.E.Clone();
@@ -166,9 +232,9 @@ namespace Parserproject
             TypeSubstitution sigma1 = node.exp1.sigma;
             ConstructedType type1 = node.exp1.Type;
 
-            TypeScheme closure = Close(E, type1);
+            TypeScheme closure = clo.Close(E, type1);
             TypeEnv E_ = sigma1.Substitute(E);
-           // E_.Add(x, closure);  TODO make E var -> typeScheme
+            E_.Add(x, closure);
 
             node.exp2.E = E_;
             visit(node.exp2);
@@ -180,65 +246,44 @@ namespace Parserproject
             node.Type = type2;
         }
 
-        public void visit(EmptyDecl node)
+        #endregion
+
+        #region Visitor methods for Constant nodes
+
+        /*
+         *  For each constant, The signature (big sigma) is defined for each node for convenience
+         */
+
+        public void visit(EmptyListExpression node)
         {
-            node.Type = new OkType();
+            node.Type = new ListType(new TypeVar());
         }
 
-        public void visit(VarDecl node)
+        public void visit(PairConst node)
         {
-            TypeEnv E = node.E;
-
-            string x = node.id.token.content;
-
-            node.exp.E = E;
-            visit(node.exp);
-
-            TypeSubstitution sigma = node.exp.sigma;
-            ConstructedType type = node.exp.Type;
-
-            TypeEnv E_ = E;
-            E_.Add(x, type);
-
-            node.nextDecl.E = E_;
-            visit(node.nextDecl);
-
-            if (node.nextDecl.Type is OkType)
-            {
-                node.Type = new OkType();
-                node.sigma = node.nextDecl.sigma;
-            }
-            else
-            {
-                throw new Exception("Declaration was not well typed");
-            }
-
+            TypeVar a = new TypeVar();
+            TypeVar b = new TypeVar();
+            node.Type = new FunctionType(a.Clone(), new FunctionType(b.Clone(), new TupleType(a.Clone(), b.Clone())));
+            node.sigma = new TypeSubstitution();
         }
 
-        public void visit(ProgramAST node)
+        public void visit(MinusConst node)
         {
-            TypeEnv E = new TypeEnv();
+            node.Type = new FunctionType(new HeltalType(), new FunctionType(new HeltalType(), new HeltalType()));
+            node.sigma = new TypeSubstitution();
+        }
 
-            node.varDecl.E = E;
-            visit(node.varDecl);
-
-            ConstructedType type = node.varDecl.Type;
-            TypeSubstitution sigma = node.varDecl.sigma;
-
-            if (!(type is OkType))
-            {
-                throw new Exception("Program was not well typed");
-            }
-
-            node.exp.E = E;
-            visit(node.exp);
-
-            node.Type = node.exp.Type;
+        public void visit(ListConst node)
+        {
+            TypeVar a = new TypeVar();
+            node.Type = new FunctionType(a.Clone(), new FunctionType(new ListType(a.Clone()), new ListType(a.Clone())));
+            node.sigma = new TypeSubstitution();
         }
 
         public void visit(ConstantFuncs node)
         {
-            node.Type = Sigmatabel.Lookup(node.name); 
+            node.Type = Signatures[node];
+            node.sigma = new TypeSubstitution();
         }
 
         public void visit(PlusConst node)
@@ -249,22 +294,26 @@ namespace Parserproject
 
         public void visit(TimesConst node)
         {
-            throw new NotImplementedException();
+            node.Type = new FunctionType(new HeltalType(), new FunctionType(new HeltalType(), new HeltalType()));
+            node.sigma = new TypeSubstitution();
         }
 
         public void visit(DivideConst node)
         {
-            throw new NotImplementedException();
+            node.Type = new FunctionType(new HeltalType(), new FunctionType(new HeltalType(), new HeltalType()));
+            node.sigma = new TypeSubstitution();
         }
 
         public void visit(PotensConst node)
         {
-            throw new NotImplementedException();
+            node.Type = new FunctionType(new HeltalType(), new FunctionType(new HeltalType(), new HeltalType()));
+            node.sigma = new TypeSubstitution();
         }
 
         public void visit(ModuloConst node)
         {
-            throw new NotImplementedException();
+            node.Type = new FunctionType(new HeltalType(), new FunctionType(new HeltalType(), new HeltalType()));
+            node.sigma = new TypeSubstitution();
         }
 
         public void visit(EqualConst node)
@@ -276,75 +325,40 @@ namespace Parserproject
 
         public void visit(NotEqualConst node)
         {
-            throw new NotImplementedException();
+            TypeVar a = new TypeVar();
+            node.Type = new FunctionType(a.Clone(), new FunctionType(a.Clone(), new BoolType()));
+            node.sigma = new TypeSubstitution();
         }
 
         public void visit(LesserThanConst node)
         {
-            throw new NotImplementedException();
+            TypeVar a = new TypeVar();
+            node.Type = new FunctionType(a.Clone(), new FunctionType(a.Clone(), new BoolType()));
+            node.sigma = new TypeSubstitution();
         }
 
         public void visit(GreaterThanConst node)
         {
-            throw new NotImplementedException();
+            TypeVar a = new TypeVar();
+            node.Type = new FunctionType(a.Clone(), new FunctionType(a.Clone(), new BoolType()));
+            node.sigma = new TypeSubstitution();
         }
 
         public void visit(GreaterThanOrEqualConst node)
         {
-            throw new NotImplementedException();
+            TypeVar a = new TypeVar();
+            node.Type = new FunctionType(a.Clone(), new FunctionType(a.Clone(), new BoolType()));
+            node.sigma = new TypeSubstitution();
         }
 
         public void visit(LesserThanOrEqualConst node)
         {
-            throw new NotImplementedException();
+            TypeVar a = new TypeVar();
+            node.Type = new FunctionType(a.Clone(), new FunctionType(a.Clone(), new BoolType()));
+            node.sigma = new TypeSubstitution();
         }
 
-        public TypeScheme Close(TypeEnv E, ConstructedType t)
-        {
-            List<TypeVar> FreeOft = FTV(t);
-            List<TypeVar> FreeOfE = FTV(E);
+        #endregion
 
-            List<TypeVar> closeSet = new List<TypeVar>();
-
-            TypeScheme closure = t;
-
-            foreach (TypeVar item in FreeOft)
-            {
-                if (!FreeOfE.Contains(item))
-                {
-                    closeSet.Add(item);
-                }
-            }
-
-            foreach (TypeVar item in closeSet)
-            {
-                closure = new Polytype(item, closure);
-            }
-
-            return closure;
-        }
-
-        private List<TypeVar> FTV(ConstructedType t)
-        {
-            // return all typevars
-            throw new NotImplementedException();
-        }
-
-        private List<TypeVar> FTV(Polytype t)
-        {
-            //return all FTV(t.typeScheme) - t.typevarriable, which is bound.
-            throw new NotImplementedException();
-        }
-
-        private List<TypeVar> FTV(TypeEnv E)
-        {
-            // iterate over all x in E and append FTV(x) to list and return it
-            throw new NotImplementedException();
-        }
-
-        public void visit(ASTNode node)
-        {
-            node.accept(this);
-        }
     }
 }

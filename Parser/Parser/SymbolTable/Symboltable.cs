@@ -52,21 +52,6 @@ namespace Parserproject
     }
 
 
-    public class TypeEnv : Symboltable<ConstructedType>
-    {
-
-        public TypeEnv Clone()
-        {
-            TypeEnv clone = new TypeEnv();
-
-            foreach (var item in table)
-            {
-                clone.AddTuple(item);
-            }
-
-            return clone;
-        }
-
-    }
+    
 
 }
