@@ -968,7 +968,7 @@ namespace Parserproject
     {
         public override void accept(IVisitor v) { v.visit(this); }
 
-        public LesserThanConst() : base("LESSERTHEN") { }
+        public LesserThanConst() : base("LESSERTHAN") { }
 
         public override bool Equals(object obj)
         {
@@ -985,17 +985,17 @@ namespace Parserproject
 
         public override void accept(IVisitor v) { v.visit(this); }
 
-        public LesserThenConstN(ValueExpression n) : base("LESSERTHENN")
+        public LesserThenConstN(ValueExpression n) : base("LESSERTHANN")
         {
             this.Nval = n;
         }
 
-        public LesserThenConstN(double n) : base("LESSERTHENN")
+        public LesserThenConstN(double n) : base("LESSERTHANN")
         {
             this.Nd = n;
         }
 
-        public LesserThenConstN(int n) : base("LESSERTHENN")
+        public LesserThenConstN(int n) : base("LESSERTHANN")
         {
             this.Ni = n;
             isInt = true;
@@ -1021,7 +1021,7 @@ namespace Parserproject
     {
         public override void accept(IVisitor v) { v.visit(this); }
 
-        public LesserThanOrEqualConst() : base("LESSERTHENOREQUAL") { }
+        public LesserThanOrEqualConst() : base("LESSERTHANOREQUAL") { }
 
         public override bool Equals(object obj)
         {
@@ -1029,7 +1029,7 @@ namespace Parserproject
         }
     }
 
-    public class LesserThenOrEqualConstN : ConstantExpression
+    public class LesserThanOrEqualConstN : ConstantExpression
     {
         public double Nd;
         public int Ni;
@@ -1038,17 +1038,17 @@ namespace Parserproject
 
         public override void accept(IVisitor v) { v.visit(this); }
 
-        public LesserThenOrEqualConstN(ValueExpression n) : base("LESSERTHENOREQUALN")
+        public LesserThanOrEqualConstN(ValueExpression n) : base("LESSERTHANOREQUALN")
         {
             this.Nval = n;
         }
 
-        public LesserThenOrEqualConstN(double n) : base("LESSERTHENOREQUALN")
+        public LesserThanOrEqualConstN(double n) : base("LESSERTHANOREQUALN")
         {
             this.Nd = n;
         }
 
-        public LesserThenOrEqualConstN(int n) : base("LESSERTHENOREQUALN")
+        public LesserThanOrEqualConstN(int n) : base("LESSERTHANOREQUALN")
         {
             this.Ni = n;
             isInt = true;
@@ -1056,7 +1056,7 @@ namespace Parserproject
 
         public override bool Equals(object obj)
         {
-            LesserThenOrEqualConstN other = obj as LesserThenOrEqualConstN;
+            LesserThanOrEqualConstN other = obj as LesserThanOrEqualConstN;
 
             if (other != null)
             {
@@ -1127,7 +1127,7 @@ namespace Parserproject
     {
         public override void accept(IVisitor v) { v.visit(this); }
 
-        public GreaterThanOrEqualConst() : base("GREATERTHENOREQUAL") { }
+        public GreaterThanOrEqualConst() : base("GREATERTHANOREQUAL") { }
 
         public override bool Equals(object obj)
         {
@@ -1135,7 +1135,7 @@ namespace Parserproject
         }
     }
 
-    public class GreaterThenOrEqualConstN : ConstantExpression
+    public class GreaterThanOrEqualConstN : ConstantExpression
     {
         public double Nd;
         public int Ni;
@@ -1144,17 +1144,17 @@ namespace Parserproject
 
         public override void accept(IVisitor v) { v.visit(this); }
 
-        public GreaterThenOrEqualConstN(ValueExpression n) : base("GREATERTHENNOREQUALN")
+        public GreaterThanOrEqualConstN(ValueExpression n) : base("GREATERTHANNOREQUALN")
         {
             this.Nval = n;
         }
 
-        public GreaterThenOrEqualConstN(double n) : base("GREATERTHENNOREQUALN")
+        public GreaterThanOrEqualConstN(double n) : base("GREATERTHANNOREQUALN")
         {
             this.Nd = n;
         }
 
-        public GreaterThenOrEqualConstN(int n) : base("GREATERTHENNOREQUALN")
+        public GreaterThanOrEqualConstN(int n) : base("GREATERTHANNOREQUALN")
         {
             this.Ni = n;
             isInt = true;
@@ -1162,7 +1162,7 @@ namespace Parserproject
 
         public override bool Equals(object obj)
         {
-            GreaterThenOrEqualConstN other = obj as GreaterThenOrEqualConstN;
+            GreaterThanOrEqualConstN other = obj as GreaterThanOrEqualConstN;
 
             if (other != null)
             {
@@ -1174,6 +1174,122 @@ namespace Parserproject
             }
         }
 
+    }
+
+    public class ConcatConst : ConstantExpression
+    {
+        public double Nd;
+        public int Ni;
+        public bool isInt = false;
+        public ValueExpression Nval;
+
+        public override void accept(IVisitor v) { v.visit(this); }
+
+        public ConcatConst() : base("CONCAT") { }
+
+        public override bool Equals(object obj)
+        {
+            ConcatConst other = obj as ConcatConst;
+
+            if (other != null)
+            {
+                return this.Nd == other.Nd;
+            }
+            else
+            {
+                return false;
+            }
+        }
+    }
+
+    public class ConcatConstN : ConstantExpression
+    {
+        public double Nd;
+        public int Ni;
+        public bool isInt = false;
+        public ValueExpression Nval;
+
+        public ConcatConstN(ValueExpression n) : base("CONCATN")
+        {
+            this.Nval = n;
+        }
+
+        public ConcatConstN(double n) : base("CONCATN")
+        {
+            this.Nd = n;
+        }
+
+        public ConcatConstN(int n) : base("CONCATN")
+        {
+            this.Ni = n;
+            isInt = true;
+        }
+
+        public override bool Equals(object obj)
+        {
+            ConcatConstN other = obj as ConcatConstN;
+
+            if (other != null)
+            {
+                return this.Nd == other.Nd;
+            }
+            else
+            {
+                return false;
+            }
+        }
+    }
+
+    public class NotConst : ConstantExpression
+    {
+        public override void accept(IVisitor v) { v.visit(this); }
+
+        public NotConst() : base("NOT") { }
+
+        public override bool Equals(object obj)
+        {
+            return obj is NotConst;
+        }
+    }
+
+    public class NotConstN : ConstantExpression
+    {
+        public double Nd;
+        public int Ni;
+        public bool isInt = false;
+        public ValueExpression Nval;
+
+        public override void accept(IVisitor v) { v.visit(this); }
+
+        public NotConstN(ValueExpression n) : base("NOTN")
+        {
+            this.Nval = n;
+        }
+
+        public NotConstN(double n) : base("NOTN")
+        {
+            this.Nd = n;
+        }
+
+        public NotConstN(int n) : base("NOTN")
+        {
+            this.Ni = n;
+            isInt = true;
+        }
+
+        public override bool Equals(object obj)
+        {
+            NotConstN other = obj as NotConstN;
+
+            if (other != null)
+            {
+                return this.Nd == other.Nd;
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 }
 
