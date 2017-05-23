@@ -507,41 +507,11 @@ namespace Parserproject
 
     public class ListConstN : ConstantExpression
     {
-        public override void accept(IVisitor v) { v.visit(this); }
+        public Expression exp;
 
-        public double Nd;
-        public int Ni;
-        public bool isInt = false;
-        public ValueExpression Nval;
-
-        public ListConstN(ValueExpression n) : base("LISTN")
+        public ListConstN(Expression Exp) : base("LISTN")
         {
-            this.Nval = n;
-        }
-
-        public ListConstN(double n) : base("LISTN")
-        {
-            this.Nd = n;
-        }
-
-        public ListConstN(int n) : base("LISTN")
-        {
-            this.Ni = n;
-            isInt = true;
-        }
-
-        public override bool Equals(object obj)
-        {
-            ListConstN other = obj as ListConstN;
-
-            if (other != null)
-            {
-                return this.Nd == other.Nd;
-            }
-            else
-            {
-                return false;
-            }
+            exp = Exp;
         }
     }
 
@@ -559,44 +529,14 @@ namespace Parserproject
 
     public class PairConstN : ConstantExpression
     {
-        public override void accept(IVisitor v) { v.visit(this); }
+        public Expression exp;
 
-        public double Nd;
-        public int Ni;
-        public bool isInt = false;
-        public ValueExpression Nval;
-
-        public PairConstN(ValueExpression n) : base("PAIRN")
+        public PairConstN(Expression Exp) : base("PAIRN")
         {
-            this.Nval = n;
-        }
-
-        public PairConstN(double n) : base("PAIRN")
-        {
-            this.Nd = n;
-        }
-
-        public PairConstN(int n) : base("PAIRN")
-        {
-            this.Ni = n;
-            isInt = true;
-        }
-
-        public override bool Equals(object obj)
-        {
-            PairConstN other = obj as PairConstN;
-
-            if (other != null)
-            {
-                return this.Nd == other.Nd;
-            }
-            else
-            {
-                return false;
-            }
+            exp = Exp;
         }
     }
-    
+
     public class PlusConst : ConstantExpression
     {
         public override void accept(IVisitor v) { v.visit(this); }
@@ -1134,7 +1074,7 @@ namespace Parserproject
     {
         public override void accept(IVisitor v) { v.visit(this); }
 
-        public GreaterThanConst() : base("GREATERTHEN") { }
+        public GreaterThanConst() : base("GREATERTHAN") { }
 
         public override bool Equals(object obj)
         {
@@ -1142,7 +1082,7 @@ namespace Parserproject
         }
     }
 
-    public class GreaterThenConstN : ConstantExpression
+    public class GreaterThanConstN : ConstantExpression
     {
         public double Nd;
         public int Ni;
@@ -1151,17 +1091,17 @@ namespace Parserproject
 
         public override void accept(IVisitor v) { v.visit(this); }
 
-        public GreaterThenConstN(ValueExpression n) : base("GREATERTHENN")
+        public GreaterThanConstN(ValueExpression n) : base("GREATERTHANN")
         {
             this.Nval = n;
         }
 
-        public GreaterThenConstN(double n) : base("GREATERTHENN")
+        public GreaterThanConstN(double n) : base("GREATERTHANN")
         {
             this.Nd = n;
         }
 
-        public GreaterThenConstN(int n) : base("GREATERTHENN")
+        public GreaterThanConstN(int n) : base("GREATERTHANN")
         {
             this.Ni = n;
             isInt = true;
@@ -1169,7 +1109,7 @@ namespace Parserproject
 
         public override bool Equals(object obj)
         {
-            GreaterThenConstN other = obj as GreaterThenConstN;
+            GreaterThanConstN other = obj as GreaterThanConstN;
 
             if (other != null)
             {

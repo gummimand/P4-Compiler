@@ -324,26 +324,28 @@ namespace Parserproject
                 else if (c is GreaterThanConst)
                 {
                     ValueExpression valExp = exp.Value as ValueExpression;
-                    return new GreaterThenConstN(valExp);
+                    return new GreaterThanConstN(valExp);
                 }
-                else if (c is GreaterThenConstN)
+                else if (c is GreaterThanConstN)
                 {
-                    GreaterThenConstN constExp = c as GreaterThenConstN;
+                    GreaterThanConstN constExp = c as GreaterThanConstN;
                     ValueExpression valExp = exp.Value as ValueExpression;
 
                     if (constExp.Nval.Type is TalType)
                     {
                         double n = double.Parse(constExp.Nval.val);
                         double m = double.Parse(valExp.val);
-
-                        return new ValueExpression((n > m).ToString(), TokenType.boolean);
+                        string truthvalue = n > m ? "sand" : "falsk";
+                    
+                        return new ValueExpression(truthvalue, TokenType.boolean);
                     }
                     else
                     {
                         int n = int.Parse(constExp.Nval.val);
                         int m = int.Parse(valExp.val);
+                        string truthvalue = n > m ? "sand" : "falsk";
 
-                        return new ValueExpression((n > m).ToString(), TokenType.boolean);
+                        return new ValueExpression(truthvalue, TokenType.boolean);
                     }
                 }
                 else if (c is GreaterThanOrEqualConst)
@@ -378,10 +380,10 @@ namespace Parserproject
                 }
                 else if (c is PairConstN)
                 {
-                    GreaterThenOrEqualConstN constExp = c as GreaterThenOrEqualConstN;
+                    PairConstN constExp = c as PairConstN;
                     ValueExpression valExp = exp.Value as ValueExpression;
 
-                    return new ValueExpression(Tuple.Create(constExp.Nval.val, valExp.val).ToString(), TokenType.datatype);
+                    return new ValueExpression(Tuple.Create(constExp.exp.Value.ToString(), valExp.val).ToString(), TokenType.datatype);
                 }
                 else if (c is ListConst)
                 {
@@ -391,22 +393,14 @@ namespace Parserproject
 
                 else if (c is ListConstN)
                 {
-                    GreaterThenOrEqualConstN constExp = c as GreaterThenOrEqualConstN;
+                    ListConstN constExp = c as ListConstN;
                     ValueExpression valExp = exp.Value as ValueExpression;
 
-                    if (constExp.Nval.Type == valExp.Type)
-                    {
-                        List<string> list = new List<string>();
-                        list.Add(valExp.val);
-                        list.Add(constExp.Nval.val);
-                        return new ValueExpression(list.ToString(), TokenType.datatype);
-                    }
-                    else
-                        throw new Exception("Lister skal bestå af samme typer"); 
-
+                    List<string> list = new List<string>();
+                    list.Add(valExp.val);
+                    list.Add(constExp.exp.Value.ToString());
+                    return new ValueExpression(list.ToString(), TokenType.datatype);
                 }
-
-
                 else { throw new Exception("no!"); }
             }
             else { throw new Exception("no!"); }
