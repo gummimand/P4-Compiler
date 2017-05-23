@@ -36,8 +36,14 @@ namespace Parserproject
         void visit(LesserThanOrEqualConst node);
         void visit(GreaterThanConst node);
         void visit(GreaterThanOrEqualConst node);
+<<<<<<< Updated upstream
         void visit(ConcatConst node);
         void visit(NotConst node);
+=======
+        void visit(NotConst node);
+        void visit(ConcatConst node);
+        //void visit()
+>>>>>>> Stashed changes
 
 
 
