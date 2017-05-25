@@ -34,6 +34,11 @@ namespace Parserproject
 
                 if (cs.EOF())
                     tokens.Add(new Token("EOF", TokenType.EOF)); //todo, End of file char?
+                else if (cs.Peek() == '#')
+                {
+                    while (cs.Peek() != '\n' && !cs.EOF())
+                        cs.Advance();
+                }
                 else
                     tokens.Add(ScanToken());
             }
