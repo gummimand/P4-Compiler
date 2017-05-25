@@ -256,8 +256,9 @@ namespace Parserproject
 
     public class ValueExpression : Expression
     {
-        //public Value value;
+        public List<string> vals;
         public string val;
+        public bool IsList = false;
 
         public override void accept(IVisitor v) { v.visit(this); }
 
@@ -284,6 +285,15 @@ namespace Parserproject
             }
         }
 
+        public ValueExpression(List<string> val, TokenType tokenType) : base("VALUE_EXPRESSION")
+        {
+            IsList = true;
+            Type = new ListType();
+            vals = val;
+        }
+
+
+
         public override bool Equals(object obj)
         {
             ValueExpression other = obj as ValueExpression;
@@ -300,6 +310,18 @@ namespace Parserproject
 
         public override string ToString()
         {
+            string output = "";
+            if (IsList)
+            {
+                foreach (var item in vals)
+                {
+                    if (String.IsNullOrEmpty(output))
+                        output = item;
+                    else
+                        output = (output + "," + item);
+                }
+                return output;
+            }
             return val;
         }
     }
@@ -495,6 +517,7 @@ namespace Parserproject
 
     public class ListConst : ConstantExpression
     {
+        public override void accept(IVisitor v) { v.visit(this); }
         public ListConst() : base("LIST")
         {
         }
@@ -507,6 +530,7 @@ namespace Parserproject
 
     public class ListConstN : ConstantExpression
     {
+        public override void accept(IVisitor v) { v.visit(this); }
         public Expression exp;
 
         public ListConstN(Expression Exp) : base("LISTN")
@@ -517,6 +541,7 @@ namespace Parserproject
 
     public class PairConst : ConstantExpression
     {
+        public override void accept(IVisitor v) { v.visit(this); }
         public PairConst() : base("PAIR")
         {
         }
@@ -529,6 +554,8 @@ namespace Parserproject
 
     public class PairConstN : ConstantExpression
     {
+        public override void accept(IVisitor v) { v.visit(this); }
+
         public Expression exp;
 
         public PairConstN(Expression Exp) : base("PAIRN")

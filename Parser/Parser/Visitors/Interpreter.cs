@@ -19,7 +19,7 @@ namespace Parserproject
 
         private Expression Apply(ConstantExpression c, Expression exp)
         {
-            if (exp.Value is ValueExpression)
+            if (exp.Value is ValueExpression || exp.Value is EmptyListExpression)
             {
                 if (c is PlusConst)
                 {
@@ -372,14 +372,31 @@ namespace Parserproject
                 else if (c is ListConstN)
                 {
                     ListConstN constExp = c as ListConstN;
-                    ValueExpression valExp = exp.Value as ValueExpression;
-
                     List<string> list = new List<string>();
-                    list.Add(valExp.val);
-                    list.Add(constExp.exp.Value.ToString());
-                    return new ValueExpression(list.ToString(), TokenType.datatype);
+
+                    if (exp.Value is ValueExpression)
+                    {
+                        ValueExpression valExp = exp.Value as ValueExpression;
+
+                        list.Add(constExp.exp.Value.ToString());
+                        list.AddRange(valExp.vals);
+                        return new ValueExpression(list, TokenType.datatype);
+                    }
+                    else
+                    {
+                        list.Add(constExp.exp.Value.ToString());
+
+                        return new ValueExpression(list, TokenType.datatype);
+                    }
+
+
+
                 }
                 else { throw new Exception("no!"); }
+            }
+            else if (exp.Value is EmptyListExpression)
+            {
+                return exp;
             }
             else { throw new Exception("no!"); }
         }
@@ -391,7 +408,7 @@ namespace Parserproject
 
         public void visit(EmptyDecl node)
         {
-            // do nothing
+            
         }
 
         public void visit(IfExpression node)
@@ -487,7 +504,7 @@ namespace Parserproject
 
         public void visit(EmptyExpression node)
         {
-            // do nothing
+            node.Value = node;
         }
 
         public void visit(ApplicationExpression node)

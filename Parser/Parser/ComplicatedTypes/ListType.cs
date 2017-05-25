@@ -10,6 +10,11 @@ namespace Parserproject
     {
         public ConstructedType ListElementType;
 
+        public ListType() //for interpreter
+        {
+
+        }
+
         public ListType(ConstructedType T)
         {
             ListElementType = T;
