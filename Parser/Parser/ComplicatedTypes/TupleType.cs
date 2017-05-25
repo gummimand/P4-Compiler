@@ -21,5 +21,29 @@ namespace Parserproject
         {
             return typeSub.Substitute(this);
         }
+
+        public override List<TypeVar> Accept(TypeCloser C)
+        {
+            return C.FTV(this);
+        }
+
+        public override bool Equals(object obj)
+        {
+            TupleType other = obj as TupleType;
+
+            if (other != null)
+            {
+                return this.Element1.Equals(other.Element1) && this.Element2.Equals(other.Element2);
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public override string ToString()
+        {
+            return Element1.ToString() + " * " + Element2.ToString(); 
+        }
     }
 }

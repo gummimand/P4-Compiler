@@ -6,7 +6,21 @@ using System.Threading.Tasks;
 
 namespace Parserproject
 {
-    class TalType : BasicType
+    public class TalType : BasicType
     {
+        public override ConstructedType accept(TypeSubstitution typeSub)
+        {
+            return typeSub.Substitute(this);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is TalType;
+        }
+
+        public override string ToString()
+        {
+            return "Tal";
+        }
     }
 }

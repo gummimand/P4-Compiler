@@ -15,9 +15,39 @@ namespace Parserproject
             table.Insert(0, Tuple.Create(typeVar, type));
         }
 
+        public TypeEnv Substitute(TypeEnv E)
+        {
+            TypeEnv newE = new TypeEnv();
+
+            foreach (var item in E.table)
+            {
+                newE.Add(item.Item1, Substitute(item.Item2));
+            }
+
+            return newE;
+        }
+
+
+        public ConstructedType Substitute(TypeScheme A)
+        {
+            return A.accept(this);
+        }
+
+        public ConstructedType Substitute(Polytype poly)
+        {
+            return Substitute(poly.TypeScheme);
+        }
+
         public ConstructedType Substitute(TypeVar typevar)
         {
-            return table.Find(type => type.Item1.id == typevar.id).Item2;
+            if (table.Exists(p => p.Item1.Equals(typevar)))
+            {
+                return table.Find(type => type.Item1.Equals(typevar)).Item2;
+            }
+            else
+            {
+                return typevar;
+            }
         }
 
         public ConstructedType Substitute(FunctionType type)

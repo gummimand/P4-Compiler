@@ -38,17 +38,22 @@ namespace Parserproject
 
         public override string ToString()
         {
-            return "'"+id;
+            return "'" + id;
         }
 
         public TypeVar Clone()
         {
-            return new TypeVar("this.id");
+            return new TypeVar(this.id);
         }
 
         public override ConstructedType accept(TypeSubstitution typeSub)
         {
             return typeSub.Substitute(this);
+        }
+
+        public override List<TypeVar> Accept(TypeCloser C)
+        {
+            return C.FTV(this);
         }
 
     }
