@@ -266,36 +266,36 @@ namespace Parserproject
         public ValueExpression(string val, ConstructedType type) : base("VALUE_EXPRESSION")
         {
             this.val = val;
+            this.Type = type;
 
-            switch (type.ToString())
-            {
-                case "StrengType":
-                    Type = new StrengType();
-                    break;
-                case "TalType":
-                    Type = new TalType();
-                    break;
-                case "HeltalType":
-                    Type = new HeltalType();
-                    break;
-                case "BoolType":
-                    Type = new BoolType();
-                    break;
-                case "ListType":
-                    Type = new ListType();
-                    break;
-                case "TupleType":
-                    Type = new TupleType();
-                    break;
-                default:
-                    throw new Exception($"Fuck you, this is not a value! was {type.ToString()}");
-            }
+            //switch (type.ToString())
+            //{
+            //    case "StrengType":
+            //        Type = new StrengType();
+            //        break;
+            //    case "TalType":
+            //        Type = new TalType();
+            //        break;
+            //    case "HeltalType":
+            //        Type = new HeltalType();
+            //        break;
+            //    case "BoolType":
+            //        Type = new BoolType();
+            //        break;
+            //    case "ListType":
+            //        Type = new ListType();
+            //        break;
+            //    case "TupleType":
+            //        Type = new TupleType();
+            //        break;
+            //    default:
+            //        throw new Exception($"Fuck you, this is not a value! was {type.ToString()}");
+            //}
         }
 
-        public ValueExpression(List<string> val, TokenType tokenType) : base("VALUE_EXPRESSION")
+        public ValueExpression(List<string> val) : base("VALUE_EXPRESSION")
         {
             IsList = true;
-            Type = new ListType();
             vals = val;
         }
 
@@ -317,7 +317,7 @@ namespace Parserproject
 
         public override string ToString()
         {
-            return val + " : " + Type.ToString();
+            
             string output = "";
             if (IsList) {
                 foreach (var item in vals) {
@@ -328,6 +328,7 @@ namespace Parserproject
                 }
                 return "{" + output + "}";
             }
+            return val;
         }
     }
 
@@ -447,7 +448,7 @@ namespace Parserproject
 
         public override string ToString()
         {
-            return "fn : " + Type.ToString();
+            return "fn";
         }
     }
 

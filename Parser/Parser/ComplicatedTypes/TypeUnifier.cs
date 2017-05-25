@@ -10,29 +10,50 @@ namespace Parserproject
     {
 
         private Dictionary<ConstructedType, ConstructedType> bindings = new Dictionary<ConstructedType, ConstructedType>();
+        private List<Tuple<ConstructedType, ConstructedType>> bindings1 = new List<Tuple<ConstructedType, ConstructedType>>();
 
         private ConstructedType Binding(ConstructedType T)
         {
-            if (bindings.ContainsKey(T))
+            if (bindings1.Exists(p => p.Item1.Equals(T)))
             {
-                return Binding(bindings[T]);
+                return Binding(bindings1.Find(p => p.Item1.Equals(T)).Item2);
             }
             else
             {
                 return T;
             }
+
+            //if (bindings.ContainsKey(T))
+            //{
+            //    return Binding(bindings[T]);
+            //}
+            //else
+            //{
+            //    return T;
+            //}
         }
 
         private void Bind(ConstructedType TypeA, ConstructedType TypeB)
         {
-            if (!bindings.ContainsKey(TypeA))
+
+            if (!bindings1.Exists(p => p.Item1.Equals(TypeA)))
             {
-                bindings.Add(TypeA, TypeB);
+                bindings1.Add(Tuple.Create(TypeA, TypeB));
             }
             else
             {
                 throw new Exception($"{TypeA.ToString()} is already bound");
             }
+        
+
+            //if (!bindings.ContainsKey(TypeA))
+            //{
+            //    bindings.Add(TypeA, TypeB);
+            //}
+            //else
+            //{
+            //    throw new Exception($"{TypeA.ToString()} is already bound");
+            //}
         }
         
         public TypeSubstitution Unify(ConstructedType TypeA, ConstructedType TypeB)
@@ -40,14 +61,38 @@ namespace Parserproject
 
             if (UnifyAUX(TypeA, TypeB))
             {
+                TypeSubstitution sigma = new TypeSubstitution();
                 TypeSubstitution unifier = new TypeSubstitution();
 
-                foreach (TypeVar typeVar in bindings.Keys.OfType<TypeVar>())
+                foreach (var binding in bindings1)
                 {
-                    unifier.Add(typeVar, Binding(typeVar));
+                    if (binding.Item1 is TypeVar)
+                    {
+                       sigma.Add(binding.Item1 as TypeVar, binding.Item2);
+                    }
                 }
 
+                foreach (var binding in bindings1)
+                {
+                    if (binding.Item1 is TypeVar)
+                    {
+                        unifier.Add(binding.Item1 as TypeVar, sigma.Substitute(binding.Item2));
+                    }
+                }
+
+                //foreach (TypeVar typeVar in bindings.Keys.OfType<TypeVar>())
+                //{
+                //    sigma.Add(typeVar, Binding(typeVar));
+                //}
+
+                //// make sure that every binding is properly made
+                //foreach (TypeVar typeVar in bindings.Keys.OfType<TypeVar>())
+                //{
+                //    unifier.Add(typeVar, sigma.Substitute(Binding(typeVar)));
+                //}
+
                 bindings.Clear();
+
 
                 return unifier;
             }

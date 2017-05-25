@@ -75,8 +75,10 @@ namespace Parserproject
 
             string x = node.id.token.content;
 
+            E.Add(x, new TypeVar());
             node.exp.E = E;
             visit(node.exp);
+            E.Remove();
 
             TypeSubstitution sigma = node.exp.sigma;
             ConstructedType type = node.exp.Type;
@@ -257,6 +259,8 @@ namespace Parserproject
         public void visit(EmptyListExpression node)
         {
             node.Type = new ListType(new TypeVar());
+            node.sigma = new TypeSubstitution();
+
         }
 
         public void visit(PairConst node)
@@ -358,31 +362,42 @@ namespace Parserproject
             node.sigma = new TypeSubstitution();
         }
 
-        #endregion
-
         public void visit(NotConst node)
         {
-            throw new NotImplementedException();
+            node.Type = new FunctionType(new BoolType(), new BoolType());
+            node.sigma = new TypeSubstitution();
         }
 
-        public void visit(HeadConst node) {
-            throw new NotImplementedException();
+        public void visit(HeadConst node)
+        {
+            TypeVar a = new TypeVar();
+            node.Type = new FunctionType(new ListType(a.Clone()), a.Clone());
+            node.sigma = new TypeSubstitution();
         }
 
-        public void visit(TailConst node) {
-            throw new NotImplementedException();
+        public void visit(TailConst node)
+        {
+            TypeVar a = new TypeVar();
+            node.Type = new FunctionType(new ListType(a.Clone()), new ListType(a.Clone()));
+            node.sigma = new TypeSubstitution();
         }
 
-        public void visit(OrConst node) {
-            throw new NotImplementedException();
+        public void visit(OrConst node)
+        {
+            node.Type = new FunctionType(new BoolType(), new FunctionType(new BoolType(), new BoolType()));
+            node.sigma = new TypeSubstitution();
         }
 
-        public void visit(AndConst node) {
-            throw new NotImplementedException();
+        public void visit(AndConst node)
+        {
+            node.Type = new FunctionType(new BoolType(), new FunctionType(new BoolType(), new BoolType()));
+            node.sigma = new TypeSubstitution();
         }
+        #endregion
+
 
         public void visit(ConcatConst node) {
-            throw new NotImplementedException();
+            
         }
     }
 }

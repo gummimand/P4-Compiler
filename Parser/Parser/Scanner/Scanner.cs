@@ -31,7 +31,7 @@ namespace Parserproject
             while (!cs.EOF())
             {
                 RemoveWhiteSpace();
-
+                ScanComment();
                 if (cs.EOF())
                     tokens.Add(new Token("EOF", TokenType.EOF)); //todo, End of file char?
                 else
@@ -43,15 +43,22 @@ namespace Parserproject
 
         private void RemoveWhiteSpace()
         {
-            Regex r = new Regex(@"\n");
-            if (cs.Peek() == '#') {
-                while (!r.IsMatch(cs.Peek().ToString())) {
-                    cs.Advance();
-                }
-            }
             while (isWhiteSpace(cs.Peek()))
             {
                 cs.Advance();
+            }
+        }
+
+        private void ScanComment()
+        {
+            while (cs.Peek() == '#')
+            {
+                cs.Advance();
+                while (cs.Peek() != '\n')
+                {
+                    cs.Advance();
+                }
+                RemoveWhiteSpace();
             }
         }
 

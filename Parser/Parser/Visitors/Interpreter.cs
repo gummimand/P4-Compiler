@@ -8,7 +8,7 @@ namespace Parserproject
 {
     public class Interpreter : IVisitor
     {
-        public Symboltable<Expression> env = new Symboltable<Expression>();
+        public VarEnv env = new VarEnv();
 
         public void Interpret(AST ast)
         {
@@ -320,17 +320,19 @@ namespace Parserproject
                     ListConstN constExp = c as ListConstN;
                     List<string> list = new List<string>();
 
-                    if (exp.Value is ValueExpression) {
+                    if (exp.Value is ValueExpression)
+                    {
                         ValueExpression valExp = exp.Value as ValueExpression;
 
                         list.Add(constExp.exp.Value.ToString());
                         list.AddRange(valExp.vals);
-                        return new ValueExpression(list, TokenType.datatype);
+                        return new ValueExpression(list);
                     }
-                    else {
+                    else
+                    {
                         list.Add(constExp.exp.Value.ToString());
 
-                        return new ValueExpression(list, TokenType.datatype);
+                        return new ValueExpression(list);
                     }
                 }
                 else if(c is ConcatConst) {
@@ -346,10 +348,10 @@ namespace Parserproject
 
                         list.AddRange(constExp.Nval.vals);
                         list.AddRange(valExp.vals);
-                        return new ValueExpression(list, TokenType.datatype);
+                        return new ValueExpression(list);
                     }
                     else {
-                        return new ValueExpression(list, TokenType.datatype);
+                        return new ValueExpression(list);
                     }
                 }
 
@@ -367,9 +369,8 @@ namespace Parserproject
                 }
                 else if (c is TailConst) {
                     ValueExpression valExp = exp.Value as ValueExpression;
-
                     
-                    return new ValueExpression(valExp.vals.GetRange(1, valExp.vals.Count - 1), TokenType.datatype);
+                    return new ValueExpression(valExp.vals.GetRange(1, valExp.vals.Count - 1));
                 }
                 else if (c is AndConst) {
                     ValueExpression valExp = exp.Value as ValueExpression;
@@ -528,6 +529,7 @@ namespace Parserproject
             {
                 ConstantExpression c = node.function.Value as ConstantExpression;
                 node.Value = Apply(c, node.argument);
+                node.Value.Type = node.Type;
             }
             else if(node.function.Value is AnonFuncExpression) // hvis funk er Anonfunk
             {

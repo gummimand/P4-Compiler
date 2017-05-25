@@ -67,6 +67,7 @@
     <Compile Include="BasicTypes\StrengType.cs" />
     <Compile Include="SymbolTable\Symboltable.cs" />
     <Compile Include="SymbolTable\TypeEnv.cs" />
+    <Compile Include="SymbolTable\VarEnv.cs" />
     <Compile Include="Visitors\Interpreter.cs" />
     <Compile Include="Visitors\IVisitor.cs" />
     <Compile Include="Leaf.cs" />
