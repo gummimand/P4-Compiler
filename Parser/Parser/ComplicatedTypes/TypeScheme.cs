@@ -8,7 +8,12 @@ namespace Parserproject
 {
     public abstract class TypeScheme
     {
+        public virtual List<TypeVar> Accept(TypeCloser C)
+        {
+            return C.FTV(this);
+        }
 
+        public abstract ConstructedType accept(TypeSubstitution typeSub);
     }
 
 
@@ -23,6 +28,19 @@ namespace Parserproject
             this.TypeScheme = A;
         }
 
+        public override string ToString()
+        {
+            return "\u2200" + TypeVariable.ToString() + "." + TypeScheme.ToString();
+        }
 
+        public override ConstructedType accept(TypeSubstitution typeSub)
+        {
+            return typeSub.Substitute(this);
+        }
+
+        public override List<TypeVar> Accept(TypeCloser C)
+        {
+            return C.FTV(this);
+        }
     }
 }

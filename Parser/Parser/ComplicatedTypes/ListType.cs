@@ -25,8 +25,28 @@ namespace Parserproject
             return typeSub.Substitute(this);
         }
 
-        public override string ToString() {
-            return "ListType";
+        public override List<TypeVar> Accept(TypeCloser C)
+        {
+            return C.FTV(this);
+        }
+
+        public override bool Equals(object obj)
+        {
+            ListType other = obj as ListType;
+
+            if (other != null)
+            {
+                return this.ListElementType.Equals(other.ListElementType);
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public override string ToString()
+        {
+            return "{" + ListElementType.ToString() + "}";
         }
 
     }

@@ -18,8 +18,14 @@ namespace Parserproject
             return typeSub.Substitute(this);
         }
 
-        public override string ToString() {
-            return "HeltalType";
+        public override bool Equals(object obj)
+        {
+            return obj is HeltalType;
+        }
+
+        public override string ToString()
+        {
+            return "Heltal";
         }
     }
 }

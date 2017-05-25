@@ -12,6 +12,7 @@ namespace Parserproject
         public Node Parent { get; set; }
         public ConstructedType Type;
         public TypeSubstitution sigma;
+        public TypeEnv E;
         public abstract void PreOrderWalk();
         public abstract void PrintPretty(string indent, bool last);
         public abstract void accept(IVisitor v);
@@ -316,6 +317,7 @@ namespace Parserproject
 
         public override string ToString()
         {
+            return val + " : " + Type.ToString();
             string output = "";
             if (IsList) {
                 foreach (var item in vals) {
@@ -326,7 +328,6 @@ namespace Parserproject
                 }
                 return "{" + output + "}";
             }
-            return val;
         }
     }
 
@@ -399,6 +400,8 @@ namespace Parserproject
                 return false;
             }
         }
+
+       
     }
 
     public class EmptyExpression : Expression
@@ -444,18 +447,9 @@ namespace Parserproject
 
         public override string ToString()
         {
-            return "temp string";
+            return "fn : " + Type.ToString();
         }
     }
-
-    //public class Id : ConstantExpression
-    //{
-    //    public string Content;
-    //    public Id(string content) : base("Identifier")
-    //    {
-    //        Content = content;
-    //    }
-    //}
 
     public class Identifier : Leaf
     {

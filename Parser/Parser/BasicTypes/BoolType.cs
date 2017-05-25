@@ -13,8 +13,14 @@ namespace Parserproject
             return typeSub.Substitute(this);
         }
 
-        public override string ToString() {
-            return "BoolType";
+        public override bool Equals(object obj)
+        {
+            return obj is BoolType;
+        }
+
+        public override string ToString()
+        {
+            return "Bool";
         }
     }
 }
