@@ -92,12 +92,12 @@ namespace ParserTest
                                 new ApplicationExpression
                                 (
                                     new PlusConst(),
-                                    new ValueExpression("0", TokenType.heltal)
+                                    new ValueExpression("0", new HeltalType())
                                 ),
-                                new ValueExpression("1", TokenType.heltal)
+                                new ValueExpression("1", new HeltalType())
                              )
                          ),
-                         new ValueExpression("2", TokenType.heltal)
+                         new ValueExpression("2", new HeltalType())
                      )
                  )
              );
@@ -130,12 +130,12 @@ namespace ParserTest
                                 new ApplicationExpression
                                 (
                                     new PlusConst(),
-                                    new ValueExpression("0", TokenType.heltal)
+                                    new ValueExpression("0", new HeltalType())
                                 ),
-                                new ValueExpression("1", TokenType.heltal)
+                                new ValueExpression("1", new HeltalType())
                              )
                          ),
-                         new ValueExpression("2", TokenType.heltal)
+                         new ValueExpression("2", new HeltalType())
                      )
                  )
              );
@@ -160,9 +160,9 @@ namespace ParserTest
                         new ApplicationExpression
                         (
                             new PlusConst(),
-                            new ValueExpression("0", TokenType.heltal)
+                            new ValueExpression("0", new HeltalType())
                         ),
-                        new ValueExpression("1", TokenType.heltal)
+                        new ValueExpression("1", new HeltalType())
                      )
                  )
              );
@@ -189,16 +189,16 @@ namespace ParserTest
                         new ApplicationExpression
                         (
                             new PairConst(),
-                            new ValueExpression("0", TokenType.heltal)
+                            new ValueExpression("0", new HeltalType())
                         ),
                         new ApplicationExpression
                         (
                             new ApplicationExpression
                             (
                                 new PairConst(),
-                                new ValueExpression("1", TokenType.heltal)
+                                new ValueExpression("1", new HeltalType())
                             ),
-                            new ValueExpression("2", TokenType.heltal)
+                            new ValueExpression("2", new HeltalType())
                         )
                      )
                  )
@@ -226,9 +226,9 @@ namespace ParserTest
                         new ApplicationExpression
                         (
                             new PairConst(),
-                            new ValueExpression("0", TokenType.heltal)
+                            new ValueExpression("0", new HeltalType())
                         ),
-                        new ValueExpression("1", TokenType.heltal)
+                        new ValueExpression("1", new HeltalType())
                      )
                  )
              );
@@ -256,14 +256,14 @@ namespace ParserTest
                         new ApplicationExpression
                         (
                             new ListConst(),
-                            new ValueExpression("0", TokenType.heltal)
+                            new ValueExpression("0", new HeltalType())
                         ),
                         new ApplicationExpression
                         (
                              new ApplicationExpression
                              (
                                 new ListConst(),
-                                new ValueExpression("1", TokenType.heltal)
+                                new ValueExpression("1", new HeltalType())
                              ),
                              new EmptyListExpression()
                         )
@@ -291,7 +291,7 @@ namespace ParserTest
                         new ApplicationExpression
                         (
                             new ListConst(),
-                            new ValueExpression("0", TokenType.heltal)                       
+                            new ValueExpression("0", new HeltalType())                       
                         ),
                         new EmptyListExpression()
                      )
@@ -335,7 +335,7 @@ namespace ParserTest
                      new LetExpression
                      (                        
                         new Identifier(new Token("x", TokenType.identifier)),
-                        new ValueExpression("0", TokenType.heltal),     
+                        new ValueExpression("0", new HeltalType()),     
                         new IdentifierExpression("x")
                      )
                  )
@@ -359,11 +359,11 @@ namespace ParserTest
                      new LetExpression
                      (
                         new Identifier(new Token("x", TokenType.identifier)),
-                        new ValueExpression("0", TokenType.heltal),
+                        new ValueExpression("0", new HeltalType()),
                         new LetExpression
                         (
                             new Identifier(new Token("y", TokenType.identifier)),
-                            new ValueExpression("1", TokenType.heltal),
+                            new ValueExpression("1", new HeltalType()),
                             new ApplicationExpression
                             (
                                 new IdentifierExpression("x"),
@@ -440,7 +440,7 @@ namespace ParserTest
                  (
                      new VarDecl(
                         new Identifier(new Token("x", TokenType.identifier)),
-                        new ValueExpression("0", TokenType.heltal),
+                        new ValueExpression("0", new HeltalType()),
                         new EmptyDecl()
                         ),
                      new EmptyExpression()
@@ -463,10 +463,10 @@ namespace ParserTest
                  (
                      new VarDecl(
                         new Identifier(new Token("x", TokenType.identifier)),
-                        new ValueExpression("0", TokenType.heltal),
+                        new ValueExpression("0", new HeltalType()),
                         new VarDecl(
                             new Identifier(new Token("y", TokenType.identifier)),
-                            new ValueExpression("1", TokenType.heltal),
+                            new ValueExpression("1", new HeltalType()),
                             new EmptyDecl()
                         )
                      ),
@@ -494,7 +494,7 @@ namespace ParserTest
                         new AnonFuncExpression
                         (
                             new Identifier(new Token("x", TokenType.identifier)), 
-                            new ValueExpression("0", TokenType.heltal)
+                            new ValueExpression("0", new HeltalType())
                         ),
                         new EmptyDecl()
                      ),
@@ -522,7 +522,7 @@ namespace ParserTest
                         new AnonFuncExpression
                         (
                             new Identifier(new Token("x", TokenType.identifier)),
-                            new ValueExpression("0", TokenType.heltal)
+                            new ValueExpression("0", new HeltalType())
                         ),
                         new VarDecl
                         (
@@ -530,7 +530,7 @@ namespace ParserTest
                             new AnonFuncExpression
                             (
                                 new Identifier(new Token("x", TokenType.identifier)),
-                                new ValueExpression("sand", TokenType.boolean)
+                                new ValueExpression("sand", new BoolType())
                             ),
                             new EmptyDecl()
                         )
@@ -561,9 +561,9 @@ namespace ParserTest
                             new Identifier(new Token("x", TokenType.identifier)),
                             new IfExpression
                             (
-                                new ValueExpression("sand", TokenType.boolean),
-                                new ValueExpression("1", TokenType.heltal),
-                                new ValueExpression("0", TokenType.heltal)
+                                new ValueExpression("sand", new BoolType()),
+                                new ValueExpression("1", new HeltalType()),
+                                new ValueExpression("0", new HeltalType())
                             )
                         ),
                         new EmptyDecl()
@@ -606,7 +606,7 @@ namespace ParserTest
                  new ProgramAST
                  (
                      new EmptyDecl(),
-                     new ValueExpression("1", TokenType.heltal)
+                     new ValueExpression("1", new HeltalType())
                  )
              );
 

@@ -8,5 +8,8 @@ namespace Parserproject
 {
     class TalType : BasicType
     {
+        public override string ToString() {
+            return "TalType";
+        }
     }
 }

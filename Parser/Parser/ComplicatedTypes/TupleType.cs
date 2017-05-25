@@ -16,10 +16,17 @@ namespace Parserproject
             Element1 = T1;
             Element2 = T2;
         }
+        public TupleType() {
+
+        }
 
         public override ConstructedType accept(TypeSubstitution typeSub)
         {
             return typeSub.Substitute(this);
+        }
+
+        public override string ToString() {
+            return "TupleType";
         }
     }
 }

@@ -6,11 +6,15 @@ using System.Threading.Tasks;
 
 namespace Parserproject
 {
-    class BoolType : BasicType
+    public class BoolType : BasicType
     {
         public override ConstructedType accept(TypeSubstitution typeSub)
         {
             return typeSub.Substitute(this);
+        }
+
+        public override string ToString() {
+            return "BoolType";
         }
     }
 }

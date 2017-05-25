@@ -94,12 +94,18 @@ namespace Parserproject
             Identifier argument;
             Expression functionBody;
             Expression functionExpression;
+            //List<Identifier> parameters = new List<Identifier>();
 
             functionName = new Identifier(AcceptToken(TokenType.identifier));
 
             AcceptToken("(");
-
-            argument = new Identifier(AcceptToken(TokenType.identifier));
+            //if(TokenStream.peek().content != ")")
+            //    parameters.Add(new Identifier(AcceptToken(TokenType.identifier)));
+            
+            //while (TokenStream.peek().content != ")") {
+            //    AcceptToken(",");
+                argument = new Identifier(AcceptToken(TokenType.identifier));
+            //}
 
             AcceptToken(")");
 
@@ -168,6 +174,33 @@ namespace Parserproject
 
         private Expression ParseExpression()
         {
+            if(TokenStream.peek().content == "!") {
+                Expression op = GetOperationConst(TokenStream.next().content);
+                Expression exp2 = ParseSimpleExpression();
+                exp2 = new ApplicationExpression(op, exp2);
+
+                return exp2;
+            }
+            else if (TokenStream.peek().content == "hoved" || TokenStream.peek().content == "hale") {
+                Expression op = GetOperationConst(TokenStream.next().content);
+                if (TokenStream.peek().content == "(")
+                    AcceptToken();
+                else
+                    throw new Exception("Missing bracket: (");
+
+                Expression exp2 = ParseExpression();
+
+                if (TokenStream.peek().content == ")")
+                    AcceptToken();
+                else
+                    throw new Exception("Missing ending bracket: )");
+
+                exp2 = new ApplicationExpression(op, exp2);
+
+                return exp2;
+            }
+
+
             Expression exp1 = ParseSimpleExpression();
 
             while(TokenStream.peek().Type == TokenType.op)
@@ -212,12 +245,22 @@ namespace Parserproject
                     return new EqualConst();
                 case "!=":
                     return new NotEqualConst();
+                case "!":
+                    return new NotConst();
                 case "<=":
                     return new LesserThanOrEqualConst();
                 case ">=":
                     return new GreaterThanOrEqualConst();
                 case ":":
                     return new ConcatConst();
+                case "hoved":
+                    return new HeadConst();
+                case "hale":
+                    return new TailConst();
+                case "&&":
+                    return new AndConst();
+                case "||":
+                    return new OrConst();
                 default:
                     throw new ArgumentException($"Unknown operator. was {content}");
             };
@@ -257,7 +300,27 @@ namespace Parserproject
                 else
                 {
                     Token valueToken =TokenStream.next();
-                    exp = new ValueExpression(valueToken.content, valueToken.Type);
+
+                    ConstructedType tIn;
+                    switch(valueToken.Type) {
+                        case TokenType.boolean:
+                            tIn = new BoolType();
+                            break;
+                        case TokenType.heltal:
+                            tIn = new HeltalType();
+                            break;
+                        case TokenType.streng:
+                            tIn = new StrengType();
+                            break;
+                        case TokenType.tal:
+                            tIn = new TalType();
+                            break;
+                        default:
+                            throw new Exception("Fejl på type");
+                    }
+
+
+                    exp = new ValueExpression(valueToken.content, tIn);
                 }
             }
             else if (TokenStream.peek().content == "hvis")
@@ -287,7 +350,7 @@ namespace Parserproject
             }
             else
             {
-                throw new ArgumentException($"Can't parse expression starting with {TokenStream.peek().content}.");
+                    throw new ArgumentException($"Can't parse expression starting with {TokenStream.peek().content}.");
             }
 
             return exp;

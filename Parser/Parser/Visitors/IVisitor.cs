@@ -37,8 +37,13 @@ namespace Parserproject
         void visit(GreaterThanConst node);
         void visit(GreaterThanOrEqualConst node);
 
-        //void visit(ConcatConst node);
+        void visit(ConcatConst node);
         void visit(NotConst node);
+        void visit(HeadConst node);
+        void visit(TailConst node);
+        void visit(OrConst node);
+        void visit(AndConst node);
+
     }
 
 

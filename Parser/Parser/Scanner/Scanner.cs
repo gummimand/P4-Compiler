@@ -43,6 +43,12 @@ namespace Parserproject
 
         private void RemoveWhiteSpace()
         {
+            Regex r = new Regex(@"\n");
+            if (cs.Peek() == '#') {
+                while (!r.IsMatch(cs.Peek().ToString())) {
+                    cs.Advance();
+                }
+            }
             while (isWhiteSpace(cs.Peek()))
             {
                 cs.Advance();
@@ -129,7 +135,7 @@ namespace Parserproject
 
         private bool isOperator(char input)
         {
-            Regex r_operators = new Regex("[-+*/^%<>=|&!.:]"); //@"\-\+\*\^.|&%/\:"TODO contain "!"?
+            Regex r_operators = new Regex("[-+*/^%<>=|&!:]"); //@"\-\+\*\^.|&%/\:"TODO contain "!"?
 
             return r_operators.IsMatch(input.ToString());
         }
@@ -175,8 +181,11 @@ namespace Parserproject
             }
             else if(first == '&')
             {
-                if (cs.Peek() == '&')
+                cs.GetNextChar();
+                if (cs.Peek() == '&') {
+                    cs.GetNextChar();
                     return new Token("&&", type);
+                }
                 else
                     throw new ArgumentException("& is not a valid operator. Use &&.");
             }

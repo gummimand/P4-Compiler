@@ -14,5 +14,8 @@ namespace Parserproject
             return typeSub.Substitute(this);
         }
 
+        public override string ToString() {
+            return "StrengType";
+        }
     }
 }

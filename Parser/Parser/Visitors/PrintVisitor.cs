@@ -133,6 +133,26 @@ namespace Parserproject
             throw new NotImplementedException();
         }
 
+        public void visit(TailConst node) {
+            throw new NotImplementedException();
+        }
+
+        public void visit(AndConst node) {
+            throw new NotImplementedException();
+        }
+
+        public void visit(ConcatConst node) {
+            throw new NotImplementedException();
+        }
+
+        public void visit(OrConst node) {
+            throw new NotImplementedException();
+        }
+
+        public void visit(HeadConst node) {
+            throw new NotImplementedException();
+        }
+
         public void visit(GreaterThanConst node)
         {
             throw new NotImplementedException();

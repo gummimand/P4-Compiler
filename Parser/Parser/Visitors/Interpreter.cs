@@ -21,377 +21,389 @@ namespace Parserproject
         {
             if (exp.Value is ValueExpression || exp.Value is EmptyListExpression)
             {
-                if (c is PlusConst)
-                {
+                if (c is PlusConst) {
                     ValueExpression valExp = exp.Value as ValueExpression;
                     return new PlusConstN(valExp);
                 }
-                else if (c is PlusConstN)
-                {
+                else if (c is PlusConstN) {
                     PlusConstN constExp = c as PlusConstN;
                     ValueExpression valExp = exp.Value as ValueExpression;
 
-                    if (constExp.Nval.Type is TalType || valExp.Type is TalType)
-                    {
+                    if (constExp.Nval.Type is TalType || valExp.Type is TalType) {
                         double n = double.Parse(constExp.Nval.val);
                         double m = double.Parse(valExp.val);
 
-                        return new ValueExpression((n + m).ToString(), TokenType.tal);
+                        return new ValueExpression((n + m).ToString(), new TalType());
                     }
-                    else
-                    {
+                    else {
                         int n = int.Parse(constExp.Nval.val);
                         int m = int.Parse(valExp.val);
 
-                        return new ValueExpression((n + m).ToString(), TokenType.heltal);
+                        return new ValueExpression((n + m).ToString(), new HeltalType());
                     }
                 }
-                else if (c is MinusConst)
-                {
+                else if (c is MinusConst) {
                     ValueExpression valExp = exp.Value as ValueExpression;
                     return new MinusConstN(valExp);
                 }
-                else if (c is MinusConstN)
-                {
+                else if (c is MinusConstN) {
                     MinusConstN constExp = c as MinusConstN;
                     ValueExpression valExp = exp.Value as ValueExpression;
 
-                    if (constExp.Nval.Type is TalType || valExp.Type is TalType)
-                    {
+                    if (constExp.Nval.Type is TalType || valExp.Type is TalType) {
                         double n = double.Parse(constExp.Nval.val);
                         double m = double.Parse(valExp.val);
 
-                        return new ValueExpression((n - m).ToString(), TokenType.tal);
+                        return new ValueExpression((n - m).ToString(), new TalType());
                     }
-                    else
-                    {
+                    else {
                         int n = int.Parse(constExp.Nval.val);
                         int m = int.Parse(valExp.val);
 
-                        return new ValueExpression((n - m).ToString(), TokenType.heltal);
+                        return new ValueExpression((n - m).ToString(), new HeltalType());
                     }
                 }
-                else if (c is TimesConst)
-                {
+                else if (c is TimesConst) {
                     ValueExpression valExp = exp.Value as ValueExpression;
                     return new TimesConstN(valExp);
                 }
-                else if (c is TimesConstN)
-                {
+                else if (c is TimesConstN) {
                     TimesConstN constExp = c as TimesConstN;
                     ValueExpression valExp = exp.Value as ValueExpression;
 
-                    if (constExp.Nval.Type is TalType || valExp.Type is TalType)
-                    {
+                    if (constExp.Nval.Type is TalType || valExp.Type is TalType) {
                         double n = double.Parse(constExp.Nval.val);
                         double m = double.Parse(valExp.val);
 
-                        return new ValueExpression((n * m).ToString(), TokenType.tal);
+                        return new ValueExpression((n * m).ToString(), new TalType());
                     }
-                    else
-                    {
+                    else {
                         int n = int.Parse(constExp.Nval.val);
                         int m = int.Parse(valExp.val);
 
-                        return new ValueExpression((n * m).ToString(), TokenType.heltal);
+                        return new ValueExpression((n * m).ToString(), new HeltalType());
                     }
                 }
-                else if (c is DivideConst)
-                {
+                else if (c is DivideConst) {
                     ValueExpression valExp = exp.Value as ValueExpression;
                     return new DivideConstN(valExp);
                 }
-                else if (c is DivideConstN)
-                {
+                else if (c is DivideConstN) {
                     DivideConstN constExp = c as DivideConstN;
                     ValueExpression valExp = exp.Value as ValueExpression;
 
-                    if (constExp.Nval.Type is TalType || valExp.Type is TalType)
-                    {
+                    if (constExp.Nval.Type is TalType || valExp.Type is TalType) {
                         double n = double.Parse(constExp.Nval.val);
                         double m = double.Parse(valExp.val);
 
-                        return new ValueExpression((n / m).ToString(), TokenType.tal);
+                        return new ValueExpression((n / m).ToString(), new TalType());
                     }
-                    else
-                    {
+                    else {
                         int n = int.Parse(constExp.Nval.val);
                         int m = int.Parse(valExp.val);
 
-                        return new ValueExpression((n / m).ToString(), TokenType.heltal);
+                        return new ValueExpression((n / m).ToString(), new HeltalType());
                     }
                 }
-                else if (c is PotensConst)
-                {
+                else if (c is PotensConst) {
                     ValueExpression valExp = exp.Value as ValueExpression;
                     return new PotensConstN(valExp);
                 }
-                else if (c is PotensConstN)
-                {
+                else if (c is PotensConstN) {
                     PotensConstN constExp = c as PotensConstN;
                     ValueExpression valExp = exp.Value as ValueExpression;
 
-                    if (constExp.Nval.Type is TalType || valExp.Type is TalType)
-                    {
+                    if (constExp.Nval.Type is TalType || valExp.Type is TalType) {
                         double n = double.Parse(constExp.Nval.val);
                         double m = double.Parse(valExp.val);
 
-                        return new ValueExpression((Math.Pow(n,m)).ToString(), TokenType.tal);
+                        return new ValueExpression((Math.Pow(n, m)).ToString(), new TalType());
                     }
-                    else
-                    {
+                    else {
                         int n = int.Parse(constExp.Nval.val);
                         int m = int.Parse(valExp.val);
 
-                        return new ValueExpression((Math.Pow(n,m)).ToString(), TokenType.heltal);
+                        return new ValueExpression((Math.Pow(n, m)).ToString(), new HeltalType());
                     }
                 }
-                else if (c is ModuloConst)
-                {
+                else if (c is ModuloConst) {
                     ValueExpression valExp = exp.Value as ValueExpression;
                     return new ModuloConstN(valExp);
                 }
-                else if (c is ModuloConstN)
-                {
+                else if (c is ModuloConstN) {
                     ModuloConstN constExp = c as ModuloConstN;
                     ValueExpression valExp = exp.Value as ValueExpression;
 
-                    if (constExp.Nval.Type is TalType || valExp.Type is TalType)
-                    {
+                    if (constExp.Nval.Type is TalType || valExp.Type is TalType) {
                         double n = double.Parse(constExp.Nval.val);
                         double m = double.Parse(valExp.val);
 
-                        return new ValueExpression((n % m).ToString(), TokenType.tal);
+                        return new ValueExpression((n % m).ToString(), new TalType());
                     }
-                    else
-                    {
+                    else {
                         int n = int.Parse(constExp.Nval.val);
                         int m = int.Parse(valExp.val);
 
-                        return new ValueExpression((n % m).ToString(), TokenType.heltal);
+                        return new ValueExpression((n % m).ToString(), new HeltalType());
                     }
                 }
-                else if (c is EqualConst)
-                {
+                else if (c is EqualConst) {
                     ValueExpression valExp = exp.Value as ValueExpression;
                     return new EqualConstN(valExp);
                 }
-                else if (c is EqualConstN)
-                {
+                else if (c is EqualConstN) {
                     EqualConstN constExp = c as EqualConstN;
                     ValueExpression valExp = exp.Value as ValueExpression;
-                                            
-                    if (constExp.Nval.Type is BoolType && valExp.Type is BoolType)
-                    {
+
+                    if (constExp.Nval.Type is BoolType && valExp.Type is BoolType) {
                         bool n = bool.Parse(constExp.Nval.val);
                         bool m = bool.Parse(valExp.val);
                         string truthvalue = n == m ? "sand" : "falsk";
 
-                        return new ValueExpression(truthvalue, TokenType.boolean);
+                        return new ValueExpression(truthvalue, new BoolType());
                     }
-                    else if (constExp.Nval.Type is TalType)
-                    {
+                    else if (constExp.Nval.Type is TalType) {
                         double n = double.Parse(constExp.Nval.val);
                         double m = double.Parse(valExp.val);
                         string truthvalue = n == m ? "sand" : "falsk";
 
-                        return new ValueExpression(truthvalue, TokenType.boolean);
+                        return new ValueExpression(truthvalue, new BoolType());
                     }
-                    else
-                    {
+                    else {
                         int n = int.Parse(constExp.Nval.val);
                         int m = int.Parse(valExp.val);
                         string truthvalue = n == m ? "sand" : "falsk";
 
-                        return new ValueExpression(truthvalue, TokenType.boolean);
+                        return new ValueExpression(truthvalue, new BoolType());
                     }
                 }
 
-                else if (c is NotEqualConst)
-                {
+                else if (c is NotEqualConst) {
                     ValueExpression valExp = exp.Value as ValueExpression;
                     return new EqualConstN(valExp);
                 }
-                else if (c is NotEqualConstN)
-                {
+                else if (c is NotEqualConstN) {
                     NotEqualConstN constExp = c as NotEqualConstN;
                     ValueExpression valExp = exp.Value as ValueExpression;
 
-                    if (constExp.Nval.Type is BoolType && valExp.Type is BoolType)
-                    {
+                    if (constExp.Nval.Type is BoolType && valExp.Type is BoolType) {
                         bool n = bool.Parse(constExp.Nval.val);
                         bool m = bool.Parse(valExp.val);
                         string truthvalue = n != m ? "sand" : "falsk";
 
-                        return new ValueExpression(truthvalue, TokenType.boolean);
+                        return new ValueExpression(truthvalue, new BoolType());
                     }
-                    else if (constExp.Nval.Type is TalType)
-                    {
+                    else if (constExp.Nval.Type is TalType) {
                         double n = double.Parse(constExp.Nval.val);
                         double m = double.Parse(valExp.val);
                         string truthvalue = n != m ? "sand" : "falsk";
 
-                        return new ValueExpression(truthvalue, TokenType.boolean);
+                        return new ValueExpression(truthvalue, new BoolType());
                     }
-                    else
-                    {
+                    else {
                         int n = int.Parse(constExp.Nval.val);
                         int m = int.Parse(valExp.val);
                         string truthvalue = n != m ? "sand" : "falsk";
 
-                        return new ValueExpression(truthvalue, TokenType.boolean);
+                        return new ValueExpression(truthvalue, new BoolType());
                     }
                 }
 
-                else if (c is LesserThanConst)
-                {
+                else if (c is LesserThanConst) {
                     ValueExpression valExp = exp.Value as ValueExpression;
                     return new LesserThanConstN(valExp);
                 }
-                else if (c is LesserThanConstN)
-                {
+                else if (c is LesserThanConstN) {
                     LesserThanConstN constExp = c as LesserThanConstN;
                     ValueExpression valExp = exp.Value as ValueExpression;
 
-                    if (constExp.Nval.Type is TalType)
-                    {
+                    if (constExp.Nval.Type is TalType) {
                         double n = double.Parse(constExp.Nval.val);
                         double m = double.Parse(valExp.val);
                         string truthvalue = n < m ? "sand" : "falsk";
 
-                        return new ValueExpression(truthvalue, TokenType.boolean);
+                        return new ValueExpression(truthvalue, new BoolType());
                     }
-                    else
-                    {
+                    else {
                         int n = int.Parse(constExp.Nval.val);
                         int m = int.Parse(valExp.val);
                         string truthvalue = n < m ? "sand" : "falsk";
 
-                        return new ValueExpression(truthvalue, TokenType.boolean);
+                        return new ValueExpression(truthvalue, new BoolType());
                     }
                 }
-                else if (c is LesserThanOrEqualConst)
-                {
+                else if (c is LesserThanOrEqualConst) {
                     ValueExpression valExp = exp.Value as ValueExpression;
                     return new LesserThanOrEqualConstN(valExp);
                 }
-                else if (c is LesserThanOrEqualConstN)
-                {
+                else if (c is LesserThanOrEqualConstN) {
                     LesserThanOrEqualConstN constExp = c as LesserThanOrEqualConstN;
                     ValueExpression valExp = exp.Value as ValueExpression;
 
-                    if (constExp.Nval.Type is TalType)
-                    {
+                    if (constExp.Nval.Type is TalType) {
                         double n = double.Parse(constExp.Nval.val);
                         double m = double.Parse(valExp.val);
                         string truthvalue = n <= m ? "sand" : "falsk";
 
-                        return new ValueExpression(truthvalue, TokenType.boolean);
+                        return new ValueExpression(truthvalue, new BoolType());
                     }
-                    else
-                    {
+                    else {
                         int n = int.Parse(constExp.Nval.val);
                         int m = int.Parse(valExp.val);
                         string truthvalue = n <= m ? "sand" : "falsk";
 
-                        return new ValueExpression(truthvalue, TokenType.boolean);
+                        return new ValueExpression(truthvalue, new BoolType());
                     }
                 }
-                else if (c is GreaterThanConst)
-                {
+                else if (c is GreaterThanConst) {
                     ValueExpression valExp = exp.Value as ValueExpression;
                     return new GreaterThanConstN(valExp);
                 }
-                else if (c is GreaterThanConstN)
-                {
+                else if (c is GreaterThanConstN) {
                     GreaterThanConstN constExp = c as GreaterThanConstN;
                     ValueExpression valExp = exp.Value as ValueExpression;
 
-                    if (constExp.Nval.Type is TalType)
-                    {
+                    if (constExp.Nval.Type is TalType) {
                         double n = double.Parse(constExp.Nval.val);
                         double m = double.Parse(valExp.val);
                         string truthvalue = n > m ? "sand" : "falsk";
 
-                        return new ValueExpression(truthvalue, TokenType.boolean);
+                        return new ValueExpression(truthvalue, new BoolType());
                     }
-                    else
-                    {
+                    else {
                         int n = int.Parse(constExp.Nval.val);
                         int m = int.Parse(valExp.val);
                         string truthvalue = n > m ? "sand" : "falsk";
 
-                        return new ValueExpression(truthvalue, TokenType.boolean);
+                        return new ValueExpression(truthvalue, new BoolType());
                     }
                 }
-                else if (c is GreaterThanOrEqualConst)
-                {
+                else if (c is GreaterThanOrEqualConst) {
                     ValueExpression valExp = exp.Value as ValueExpression;
                     return new GreaterThanOrEqualConstN(valExp);
                 }
-                else if (c is GreaterThanOrEqualConstN)
-                {
+                else if (c is GreaterThanOrEqualConstN) {
                     GreaterThanOrEqualConstN constExp = c as GreaterThanOrEqualConstN;
                     ValueExpression valExp = exp.Value as ValueExpression;
 
-                    if (constExp.Nval.Type is TalType)
-                    {
+                    if (constExp.Nval.Type is TalType) {
                         double n = double.Parse(constExp.Nval.val);
                         double m = double.Parse(valExp.val);
                         string truthvalue = n >= m ? "sand" : "falsk";
 
-                        return new ValueExpression(truthvalue, TokenType.boolean);
+                        return new ValueExpression(truthvalue, new BoolType());
                     }
-                    else
-                    {
+                    else {
                         int n = int.Parse(constExp.Nval.val);
                         int m = int.Parse(valExp.val);
                         string truthvalue = n >= m ? "sand" : "falsk";
 
-                        return new ValueExpression(truthvalue, TokenType.boolean);
+                        return new ValueExpression(truthvalue, new BoolType());
                     }
                 }
-                else if (c is PairConst)
-                {
+                else if (c is PairConst) {
                     ValueExpression valExp = exp.Value as ValueExpression;
                     return new PairConstN(valExp);
                 }
-                else if (c is PairConstN)
-                {
+                else if (c is PairConstN) {
                     PairConstN constExp = c as PairConstN;
                     ValueExpression valExp = exp.Value as ValueExpression;
 
-                    return new ValueExpression(Tuple.Create(constExp.exp.Value, valExp.val).ToString(), TokenType.datatype);
+                    return new ValueExpression(Tuple.Create(constExp.exp.Value, valExp.val).ToString(), new TupleType());
                 }
-                else if (c is ListConst)
-                {
+                else if (c is ListConst) {
                     ValueExpression valExp = exp.Value as ValueExpression;
                     return new ListConstN(valExp);
                 }
 
-                else if (c is ListConstN)
-                {
+                else if (c is ListConstN) {
                     ListConstN constExp = c as ListConstN;
                     List<string> list = new List<string>();
 
-                    if (exp.Value is ValueExpression)
-                    {
+                    if (exp.Value is ValueExpression) {
                         ValueExpression valExp = exp.Value as ValueExpression;
 
                         list.Add(constExp.exp.Value.ToString());
                         list.AddRange(valExp.vals);
                         return new ValueExpression(list, TokenType.datatype);
                     }
-                    else
-                    {
+                    else {
                         list.Add(constExp.exp.Value.ToString());
 
                         return new ValueExpression(list, TokenType.datatype);
                     }
-
-
-
                 }
+                else if(c is ConcatConst) {
+                    ValueExpression valExp = exp.Value as ValueExpression;
+                    return new ConcatConstN(valExp);
+                }
+                else if(c is ConcatConstN) {
+                    ConcatConstN constExp = c as ConcatConstN;
+                    List<string> list = new List<string>();
+
+                    if (exp.Value is ValueExpression) {
+                        ValueExpression valExp = exp.Value as ValueExpression;
+
+                        list.AddRange(constExp.Nval.vals);
+                        list.AddRange(valExp.vals);
+                        return new ValueExpression(list, TokenType.datatype);
+                    }
+                    else {
+                        return new ValueExpression(list, TokenType.datatype);
+                    }
+                }
+
+                else if (c is NotConst) {
+                    ValueExpression valExp = exp.Value as ValueExpression;
+
+                    string truthvalue = valExp.val == "sand" ? "falsk" : "sand";
+
+                    return new ValueExpression(truthvalue, new BoolType());
+                }
+                else if (c is HeadConst) {
+                    ValueExpression valExp = exp.Value as ValueExpression;
+                    
+                    return new ValueExpression(valExp.vals.First(), valExp.Type); //TODO sufficient type
+                }
+                else if (c is TailConst) {
+                    ValueExpression valExp = exp.Value as ValueExpression;
+
+                    
+                    return new ValueExpression(valExp.vals.GetRange(1, valExp.vals.Count - 1), TokenType.datatype);
+                }
+                else if (c is AndConst) {
+                    ValueExpression valExp = exp.Value as ValueExpression;
+
+                    return new AndConstN(valExp);
+                }
+                else if (c is AndConstN) {
+                    AndConstN constExp = c as AndConstN;
+                    ValueExpression valExp = exp.Value as ValueExpression;
+
+                    bool n = constExp.Nval.val == "sand" ? true : false;
+                    bool m = valExp.val == "sand" ? true : false;
+
+                    string truthvalue = n && m ? "sand" : "falsk";
+
+                    return new ValueExpression(truthvalue, new BoolType());
+                }
+
+                else if (c is OrConst) {
+                    ValueExpression valExp = exp.Value as ValueExpression;
+
+                    return new OrConstN(valExp);
+                }
+                else if (c is OrConstN) {
+                    OrConstN constExp = c as OrConstN;
+                    ValueExpression valExp = exp.Value as ValueExpression;
+
+                    bool n = constExp.Nval.val == "sand" ? true : false;
+                    bool m = valExp.val == "sand" ? true : false;
+                    string truthvalue = n || m ? "sand" : "falsk";
+
+                    return new ValueExpression(truthvalue, new BoolType());
+                }
+
                 else { throw new Exception("no!"); }
             }
             else if (exp.Value is EmptyListExpression)
@@ -606,11 +618,31 @@ namespace Parserproject
         {
             node.Value = node;
         }
-        /*
-        public void visit(ConcatConst node)
-        {
+
+        public void visit(HeadConst node) {
             node.Value = node;
         }
-        */
+
+        public void visit(TailConst node) {
+            node.Value = node;
+        }
+
+        public void visit(OrConst node) {
+            node.Value = node;
+        }
+
+        public void visit(AndConst node) {
+            node.Value = node;
+        }
+
+        public void visit(ConcatConst node) {
+            node.Value = node;
+        }
+        /*
+public void visit(ConcatConst node)
+{
+node.Value = node;
+}
+*/
     }
 }

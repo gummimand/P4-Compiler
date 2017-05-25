@@ -262,26 +262,32 @@ namespace Parserproject
 
         public override void accept(IVisitor v) { v.visit(this); }
 
-        public ValueExpression(string val, TokenType tokenType) : base("VALUE_EXPRESSION")
+        public ValueExpression(string val, ConstructedType type) : base("VALUE_EXPRESSION")
         {
             this.val = val;
 
-            switch (tokenType)
+            switch (type.ToString())
             {
-                case TokenType.streng:
+                case "StrengType":
                     Type = new StrengType();
                     break;
-                case TokenType.heltal:
-                    Type = new HeltalType();
-                    break;
-                case TokenType.tal:
+                case "TalType":
                     Type = new TalType();
                     break;
-                case TokenType.boolean:
+                case "HeltalType":
+                    Type = new HeltalType();
+                    break;
+                case "BoolType":
                     Type = new BoolType();
                     break;
+                case "ListType":
+                    Type = new ListType();
+                    break;
+                case "TupleType":
+                    Type = new TupleType();
+                    break;
                 default:
-                    throw new Exception($"Fuck you, this is not a value! was {tokenType.ToString()}");
+                    throw new Exception($"Fuck you, this is not a value! was {type.ToString()}");
             }
         }
 
@@ -1248,6 +1254,8 @@ namespace Parserproject
             isInt = true;
         }
 
+        public override void accept(IVisitor v) { v.visit(this); }
+
         public override bool Equals(object obj)
         {
             ConcatConstN other = obj as ConcatConstN;
@@ -1275,44 +1283,64 @@ namespace Parserproject
         }
     }
 
-    public class NotConstN : ConstantExpression
+    public class HeadConst : ConstantExpression
+    {
+        public HeadConst() : base("HEAD") {
+        }
+
+        public override void accept(IVisitor v) { v.visit(this); }
+    }
+    public class TailConst : ConstantExpression
+    {
+        public TailConst() : base("TAIL") {
+        }
+
+        public override void accept(IVisitor v) { v.visit(this); }
+    }
+
+    public class AndConst : ConstantExpression
+    {
+        public AndConst() : base("AND") {
+        }
+
+        public override void accept(IVisitor v) { v.visit(this); }
+    }
+
+    public class AndConstN : ConstantExpression
     {
         public double Nd;
         public int Ni;
         public bool isInt = false;
         public ValueExpression Nval;
 
-        public override void accept(IVisitor v) { v.visit(this); }
-
-        public NotConstN(ValueExpression n) : base("NOTN")
-        {
+        public AndConstN(ValueExpression n) : base("ANDN") {
             this.Nval = n;
         }
 
-        public NotConstN(double n) : base("NOTN")
-        {
-            this.Nd = n;
+        public override void accept(IVisitor v) { v.visit(this); }
+
+    }
+
+    public class OrConst : ConstantExpression
+    {
+        public OrConst() : base("OR") {
         }
 
-        public NotConstN(int n) : base("NOTN")
-        {
-            this.Ni = n;
-            isInt = true;
+        public override void accept(IVisitor v) { v.visit(this); }
+    }
+
+    public class OrConstN : ConstantExpression
+    {
+        public double Nd;
+        public int Ni;
+        public bool isInt = false;
+        public ValueExpression Nval;
+
+        public OrConstN(ValueExpression n) : base("ORN") {
+            this.Nval = n;
         }
 
-        public override bool Equals(object obj)
-        {
-            NotConstN other = obj as NotConstN;
-
-            if (other != null)
-            {
-                return this.Nd == other.Nd;
-            }
-            else
-            {
-                return false;
-            }
-        }
+        public override void accept(IVisitor v) { v.visit(this); }
     }
 }
 
