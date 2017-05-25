@@ -311,16 +311,14 @@ namespace Parserproject
         public override string ToString()
         {
             string output = "";
-            if (IsList)
-            {
-                foreach (var item in vals)
-                {
+            if (IsList) {
+                foreach (var item in vals) {
                     if (String.IsNullOrEmpty(output))
                         output = item;
                     else
                         output = (output + "," + item);
                 }
-                return output;
+                return "{" + output + "}";
             }
             return val;
         }
