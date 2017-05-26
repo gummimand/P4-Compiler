@@ -142,7 +142,7 @@ namespace Parserproject
         // [APP]-rule
         public void visit(AnonFuncExpression node)
         {
-            string x = node.arg.token.content;// todo make arg identifierExpression an replace node.arg.varName;
+            string x = node.arg.token.content;
             TypeVar a = new TypeVar();
 
             TypeEnv E = node.E.Clone();
@@ -219,7 +219,6 @@ namespace Parserproject
 
         public void visit(ValueExpression node)
         {
-            // har allerede type
             node.sigma = new TypeSubstitution();
         }
 
@@ -234,8 +233,10 @@ namespace Parserproject
             TypeSubstitution sigma1 = node.exp1.sigma;
             ConstructedType type1 = node.exp1.Type;
 
-            TypeScheme closure = clo.Close(E, type1);
-            TypeEnv E_ = sigma1.Substitute(E);
+            TypeEnv E2 = node.E.Clone();
+
+            TypeScheme closure = clo.Close(sigma1.Substitute(E2), type1);
+            TypeEnv E_ = sigma1.Substitute(E2);
             E_.Add(x, closure);
 
             node.exp2.E = E_;

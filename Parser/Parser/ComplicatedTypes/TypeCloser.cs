@@ -72,11 +72,6 @@ namespace Parserproject
             return new List<TypeVar>();
         }
 
-        //public List<TypeVar> FTV(ConstructedType t)
-        //{
-        //    return t.Accept(this);
-        //}
-
         public List<TypeVar> FTV(TypeScheme t)
         {
             return t.Accept(this);

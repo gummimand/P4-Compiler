@@ -315,7 +315,6 @@ namespace Parserproject
             if (IsConst(TokenStream.peek().Type) || TokenStream.peek().Type == TokenType.identifier)
             {
                 if(TokenStream.peek().Type == TokenType.identifier) {
-                    //Identifier identifier = new Identifier(TokenStream.next());
                     exp = new IdentifierExpression(TokenStream.next().content);
                 }
                 else

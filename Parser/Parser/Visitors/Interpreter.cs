@@ -157,29 +157,6 @@ namespace Parserproject
                     string truthvalue = constExp.Nval.Equals(valExp) ? "sand" : "falsk";
 
                     return new ValueExpression(truthvalue, new BoolType());
-
-
-                    //if (constExp.Nval.Type is BoolType && valExp.Type is BoolType) {
-                    //    bool n = bool.Parse(constExp.Nval.val);
-                    //    bool m = bool.Parse(valExp.val);
-                    //    string truthvalue = n == m ? "sand" : "falsk";
-
-                    //    return new ValueExpression(truthvalue, new BoolType());
-                    //}
-                    //else if (constExp.Nval.Type is TalType) {
-                    //    double n = double.Parse(constExp.Nval.val);
-                    //    double m = double.Parse(valExp.val);
-                    //    string truthvalue = n == m ? "sand" : "falsk";
-
-                    //    return new ValueExpression(truthvalue, new BoolType());
-                    //}
-                    //else {
-                    //    int n = int.Parse(constExp.Nval.val);
-                    //    int m = int.Parse(valExp.val);
-                    //    string truthvalue = n == m ? "sand" : "falsk";
-
-                    //    return new ValueExpression(truthvalue, new BoolType());
-                    //}
                 }
 
                 else if (c is NotEqualConst) {
@@ -326,8 +303,7 @@ namespace Parserproject
 
                     if (exp.Value is EmptyListExpression)
                     {
-                        list.Add(constExp.exp);
-                        //list.Add(exp.Value);
+                        list.Add(constExp.exp)
                         return new ValueExpression(list);
                     }
                     else if (exp.Value is ValueExpression )
@@ -346,24 +322,6 @@ namespace Parserproject
                     ValueExpression valExp = exp.Value as ValueExpression;
                     return new ConcatConstN(valExp);
                 }
-                else if(c is ConcatConstN) {
-                    //ConcatConstN constExp = c as ConcatConstN;
-                    //List<string> list = new List<string>();
-
-                    //if (exp.Value is ValueExpression) {
-                    //    ValueExpression valExp = exp.Value as ValueExpression;
-
-                    //    list.AddRange(constExp.Nval.vals);
-                    //    list.AddRange(valExp.vals);
-                    //    return new ValueExpression(list);
-                    //}
-                    //else {
-                    //    return new ValueExpression(list);
-                    //}
-
-                    throw new NotImplementedException();
-                }
-
                 else if (c is NotConst) {
                     ValueExpression valExp = exp.Value as ValueExpression;
 
@@ -375,7 +333,7 @@ namespace Parserproject
                     ValueExpression valExp = exp.Value as ValueExpression;
                     ListType type = valExp.Type as ListType;
 
-                    return valExp.vals[0]; //TODO sufficient type
+                    return valExp.vals[0]; 
                 }
                 else if (c is TailConst) {
                     ValueExpression valExp = exp.Value as ValueExpression;
@@ -469,19 +427,9 @@ namespace Parserproject
         public void visit(IfExpression node)
         {
 
-            // if1
-            // hvis node.condition er et udtryk, reducer condition
-
-            //if2
-            // hvis node.condition = sand reducer node.alt1
-
-            //if3
-            // hvis node.condition = falsk reducer node.alt1
             visit(node.condition);
 
             bool truth;
-
-            // TODO clean up + handle exceptions
 
             object val = node.condition.Value;
             ValueExpression valexp = val as ValueExpression;
@@ -503,7 +451,6 @@ namespace Parserproject
 
         public void visit(AnonFuncExpression node)
         {
-            // er sin egen værdi (fingers crossed)
             node.Value = node;
         }
 
@@ -549,7 +496,7 @@ namespace Parserproject
 
         public void visit(ClosureExpression node)
         {
-            throw new NotImplementedException();
+            
         }
 
         public void visit(IdentifierExpression node)
@@ -700,11 +647,5 @@ namespace Parserproject
             node.Value = node;
 
         }
-        /*
-public void visit(ConcatConst node)
-{
-node.Value = node;
-}
-*/
     }
 }

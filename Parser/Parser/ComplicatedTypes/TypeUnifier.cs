@@ -22,15 +22,6 @@ namespace Parserproject
             {
                 return T;
             }
-
-            //if (bindings.ContainsKey(T))
-            //{
-            //    return Binding(bindings[T]);
-            //}
-            //else
-            //{
-            //    return T;
-            //}
         }
 
         private void Bind(ConstructedType TypeA, ConstructedType TypeB)
@@ -44,16 +35,6 @@ namespace Parserproject
             {
                 throw new Exception($"{TypeA.ToString()} is already bound");
             }
-        
-
-            //if (!bindings.ContainsKey(TypeA))
-            //{
-            //    bindings.Add(TypeA, TypeB);
-            //}
-            //else
-            //{
-            //    throw new Exception($"{TypeA.ToString()} is already bound");
-            //}
         }
         
         public TypeSubstitution Unify(ConstructedType TypeA, ConstructedType TypeB)
@@ -80,19 +61,7 @@ namespace Parserproject
                     }
                 }
 
-                //foreach (TypeVar typeVar in bindings.Keys.OfType<TypeVar>())
-                //{
-                //    sigma.Add(typeVar, Binding(typeVar));
-                //}
-
-                //// make sure that every binding is properly made
-                //foreach (TypeVar typeVar in bindings.Keys.OfType<TypeVar>())
-                //{
-                //    unifier.Add(typeVar, sigma.Substitute(Binding(typeVar)));
-                //}
-
                 bindings.Clear();
-
 
                 return unifier;
             }

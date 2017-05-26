@@ -18,8 +18,6 @@ namespace Parserproject
             cs = new CharacterStream(characterString);
         }
 
-        //public enum Typer { Tal, Heltal, Streng, Identifier, Operator, Bracket, Keyword } 
-
 
         public List<Token> Scan()
         {
@@ -33,7 +31,7 @@ namespace Parserproject
                 RemoveWhiteSpace();
 
                 if (cs.EOF())
-                    tokens.Add(new Token("EOF", TokenType.EOF)); //todo, End of file char?
+                    tokens.Add(new Token("EOF", TokenType.EOF));
                 else if (cs.Peek() == '#')
                 {
                     while (cs.Peek() != '\n' && !cs.EOF())
@@ -134,12 +132,12 @@ namespace Parserproject
 
         private bool isOperator(char input)
         {
-            Regex r_operators = new Regex("[-+*/^%<>=|&!:]"); //@"\-\+\*\^.|&%/\:"TODO contain "!"?
+            Regex r_operators = new Regex("[-+*/^%<>=|&!:]"); 
 
             return r_operators.IsMatch(input.ToString());
         }
 
-        private bool isBracket(char input)//todo
+        private bool isBracket(char input)
         {
             Regex r = new Regex(@"[\(\)\[\]{}]");
 

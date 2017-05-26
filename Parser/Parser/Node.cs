@@ -461,7 +461,6 @@ namespace Parserproject
     {
         public Identifier(Token t) : base(t) { }
         public override void accept(IVisitor v) { v.visit(this); }
-        //Static polymorphism
 
         public override bool Equals(object obj)
         {

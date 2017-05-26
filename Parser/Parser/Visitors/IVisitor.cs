@@ -36,7 +36,6 @@ namespace Parserproject
         void visit(LesserThanOrEqualConst node);
         void visit(GreaterThanConst node);
         void visit(GreaterThanOrEqualConst node);
-
         void visit(ConcatConst node);
         void visit(NotConst node);
         void visit(HeadConst node);
@@ -46,31 +45,5 @@ namespace Parserproject
         void visit(SecondConst node);
         void visit(SelectConst node);
         void visit(FirstConst node);
-
-
-
-
-    }
-
-
-    public interface IVisitor<T>
-    {
-        T visit(ASTNode node);
-        T visit(Leaf leaf);
-        T visit(Node node);
-        T visit(Identifier node);
-        T visit(Value node);
-        T visit(ProgramAST node);
-        T visit(Decl node);
-        T visit(VarDecl node);
-        T visit(EmptyDecl node);
-        T visit(Expression node);
-        T visit(IfExpression node);
-        T visit(LetExpression node);
-        T visit(AnonFuncExpression node);
-        T visit(ValueExpression node);
-        T visit(IdentifierExpression node);
-        T visit(ApplicationExpression node);
-        T visit(EmptyExpression node);
     }
 }

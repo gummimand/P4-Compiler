@@ -40,14 +40,6 @@ namespace Parserproject
             return table.Find(t => t.Item1 == varName).Item2;           
         }
 
-        //public void Print()
-        //{
-        //    for (int i = table.Count - 1; i >= 0; i--)
-        //    {
-        //        Console.WriteLine(table[i].Item1 + " = " + table[i].Item2.ToString());
-        //    }
-        //}
-
     }
 
 
