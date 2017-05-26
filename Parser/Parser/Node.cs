@@ -259,7 +259,9 @@ namespace Parserproject
     {
         public List<string> vals;
         public string val;
+        public Tuple<Expression, Expression> tuple;
         public bool IsList = false;
+        public bool IsTuple = false;
 
         public override void accept(IVisitor v) { v.visit(this); }
 
@@ -297,6 +299,12 @@ namespace Parserproject
         {
             IsList = true;
             vals = val;
+        }
+
+        public ValueExpression(Tuple<Expression, Expression> val) : base("VALUE_EXPRESSION")
+        {
+            IsTuple = true;
+            tuple = val;
         }
 
 
@@ -1276,6 +1284,32 @@ namespace Parserproject
         {
             return obj is NotConst;
         }
+    }
+
+    public class FirstConst : ConstantExpression
+    {
+        public FirstConst() : base("FIRST")
+        {
+        }
+
+        public override void accept(IVisitor v) { v.visit(this); }
+    }
+    public class SecondConst : ConstantExpression
+    {
+        public SecondConst() : base("SECOND")
+        {
+        }
+
+        public override void accept(IVisitor v) { v.visit(this); }
+    }
+
+    public class SelectConst : ConstantExpression
+    {
+        public SelectConst() : base("SELECT")
+        {
+        }
+
+        public override void accept(IVisitor v) { v.visit(this); }
     }
 
     public class HeadConst : ConstantExpression

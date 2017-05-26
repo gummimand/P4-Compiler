@@ -399,5 +399,20 @@ namespace Parserproject
         public void visit(ConcatConst node) {
             
         }
+
+        public void visit(SecondConst node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void visit(SelectConst node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void visit(FirstConst node)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

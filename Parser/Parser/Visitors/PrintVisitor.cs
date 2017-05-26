@@ -141,6 +141,21 @@ namespace Parserproject
             throw new NotImplementedException();
         }
 
+        public void visit(SecondConst node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void visit(FirstConst node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void visit(SelectConst node)
+        {
+            throw new NotImplementedException();
+        }
+
         public void visit(ConcatConst node) {
             throw new NotImplementedException();
         }

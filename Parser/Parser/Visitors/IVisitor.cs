@@ -43,6 +43,12 @@ namespace Parserproject
         void visit(TailConst node);
         void visit(OrConst node);
         void visit(AndConst node);
+        void visit(SecondConst node);
+        void visit(SelectConst node);
+        void visit(FirstConst node);
+
+
+
 
     }
 

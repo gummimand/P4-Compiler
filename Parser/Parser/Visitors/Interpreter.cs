@@ -307,9 +307,9 @@ namespace Parserproject
                 }
                 else if (c is PairConstN) {
                     PairConstN constExp = c as PairConstN;
-                    ValueExpression valExp = exp.Value as ValueExpression;
+                    Expression valExp = exp.Value as Expression;
 
-                    return new ValueExpression(Tuple.Create(constExp.exp.Value, valExp.val).ToString(), new TupleType());
+                    return new ValueExpression(Tuple.Create(constExp.exp.Value, valExp));
                 }
                 else if (c is ListConst) {
                     ValueExpression valExp = exp.Value as ValueExpression;
@@ -403,6 +403,20 @@ namespace Parserproject
                     string truthvalue = n || m ? "sand" : "falsk";
 
                     return new ValueExpression(truthvalue, new BoolType());
+                }
+                else if (c is FirstConst)
+                {
+                    FirstConst constExp = c as FirstConst;
+                    ValueExpression valExp = exp.Value as ValueExpression;
+
+                    if (valExp.IsTuple)
+                    {
+                        return valExp.tuple.Item1;
+                    }
+                    else
+                    {
+                        return valExp;
+                    }
                 }
 
                 else { throw new Exception("no!"); }
@@ -639,6 +653,24 @@ namespace Parserproject
 
         public void visit(ConcatConst node) {
             node.Value = node;
+        }
+
+        public void visit(SecondConst node)
+        {
+            node.Value = node;
+            
+        }
+
+        public void visit(SelectConst node)
+        {
+            node.Value = node;
+
+        }
+
+        public void visit(FirstConst node)
+        {
+            node.Value = node;
+
         }
         /*
 public void visit(ConcatConst node)
