@@ -9,7 +9,7 @@ namespace Parserproject
     public class TypeVar : ConstructedType
     {
         public string id;
-        private static char nextId = 'a';
+        private static char nextId ='a';
 
         public TypeVar()
         {

@@ -54,7 +54,7 @@ namespace Parserproject
             while (cs.Peek() == '#')
             {
                 cs.Advance();
-                while (cs.Peek() != '\n')
+                while (cs.Peek() != '\n' && !cs.EOF())
                 {
                     cs.Advance();
                 }
@@ -265,6 +265,8 @@ namespace Parserproject
                 case "slut":
                 case "hoved":
                 case "hale":
+                case "første":
+                case "anden":
                 case "tag":
                 case "smid":
                 case "fejl":

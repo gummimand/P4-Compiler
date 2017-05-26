@@ -269,30 +269,6 @@ namespace Parserproject
         {
             this.val = val;
             this.Type = type;
-
-            //switch (type.ToString())
-            //{
-            //    case "StrengType":
-            //        Type = new StrengType();
-            //        break;
-            //    case "TalType":
-            //        Type = new TalType();
-            //        break;
-            //    case "HeltalType":
-            //        Type = new HeltalType();
-            //        break;
-            //    case "BoolType":
-            //        Type = new BoolType();
-            //        break;
-            //    case "ListType":
-            //        Type = new ListType();
-            //        break;
-            //    case "TupleType":
-            //        Type = new TupleType();
-            //        break;
-            //    default:
-            //        throw new Exception($"Fuck you, this is not a value! was {type.ToString()}");
-            //}
         }
 
         public ValueExpression(List<string> val) : base("VALUE_EXPRESSION")
@@ -335,6 +311,10 @@ namespace Parserproject
                         output = (output + "," + item);
                 }
                 return "{" + output + "}";
+            }
+            else if (IsTuple)
+            {
+                return "(" + tuple.Item1.ToString() + " , " + tuple.Item2.ToString() + ")";
             }
             return val;
         }

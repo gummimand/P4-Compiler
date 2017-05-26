@@ -415,7 +415,21 @@ namespace Parserproject
                     }
                     else
                     {
-                        return valExp;
+                        throw new Exception("First used on non-pair");
+                    }
+                }
+                else if (c is SecondConst)
+                {
+                    FirstConst constExp = c as FirstConst;
+                    ValueExpression valExp = exp.Value as ValueExpression;
+
+                    if (valExp.IsTuple)
+                    {
+                        return valExp.tuple.Item2;
+                    }
+                    else
+                    {
+                        throw new Exception("Second used on non-pair");
                     }
                 }
 

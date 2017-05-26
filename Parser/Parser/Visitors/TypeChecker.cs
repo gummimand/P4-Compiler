@@ -402,7 +402,11 @@ namespace Parserproject
 
         public void visit(SecondConst node)
         {
-            throw new NotImplementedException();
+            TypeVar a = new TypeVar();
+            TypeVar b = new TypeVar();
+
+            node.Type = new FunctionType(new TupleType(a.Clone(), b.Clone()), b.Clone());
+            node.sigma = new TypeSubstitution();
         }
 
         public void visit(SelectConst node)
@@ -412,7 +416,11 @@ namespace Parserproject
 
         public void visit(FirstConst node)
         {
-            throw new NotImplementedException();
+            TypeVar a = new TypeVar();
+            TypeVar b = new TypeVar();
+
+            node.Type = new FunctionType(new TupleType(a.Clone(), b.Clone()), a.Clone());
+            node.sigma = new TypeSubstitution();
         }
     }
 }

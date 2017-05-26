@@ -91,7 +91,7 @@ namespace Parserproject
 
             freeVars = freeVars.Distinct().ToList();
 
-            int i = freeVars.FindIndex(p => p.Equals(t));
+            int i = freeVars.FindIndex(p => p.Equals(t.TypeVariable));
 
             freeVars.RemoveAt(i);
 

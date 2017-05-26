@@ -174,49 +174,55 @@ namespace Parserproject
 
         private Expression ParseExpression()
         {
-            if(TokenStream.peek().content == "!") {
-                Expression op = GetOperationConst(TokenStream.next().content);
-                Expression exp2 = ParseSimpleExpression();
-                exp2 = new ApplicationExpression(op, exp2);
+           
 
-                return exp2;
-            }
-            else if (TokenStream.peek().content == "hoved" || TokenStream.peek().content == "hale") {
-                Expression op = GetOperationConst(TokenStream.next().content);
-                if (TokenStream.peek().content == "(")
-                    AcceptToken();
-                else
-                    throw new Exception("Missing bracket: (");
+                if (TokenStream.peek().content == "!")
+                {
+                    Expression op = GetOperationConst(TokenStream.next().content);
+                    Expression exp2 = ParseSimpleExpression();
+                    exp2 = new ApplicationExpression(op, exp2);
 
-                Expression exp2 = ParseExpression();
+                    return exp2;
+                }
+                else if (TokenStream.peek().content == "hoved" || TokenStream.peek().content == "hale" || TokenStream.peek().content == "første" || TokenStream.peek().content == "anden")
+                {
+                    Expression op = GetOperationConst(TokenStream.next().content);
+                    if (TokenStream.peek().content == "(")
+                        AcceptToken();
+                    else
+                        throw new Exception("Missing bracket: (");
 
-                if (TokenStream.peek().content == ")")
-                    AcceptToken();
-                else
-                    throw new Exception("Missing ending bracket: )");
+                    Expression exp2 = ParseExpression();
 
-                exp2 = new ApplicationExpression(op, exp2);
+                    if (TokenStream.peek().content == ")")
+                        AcceptToken();
+                    else
+                        throw new Exception("Missing ending bracket: )");
 
-                return exp2;
-            }
+                    exp2 = new ApplicationExpression(op, exp2);
+
+                    return exp2;
+                }
 
 
-            Expression exp1 = ParseSimpleExpression();
+                Expression exp1 = ParseSimpleExpression();
 
-            while(TokenStream.peek().Type == TokenType.op)
-            {
-                Expression op = GetOperationConst(TokenStream.next().content);
 
-                Expression exp2 = ParseSimpleExpression();
 
-                exp1 = new ApplicationExpression(new ApplicationExpression(op, exp1), exp2);
-            }
+                while (TokenStream.peek().Type == TokenType.op)
+                {
+                    Expression op = GetOperationConst(TokenStream.next().content);
 
-            while(TokenStream.peek().Type != TokenType.EOF && !IsExpressionEnding(TokenStream.peek()))
-            {
-                Expression exp2 = ParseSimpleExpression();
-                exp1 = new ApplicationExpression(exp1, exp2);
-            }
+                    Expression exp2 = ParseExpression();
+
+                    exp1 = new ApplicationExpression(new ApplicationExpression(op, exp1), exp2);
+                }
+
+                while (TokenStream.peek().Type != TokenType.EOF && TokenStream.peek().Type != TokenType.op && !IsExpressionEnding(TokenStream.peek()))
+                {
+                    Expression exp2 = ParseSimpleExpression();
+                    exp1 = new ApplicationExpression(exp1, exp2);
+                }
 
             return exp1;        
         }
@@ -255,6 +261,10 @@ namespace Parserproject
                     return new ConcatConst();
                 case "hoved":
                     return new HeadConst();
+                case "første":
+                    return new FirstConst();
+                case "anden":
+                    return new SecondConst();
                 case "hale":
                     return new TailConst();
                 case "&&":
