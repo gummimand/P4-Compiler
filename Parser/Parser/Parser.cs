@@ -207,9 +207,13 @@ namespace Parserproject
 
                 Expression exp1 = ParseSimpleExpression();
 
+            while (TokenStream.peek().Type != TokenType.EOF && TokenStream.peek().Type != TokenType.op && !IsExpressionEnding(TokenStream.peek()))
+            {
+                Expression exp2 = ParseSimpleExpression();
+                exp1 = new ApplicationExpression(exp1, exp2);
+            }
 
-
-                while (TokenStream.peek().Type == TokenType.op)
+            while (TokenStream.peek().Type == TokenType.op)
                 {
                     Expression op = GetOperationConst(TokenStream.next().content);
 
@@ -218,11 +222,7 @@ namespace Parserproject
                     exp1 = new ApplicationExpression(new ApplicationExpression(op, exp1), exp2);
                 }
 
-                while (TokenStream.peek().Type != TokenType.EOF && TokenStream.peek().Type != TokenType.op && !IsExpressionEnding(TokenStream.peek()))
-                {
-                    Expression exp2 = ParseSimpleExpression();
-                    exp1 = new ApplicationExpression(exp1, exp2);
-                }
+              
 
             return exp1;        
         }
