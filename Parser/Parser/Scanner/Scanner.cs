@@ -92,7 +92,7 @@ namespace Parserproject
             }
             else
             {
-                throw new ArgumentException($"Could not read {peeked}");
+                throw new ArgumentException($"Syntax error: Could not read {peeked}");
             }
         }
 
@@ -112,7 +112,7 @@ namespace Parserproject
             }
 
             if (cs.EOF())
-                throw new ArgumentException("File ended while stying to scan a string");
+                throw new ArgumentException("File ended while trying to scan a string");
             else if (cs.Peek() == '"') 
                 return new Token(lexeme + cs.GetNextChar(), TokenType.streng);
             else
