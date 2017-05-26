@@ -313,7 +313,7 @@ namespace Parserproject
                     PairConstN constExp = c as PairConstN;
                     Expression valExp = exp.Value as Expression;
 
-                    return new ValueExpression(Tuple.Create(constExp.exp.Value, valExp));
+                    return new ValueExpression(Tuple.Create(constExp.exp, valExp));
                 }
                 else if (c is ListConst) {
                     Expression valExp = exp.Value as Expression;
