@@ -303,7 +303,7 @@ namespace Parserproject
 
                     if (exp.Value is EmptyListExpression)
                     {
-                        list.Add(constExp.exp)
+                        list.Add(constExp.exp);
                         return new ValueExpression(list);
                     }
                     else if (exp.Value is ValueExpression )
