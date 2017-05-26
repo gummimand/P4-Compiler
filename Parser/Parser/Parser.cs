@@ -94,24 +94,40 @@ namespace Parserproject
             Identifier argument;
             Expression functionBody;
             Expression functionExpression;
-            //List<Identifier> parameters = new List<Identifier>();
 
+            List<Identifier> args = new List<Identifier>();
+           
             functionName = new Identifier(AcceptToken(TokenType.identifier));
 
             AcceptToken("(");
-            //if(TokenStream.peek().content != ")")
-            //    parameters.Add(new Identifier(AcceptToken(TokenType.identifier)));
-            
-            //while (TokenStream.peek().content != ")") {
-            //    AcceptToken(",");
-                argument = new Identifier(AcceptToken(TokenType.identifier));
-            //}
+
+            args.Add(new Identifier(AcceptToken(TokenType.identifier)));
+
+
+            while (TokenStream.peek().content == ",")
+            {
+                AcceptToken();
+                args.Add(new Identifier(AcceptToken(TokenType.identifier)));
+            }
 
             AcceptToken(")");
 
             functionBody = ParseClauseExp();
 
-            functionExpression = new AnonFuncExpression(argument, functionBody);
+            if (args.Count == 1)
+            {
+                argument = args[0];
+                functionExpression = new AnonFuncExpression(argument, functionBody);
+            }
+            else
+            {
+                Identifier pair = new Identifier(new Token("pair", TokenType.identifier));
+
+                LetExpression let2 = new LetExpression(args[1],new ApplicationExpression(new SecondConst(), new IdentifierExpression("pair")),functionBody);
+                LetExpression let1 = new LetExpression(args[0],new ApplicationExpression(new FirstConst(), new IdentifierExpression("pair")),let2);
+
+                functionExpression = new AnonFuncExpression(pair, let1);
+            }
 
             AcceptToken(";");
 
@@ -175,11 +191,7 @@ namespace Parserproject
         private Expression ParseExpression()
         {
            
-
-               
-
-
-                Expression exp1 = ParseSimpleExpression();
+            Expression exp1 = ParseSimpleExpression();
 
             while (TokenStream.peek().Type != TokenType.EOF && TokenStream.peek().Type != TokenType.op && !IsExpressionEnding(TokenStream.peek()))
             {
