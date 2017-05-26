@@ -257,7 +257,7 @@ namespace Parserproject
 
     public class ValueExpression : Expression
     {
-        public List<string> vals;
+        public List<Expression> vals;
         public string val;
         public Tuple<Expression, Expression> tuple;
         public bool IsList = false;
@@ -271,7 +271,7 @@ namespace Parserproject
             this.Type = type;
         }
 
-        public ValueExpression(List<string> val) : base("VALUE_EXPRESSION")
+        public ValueExpression(List<Expression> val) : base("VALUE_EXPRESSION")
         {
             IsList = true;
             vals = val;
@@ -289,9 +289,21 @@ namespace Parserproject
         {
             ValueExpression other = obj as ValueExpression;
 
-            if (other != null)
+            if (other != null && this.Type.Equals(other.Type))
             {
-                return this.val == other.val;
+
+                if (IsList)
+                {
+                    return vals.Equals(other.vals);
+                }
+                else if (IsTuple)
+                {
+                    return this.tuple.Item1.Equals(other.tuple.Item1) && this.tuple.Item2.Equals(other.tuple.Item2);
+                }
+                else
+                {
+                    return this.val == other.val;
+                }
             }
             else
             {
@@ -306,7 +318,7 @@ namespace Parserproject
             if (IsList) {
                 foreach (var item in vals) {
                     if (String.IsNullOrEmpty(output))
-                        output = item;
+                        output = item.ToString();
                     else
                         output = (output + "," + item);
                 }
@@ -356,6 +368,11 @@ namespace Parserproject
         public override bool Equals(object obj)
         {
             return obj is EmptyListExpression;
+        }
+
+        public override string ToString()
+        {
+            return "{}";
         }
 
     }
@@ -888,11 +905,11 @@ namespace Parserproject
         public double Nd;
         public int Ni;
         public bool isInt = false;
-        public ValueExpression Nval;
+        public Expression Nval;
 
         public override void accept(IVisitor v) { v.visit(this); }
 
-        public EqualConstN(ValueExpression n) : base("EQUALN")
+        public EqualConstN(Expression n) : base("EQUALN")
         {
             this.Nval = n;
         }

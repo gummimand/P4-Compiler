@@ -176,33 +176,7 @@ namespace Parserproject
         {
            
 
-                if (TokenStream.peek().content == "!")
-                {
-                    Expression op = GetOperationConst(TokenStream.next().content);
-                    Expression exp2 = ParseSimpleExpression();
-                    exp2 = new ApplicationExpression(op, exp2);
-
-                    return exp2;
-                }
-                else if (TokenStream.peek().content == "hoved" || TokenStream.peek().content == "hale" || TokenStream.peek().content == "første" || TokenStream.peek().content == "anden")
-                {
-                    Expression op = GetOperationConst(TokenStream.next().content);
-                    if (TokenStream.peek().content == "(")
-                        AcceptToken();
-                    else
-                        throw new Exception("Missing bracket: (");
-
-                    Expression exp2 = ParseExpression();
-
-                    if (TokenStream.peek().content == ")")
-                        AcceptToken();
-                    else
-                        throw new Exception("Missing ending bracket: )");
-
-                    exp2 = new ApplicationExpression(op, exp2);
-
-                    return exp2;
-                }
+               
 
 
                 Expression exp1 = ParseSimpleExpression();
@@ -258,7 +232,7 @@ namespace Parserproject
                 case ">=":
                     return new GreaterThanOrEqualConst();
                 case ":":
-                    return new ConcatConst();
+                    return new ListConst();
                 case "hoved":
                     return new HeadConst();
                 case "første":
@@ -332,6 +306,34 @@ namespace Parserproject
 
                     exp = new ValueExpression(valueToken.content, tIn);
                 }
+            }
+
+            else if (TokenStream.peek().content == "!")
+            {
+                Expression op = GetOperationConst(TokenStream.next().content);
+                Expression exp2 = ParseSimpleExpression();
+                exp2 = new ApplicationExpression(op, exp2);
+
+                return exp2;
+            }
+            else if (TokenStream.peek().content == "hoved" || TokenStream.peek().content == "hale" || TokenStream.peek().content == "første" || TokenStream.peek().content == "anden")
+            {
+                Expression op = GetOperationConst(TokenStream.next().content);
+                if (TokenStream.peek().content == "(")
+                    AcceptToken();
+                else
+                    throw new Exception("Missing bracket: (");
+
+                Expression exp2 = ParseExpression();
+
+                if (TokenStream.peek().content == ")")
+                    AcceptToken();
+                else
+                    throw new Exception("Missing ending bracket: )");
+
+                exp2 = new ApplicationExpression(op, exp2);
+
+                return exp2;
             }
             else if (TokenStream.peek().content == "hvis")
             {

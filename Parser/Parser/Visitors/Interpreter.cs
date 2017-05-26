@@ -19,7 +19,7 @@ namespace Parserproject
 
         private Expression Apply(ConstantExpression c, Expression exp)
         {
-            if (exp.Value is ValueExpression || exp.Value is EmptyListExpression)
+            if (exp.Value is ValueExpression || exp.Value is EmptyListExpression || exp.Value is AnonFuncExpression)
             {
                 if (c is PlusConst) {
                     ValueExpression valExp = exp.Value as ValueExpression;
@@ -148,34 +148,38 @@ namespace Parserproject
                     }
                 }
                 else if (c is EqualConst) {
-                    ValueExpression valExp = exp.Value as ValueExpression;
+                    Expression valExp = exp.Value as Expression;
                     return new EqualConstN(valExp);
                 }
                 else if (c is EqualConstN) {
                     EqualConstN constExp = c as EqualConstN;
-                    ValueExpression valExp = exp.Value as ValueExpression;
+                    Expression valExp = exp.Value as Expression;
+                    string truthvalue = constExp.Nval.Equals(valExp) ? "sand" : "falsk";
 
-                    if (constExp.Nval.Type is BoolType && valExp.Type is BoolType) {
-                        bool n = bool.Parse(constExp.Nval.val);
-                        bool m = bool.Parse(valExp.val);
-                        string truthvalue = n == m ? "sand" : "falsk";
+                    return new ValueExpression(truthvalue, new BoolType());
 
-                        return new ValueExpression(truthvalue, new BoolType());
-                    }
-                    else if (constExp.Nval.Type is TalType) {
-                        double n = double.Parse(constExp.Nval.val);
-                        double m = double.Parse(valExp.val);
-                        string truthvalue = n == m ? "sand" : "falsk";
 
-                        return new ValueExpression(truthvalue, new BoolType());
-                    }
-                    else {
-                        int n = int.Parse(constExp.Nval.val);
-                        int m = int.Parse(valExp.val);
-                        string truthvalue = n == m ? "sand" : "falsk";
+                    //if (constExp.Nval.Type is BoolType && valExp.Type is BoolType) {
+                    //    bool n = bool.Parse(constExp.Nval.val);
+                    //    bool m = bool.Parse(valExp.val);
+                    //    string truthvalue = n == m ? "sand" : "falsk";
 
-                        return new ValueExpression(truthvalue, new BoolType());
-                    }
+                    //    return new ValueExpression(truthvalue, new BoolType());
+                    //}
+                    //else if (constExp.Nval.Type is TalType) {
+                    //    double n = double.Parse(constExp.Nval.val);
+                    //    double m = double.Parse(valExp.val);
+                    //    string truthvalue = n == m ? "sand" : "falsk";
+
+                    //    return new ValueExpression(truthvalue, new BoolType());
+                    //}
+                    //else {
+                    //    int n = int.Parse(constExp.Nval.val);
+                    //    int m = int.Parse(valExp.val);
+                    //    string truthvalue = n == m ? "sand" : "falsk";
+
+                    //    return new ValueExpression(truthvalue, new BoolType());
+                    //}
                 }
 
                 else if (c is NotEqualConst) {
@@ -302,7 +306,7 @@ namespace Parserproject
                     }
                 }
                 else if (c is PairConst) {
-                    ValueExpression valExp = exp.Value as ValueExpression;
+                    Expression valExp = exp.Value as Expression;
                     return new PairConstN(valExp);
                 }
                 else if (c is PairConstN) {
@@ -312,27 +316,30 @@ namespace Parserproject
                     return new ValueExpression(Tuple.Create(constExp.exp.Value, valExp));
                 }
                 else if (c is ListConst) {
-                    ValueExpression valExp = exp.Value as ValueExpression;
+                    Expression valExp = exp.Value as Expression;
                     return new ListConstN(valExp);
                 }
 
                 else if (c is ListConstN) {
                     ListConstN constExp = c as ListConstN;
-                    List<string> list = new List<string>();
+                    List<Expression> list = new List<Expression>();
 
-                    if (exp.Value is ValueExpression)
+                    if (exp.Value is EmptyListExpression)
+                    {
+                        list.Add(constExp.exp);
+                        //list.Add(exp.Value);
+                        return new ValueExpression(list);
+                    }
+                    else if (exp.Value is ValueExpression )
                     {
                         ValueExpression valExp = exp.Value as ValueExpression;
-
-                        list.Add(constExp.exp.Value.ToString());
+                        list.Add(constExp.exp);
                         list.AddRange(valExp.vals);
                         return new ValueExpression(list);
                     }
                     else
                     {
-                        list.Add(constExp.exp.Value.ToString());
-
-                        return new ValueExpression(list);
+                        throw new Exception("Tail was not list or empty list");
                     }
                 }
                 else if(c is ConcatConst) {
@@ -340,19 +347,21 @@ namespace Parserproject
                     return new ConcatConstN(valExp);
                 }
                 else if(c is ConcatConstN) {
-                    ConcatConstN constExp = c as ConcatConstN;
-                    List<string> list = new List<string>();
+                    //ConcatConstN constExp = c as ConcatConstN;
+                    //List<string> list = new List<string>();
 
-                    if (exp.Value is ValueExpression) {
-                        ValueExpression valExp = exp.Value as ValueExpression;
+                    //if (exp.Value is ValueExpression) {
+                    //    ValueExpression valExp = exp.Value as ValueExpression;
 
-                        list.AddRange(constExp.Nval.vals);
-                        list.AddRange(valExp.vals);
-                        return new ValueExpression(list);
-                    }
-                    else {
-                        return new ValueExpression(list);
-                    }
+                    //    list.AddRange(constExp.Nval.vals);
+                    //    list.AddRange(valExp.vals);
+                    //    return new ValueExpression(list);
+                    //}
+                    //else {
+                    //    return new ValueExpression(list);
+                    //}
+
+                    throw new NotImplementedException();
                 }
 
                 else if (c is NotConst) {
@@ -364,13 +373,18 @@ namespace Parserproject
                 }
                 else if (c is HeadConst) {
                     ValueExpression valExp = exp.Value as ValueExpression;
-                    
-                    return new ValueExpression(valExp.vals.First(), valExp.Type); //TODO sufficient type
+                    ListType type = valExp.Type as ListType;
+
+                    return valExp.vals[0]; //TODO sufficient type
                 }
                 else if (c is TailConst) {
                     ValueExpression valExp = exp.Value as ValueExpression;
-                    
-                    return new ValueExpression(valExp.vals.GetRange(1, valExp.vals.Count - 1));
+
+                    if (valExp.vals.Count > 1)
+                    {
+                        return new ValueExpression(valExp.vals.GetRange(1, valExp.vals.Count - 1));
+                    }
+                    return new EmptyListExpression();
                 }
                 else if (c is AndConst) {
                     ValueExpression valExp = exp.Value as ValueExpression;
