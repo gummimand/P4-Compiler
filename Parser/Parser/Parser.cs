@@ -119,14 +119,39 @@ namespace Parserproject
                 argument = args[0];
                 functionExpression = new AnonFuncExpression(argument, functionBody);
             }
-            else
+            else if (args.Count == 2)
             {
                 Identifier pair = new Identifier(new Token("pair", TokenType.identifier));
 
-                LetExpression let2 = new LetExpression(args[1],new ApplicationExpression(new SecondConst(), new IdentifierExpression("pair")),functionBody);
-                LetExpression let1 = new LetExpression(args[0],new ApplicationExpression(new FirstConst(), new IdentifierExpression("pair")),let2);
+                LetExpression let2 = new LetExpression(args[1], new ApplicationExpression(new SecondConst(), new IdentifierExpression("pair")), functionBody);
+                LetExpression let1 = new LetExpression(args[0], new ApplicationExpression(new FirstConst(), new IdentifierExpression("pair")), let2);
 
                 functionExpression = new AnonFuncExpression(pair, let1);
+            }
+            else
+            {
+                List<IdentifierExpression> pairs = new List<IdentifierExpression>();
+                for (int j = 0; j < args.Count - 1; j++)
+                {
+                    pairs.Add(new IdentifierExpression("pair" + j));
+                }
+
+                int i = args.Count - 2;
+
+                functionBody = new LetExpression(args[i + 1], new ApplicationExpression(new SecondConst(), pairs[i]), functionBody);
+                functionBody = new LetExpression(args[i], new ApplicationExpression(new FirstConst(), pairs[i]), functionBody);
+
+                i--;
+
+                while (i >= 0)
+                {
+                    functionBody = new LetExpression(new Identifier(new Token(pairs[i + 1].varName, TokenType.identifier)), new ApplicationExpression(new SecondConst(), pairs[i]), functionBody);
+                    functionBody = new LetExpression(args[i], new ApplicationExpression(new FirstConst(), pairs[i]), functionBody);
+
+                    i--;
+                }
+
+                functionExpression = new AnonFuncExpression(new Identifier(new Token(pairs[i + 1].varName, TokenType.identifier)), functionBody);
             }
 
             AcceptToken(";");
