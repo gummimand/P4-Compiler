@@ -31,9 +31,14 @@ namespace Parserproject
             while (!cs.EOF())
             {
                 RemoveWhiteSpace();
-                ScanComment();
+
                 if (cs.EOF())
                     tokens.Add(new Token("EOF", TokenType.EOF)); //todo, End of file char?
+                else if (cs.Peek() == '#')
+                {
+                    while (cs.Peek() != '\n' && !cs.EOF())
+                        cs.Advance();
+                }
                 else
                     tokens.Add(ScanToken());
             }
@@ -46,19 +51,6 @@ namespace Parserproject
             while (isWhiteSpace(cs.Peek()))
             {
                 cs.Advance();
-            }
-        }
-
-        private void ScanComment()
-        {
-            while (cs.Peek() == '#')
-            {
-                cs.Advance();
-                while (cs.Peek() != '\n' && !cs.EOF())
-                {
-                    cs.Advance();
-                }
-                RemoveWhiteSpace();
             }
         }
 
@@ -92,7 +84,7 @@ namespace Parserproject
             }
             else
             {
-                throw new ArgumentException($"Could not read {peeked}");
+                throw new ArgumentException($"Syntax error: Could not read {peeked}");
             }
         }
 
@@ -112,7 +104,7 @@ namespace Parserproject
             }
 
             if (cs.EOF())
-                throw new ArgumentException("File ended while stying to scan a string");
+                throw new ArgumentException("File ended while trying to scan a string");
             else if (cs.Peek() == '"') 
                 return new Token(lexeme + cs.GetNextChar(), TokenType.streng);
             else

@@ -326,7 +326,7 @@ namespace Parserproject
                             tIn = new TalType();
                             break;
                         default:
-                            throw new Exception("Fejl på type");
+                            throw new Exception($"Unexpected type, was {valueToken.Type}");
                     }
 
 

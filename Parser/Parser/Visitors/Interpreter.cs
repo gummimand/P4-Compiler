@@ -433,13 +433,13 @@ namespace Parserproject
                     }
                 }
 
-                else { throw new Exception("no!"); }
+                else { throw new Exception($"Validate that you have used constant correct, was {c.ToString()}"); }
             }
             else if (exp.Value is EmptyListExpression)
             {
                 return exp;
             }
-            else { throw new Exception("no!"); }
+            else { throw new Exception($"Incorrect constant or Empty List. Was {exp.Value}"); }
         }
 
         public void visit(ASTNode node)
@@ -570,7 +570,7 @@ namespace Parserproject
             }
             else
             {
-                throw new Exception("SHit!");
+                throw new Exception($"Wrong use of application. Was {node.function.Value}!");
             }
         }
 
